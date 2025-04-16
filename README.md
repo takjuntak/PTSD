@@ -1,6 +1,28 @@
-# PTSD - 헬스장 정리 로봇 시스템
+# 🏋️ PTSD - 헬스장 정리 로봇 시스템  
+📅 **프로젝트 기간:** 2025.04.14 ~ 2025.05.22  
+
+> 💡 이제 기구 정리는 PTSD가 합니다 – **운동은 하고, 정리는 맡기세요** 💪
 
 
+
+---
+
+## 🧾 프로젝트 소개
+
+헬스 트레이너 분들과의 현장 인터뷰를 통해  
+**"운동 후 정리하지 않는 무거운 원판을 매번 사람이 옮기는 불편함"**을 확인하게 되었습니다.
+
+반복되는 수작업 정리, 무거운 기구 재배치, 트레이너의 과도한 부담…
+
+이러한 **실제 헬스장 운영자들의 고충을 해결**하기 위해,  
+기구를 자동으로 감지하고 정리하는 **자율 주행 헬스 정리 로봇**,  
+**PTSD (Put Things Smartly Down)** 프로젝트를 기획·개발하게 되었습니다.
+
+> 🚀 **웹 기술 + AI + IoT + ROS** 기반으로  
+> **사용자의 운동 편의성 + 트레이너의 업무 부담**을 동시에 줄이는  
+> 스마트한 헬스장 정리 솔루션입니다.
+
+---
 
 ## 🧑‍🤝‍🧑 팀원
 
@@ -42,11 +64,12 @@
 </table>
 
 
-
+---
 
 ## 🛠 TOOLS
 ### ✔️Frond-end
-<img src="https://img.shields.io/badge/JavaScript-grey?style=for-the-badge&logo=javascript"> <img src="https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=React&logoColor=black"> <img src="https://img.shields.io/badge/Css-1572B6?style=for-the-badge&logo=Css&logoColor=white"> <img src="https://img.shields.io/badge/Redux-764ABC?style=for-the-badge&logo=Redux&logoColor=purple"> <img src="https://img.shields.io/badge/Next.js-000000?style=for-the-badge&logo=Next.js&logoColor=white"> <img src="https://img.shields.io/badge/github-181717?style=for-the-badge&logo=github&logoColor=white">
+<img src="https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=React&logoColor=white"/> <img src="https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=TypeScript&logoColor=white"/> <img src="https://img.shields.io/badge/PWA-5A0FC8?style=for-the-badge&logo=PWA&logoColor=white"/>
+
 
 ### ✔️Back-end
   <img src="https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=Python&logoColor=white"/> <img src="https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=FastAPI&logoColor=white"/> <img src="https://img.shields.io/badge/PostgreSQL-4169E1?style=for-the-badge&logo=PostgreSQL&logoColor=white"/> <img src="https://img.shields.io/badge/VSCode-007ACC?style=for-the-badge&logo=visualstudiocode&logoColor=white"/> 
@@ -62,4 +85,21 @@
 
 ### ✔️Collaboration
 <img src="https://img.shields.io/badge/Jira-0052CC?style=for-the-badge&logo=Jira&logoColor=white"/> <img src="https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=GitHub&logoColor=white"/> <img src="https://img.shields.io/badge/Discord-5865F2?style=for-the-badge&logo=Discord&logoColor=white"/>
+
+
+
+
+
+## 🚀 주요 기능 
+
+## 🧪 설치 및 실행 방법
+
+## 📂 프로젝트 구조
+
+## 📷 시연 및 결과
+
+## 📌 참고 자료
+
+
+
 
