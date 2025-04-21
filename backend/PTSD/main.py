@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from .exceptions import register_exception_handlers
+from PTSD.exceptions import register_exception_handlers
 
 app = FastAPI()
 
