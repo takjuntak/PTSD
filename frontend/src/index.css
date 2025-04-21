@@ -1,0 +1,25 @@
+import React from 'react'
+import ReactDOM from 'react-dom/client'
+import App from './App.tsx'
+import './index.css'
+
+// PWA 서비스 워커 등록
+import { registerSW } from 'virtual:pwa-register'
+
+// 서비스 워커 등록 함수 정의
+const updateSW = registerSW({
+  onNeedRefresh() {
+    if (confirm('새 버전이 있습니다. 업데이트하시겠습니까?')) {
+      updateSW()
+    }
+  },
+  onOfflineReady() {
+    console.log('앱이 오프라인 사용을 위해 준비되었습니다.')
+  },
+})
+
+ReactDOM.createRoot(document.getElementById('root')!).render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>,
+)
