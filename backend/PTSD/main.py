@@ -9,10 +9,6 @@ app = FastAPI(
     docs_url="/docs",          # ✅ Swagger UI 경로 (기본값)
     redoc_url="/redoc",        # ✅ ReDoc 문서 경로
     openapi_url="/openapi.json",
-    # openapi_tags=[
-    #     {"name": "회원가입", "description": "회원가입 관련 API"},
-    #     {"name": "로그인", "description": "로그인 관련 API"}
-    # ]
 )
 register_exception_handlers(app)
 
