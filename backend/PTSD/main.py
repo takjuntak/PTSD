@@ -1,11 +1,14 @@
 from fastapi import FastAPI
+from .exceptions import register_exception_handlers
 
 app = FastAPI()
 
+register_exception_handlers(app)
 
-@app.get("/") # 요청 url 경로
+
+@app.get("/")
 def root():
-    return {"message": "Hello World"} # 반환할 데이터
+    return {"message": "Hello, PTSD Project!"}
 
 
 @app.get("/home")
