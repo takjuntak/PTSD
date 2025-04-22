@@ -1,25 +1,49 @@
-import React from 'react'
-import ReactDOM from 'react-dom/client'
-import App from './App.tsx'
-import './index.css'
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-// PWA 서비스 워커 등록
-import { registerSW } from 'virtual:pwa-register'
+:root {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
+    Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
 
-// 서비스 워커 등록 함수 정의
-const updateSW = registerSW({
-  onNeedRefresh() {
-    if (confirm('새 버전이 있습니다. 업데이트하시겠습니까?')) {
-      updateSW()
-    }
-  },
-  onOfflineReady() {
-    console.log('앱이 오프라인 사용을 위해 준비되었습니다.')
-  },
-})
+  color-scheme: dark;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #1E1E1E;
 
-ReactDOM.createRoot(document.getElementById('root')!).render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-)
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  display: flex;
+  place-items: center;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+#root {
+  max-width: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+}
+
+button {
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: #1a1a1a;
+  cursor: pointer;
+  transition: border-color 0.25s;
+}
+
+/* 나머지 기본 스타일은 기존 스타일을 따르되 필요한 것만 수정 */
