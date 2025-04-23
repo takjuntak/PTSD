@@ -15,38 +15,88 @@ const Header: React.FC<HeaderProps> = ({ title }) => {
 
   return (
     <header className="py-4 px-6 bg-app-dark text-white">
-      <div className="relative inline-block">
+      <div
+        style={{
+          position: 'relative',
+          textAlign: 'left',
+          width: '100%',
+          zIndex: 1000
+        }}
+      >
         <button
           className="flex items-center gap-2 text-white bg-transparent border-none focus:outline-none"
+          style={{ margin: '0', padding: '0' }}
           onClick={toggleDropdown}
         >
           <span className="text-xl font-bold">{title}</span>
           <ChevronDown size={20} />
         </button>
 
-        {isDropdownOpen && (
-          <div className="absolute right-0 mt-2 w-52 bg-app-card rounded-md shadow-lg z-10 py-2">
-            <ul>
-              <li className="px-4 py-2 flex items-center justify-between text-app-blue font-semibold">
-                <span>{title}</span>
-                <Check size={16} />
-              </li>
-              <div className="border-t border-dashed border-gray-500 my-1" />
-              <li>
-                <button
-                  className="w-full text-left px-4 py-2 text-white hover:bg-app-blue transition-colors flex items-center gap-2 focus:outline-none"
-                  onClick={() => {
-                    console.log('장소 관리 클릭');
-                    setIsDropdownOpen(false);
-                  }}
-                >
-                  <Settings size={16} />
-                  <span>장소 관리</span>
-                </button>
-              </li>
-            </ul>
+        <div
+          style={{
+            position: 'absolute',
+            top: '100%',
+            left: '0',
+            width: '208px',
+            backgroundColor: '#2A2A2A',
+            borderRadius: '6px',
+            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
+            padding: '8px 0',
+            marginTop: '8px',
+            zIndex: 1000,
+            display: isDropdownOpen ? 'block' : 'none',
+          }}
+        >
+          <div
+            style={{
+              padding: '8px 16px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              color: '#0088FF',
+              fontWeight: 600
+            }}
+          >
+            <span>{title}</span>
+            <Check size={16} />
           </div>
-        )}
+          
+          <div 
+            style={{
+              borderTop: '1px dashed #444',
+              margin: '4px 0'
+            }}
+          />
+          
+          <button
+            style={{
+              width: '100%',
+              textAlign: 'left',
+              padding: '8px 16px',
+              color: 'white',
+              backgroundColor: 'transparent',
+              border: 'none',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              cursor: 'pointer',
+              transition: 'background-color 0.2s'
+            }}
+            onMouseOver={(e) => {
+              e.currentTarget.style.backgroundColor = '#0088FF';
+            }}
+            onMouseOut={(e) => {
+              e.currentTarget.style.backgroundColor = 'transparent';
+            }}
+            onClick={() => {
+              console.log('장소 관리 클릭');
+              setIsDropdownOpen(false);
+            }}
+          >
+            <Settings size={16} />
+            <span>장소 관리</span>
+          </button>
+        </div>
       </div>
     </header>
   );
