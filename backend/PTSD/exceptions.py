@@ -1,9 +1,8 @@
-# ✅ exceptions.py
-
 from fastapi import Request, HTTPException, status
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, ValidationError
 from starlette.exceptions import HTTPException as StarletteHTTPException
+from fastapi.exceptions import RequestValidationError
 
 # 예외 응답 모델
 class FieldErrorDetail(BaseModel):
@@ -11,24 +10,56 @@ class FieldErrorDetail(BaseModel):
     message: str
 
 class ErrorResponse(BaseModel):
-    statusCode: int
+    isSuccess: bool = False
+    code: int
     message: str
     errors: list[FieldErrorDetail] | None = None
 
-# ✅ 핸들러 등록 함수들만 정의 (FastAPI 인스턴스는 인자로 받음)
+# 핸들러 등록 함수들만 정의 (FastAPI 인스턴스는 인자로 받음)
 def register_exception_handlers(app):
-    @app.exception_handler(ValidationError)
-    async def validation_exception_handler(request: Request, exc: ValidationError):
+    @app.exception_handler(RequestValidationError)
+    async def request_validation_exception_handler(request: Request, exc: RequestValidationError):
         field_errors = [
-            FieldErrorDetail(field=e['loc'][-1], message=e['msg']) for e in exc.errors()
+            FieldErrorDetail(
+                field=e['loc'][-1],
+                message=e.get('ctx', {}).get('reason', e['msg'])
+            ) for e in exc.errors()
         ]
         return JSONResponse(
             status_code=status.HTTP_400_BAD_REQUEST,
             content=ErrorResponse(
-                statusCode=400,
-                message="잘못된 요청입니다. 입력 값을 확인해주세요.",
+                isSuccess=False,
+                code=400,
+                message="입력 형식을 확인해주세요.",
                 errors=field_errors
-            ).dict()
+            ).model_dump()
+        )
+
+    @app.exception_handler(ValidationError)
+    async def validation_exception_handler(request: Request, exc: ValidationError):
+        field_errors = []
+        for e in exc.errors():
+            field = e['loc'][-1]
+            message = e.get('msg', '')
+
+             # 이메일 형식 오류 메시지 커스터마이즈
+            if 'email' in field and "The part after the @-sign is not valid" in message:
+                message = "이메일 형식이 잘못되었습니다. @ 뒤에 도메인을 확인하세요."
+            
+            # 비밀번호 길이 오류 메시지 커스터마이즈
+            elif 'password' in field and "ensure this value has at least 8 characters" in message:
+                message = "비밀번호는 최소 8자 이상이어야 합니다."
+
+            field_errors.append(FieldErrorDetail(field=field, message=message))
+
+        return JSONResponse(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            content=ErrorResponse(
+                isSuccess=False,
+                code=400,
+                message="입력 형식을 확인해주세요.",
+                errors=field_errors
+            ).model_dump()
         )
 
     @app.exception_handler(HTTPException)
@@ -37,19 +68,21 @@ def register_exception_handlers(app):
             return JSONResponse(
                 status_code=401,
                 content=ErrorResponse(
-                    statusCode=401,
+                    isSuccess=False,
+                    code=401,
                     message="인증이 필요합니다. 로그인 후 다시 시도해주세요.",
                     errors=None
-                ).dict()
+                ).model_dump()
             )
         elif exc.status_code == 422:
             return JSONResponse(
                 status_code=422,
                 content=ErrorResponse(
-                    statusCode=422,
+                    isSuccess=False,
+                    code=422,
                     message="요청 데이터를 처리할 수 없습니다.",
                     errors=None
-                ).dict()
+                ).model_dump()
             )
         raise exc
 
@@ -59,19 +92,21 @@ def register_exception_handlers(app):
             return JSONResponse(
                 status_code=403,
                 content=ErrorResponse(
-                    statusCode=403,
+                    isSuccess=False,
+                    code=403,
                     message="접근이 거부되었습니다.",
                     errors=None
-                ).dict()
+                ).model_dump()
             )
         elif exc.status_code == 404:
             return JSONResponse(
                 status_code=404,
                 content=ErrorResponse(
-                    statusCode=404,
+                    isSuccess=False,
+                    code=404,
                     message="요청하신 리소스를 찾을 수 없습니다.",
                     errors=None
-                ).dict()
+                ).model_dump()
             )
         raise exc
 
@@ -80,10 +115,11 @@ def register_exception_handlers(app):
         return JSONResponse(
             status_code=409,
             content=ErrorResponse(
-                statusCode=409,
+                isSuccess=False,
+                code=409,
                 message="이미 존재하는 데이터입니다.",
                 errors=None
-            ).dict()
+            ).model_dump()
         )
 
     @app.exception_handler(Exception)
@@ -91,8 +127,9 @@ def register_exception_handlers(app):
         return JSONResponse(
             status_code=500,
             content=ErrorResponse(
-                statusCode=500,
+                isSuccess=False,
+                code=500,
                 message="서버 내부 오류가 발생했습니다.",
                 errors=None
-            ).dict()
+            ).model_dump()
         )
