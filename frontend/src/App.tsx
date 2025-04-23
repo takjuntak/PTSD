@@ -1,11 +1,24 @@
+// src/App.tsx
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import './App.css'
 import MainPage from './pages/MainPage'
+import NavigationBar from './components/common/NavigationBar'
 
 function App() {
   return (
-    <>
-      <MainPage />
-    </>
+    <Router>
+      <div className="flex flex-col bg-app-dark text-white w-full overflow-x-hidden" style={{ height: '100vh' }}>
+        <div className="flex-1 pb-16 w-full overflow-y-auto"> {/* 스크롤 추가 */}
+          <Routes>
+            <Route path="/" element={<MainPage />} />
+            {/* 추가 경로는 여기에 작성 */}
+          </Routes>
+        </div>
+        
+        {/* 네비게이션 바는 App.tsx에서 관리하여 모든 페이지에서 공통으로 사용 */}
+        <NavigationBar />
+      </div>
+    </Router>
   )
 }
 
