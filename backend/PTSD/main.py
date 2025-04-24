@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.security import OAuth2PasswordBearer
 from PTSD.exceptions import register_exception_handlers
-from PTSD.routers import user_router, history_router, routine_router
+from PTSD.routers import user_router, routine_router , history_router, devices_router
 from fastapi.openapi.utils import get_openapi
 from fastapi.middleware.cors import CORSMiddleware
 from PTSD.core.database import Base, engine
