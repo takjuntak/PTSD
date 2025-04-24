@@ -67,23 +67,21 @@ def signup(payload: SignupRequest, db: Session = Depends(get_db)):
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
-
+    
     # JWT 토큰 생성
     access_token = create_access_token({"sub": new_user.email})
 
-    logger.info(f"회원가입 성공: 이메일 {new_user.email}")
-    
     signup_response = SignupResponse(
         email=new_user.email,
-        created_at=new_user.created_at,
-        access_token=access_token,
+        createdAt=new_user.createdAt,
+        accessToken=access_token
     )
     return ResponseModel(
         isSuccess=True,
         code=status.HTTP_201_CREATED,  # 응답 내부 코드 필드도 201
         message="회원가입이 성공적으로 완료되었습니다.",
         result=signup_response
-    )
+    ).model_dump()
 
 @router.post(
     "/api/auth/login",
@@ -111,7 +109,7 @@ def login(payload: LoginRequest, db: Session = Depends(get_db)):
 
     token = create_access_token({"sub": user.email})
 
-    login_result = LoginResult(email=user.email, access_token=token)
+    login_result = LoginResult(email=user.email, accessToken=token)
 
     return ResponseModel(
         isSuccess=True,
