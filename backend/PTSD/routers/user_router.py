@@ -85,6 +85,37 @@ def signup(payload: SignupRequest, db: Session = Depends(get_db)):
         result=signup_response
     )
 
-@router.post("/api/auth/login", summary="로그인")
-def login():
-    return {"msg": "user login"}
+@router.post(
+    "/api/auth/login",
+    summary="로그인",
+    response_model=ResponseModel[LoginResult],
+    description="""
+📌 **로그인을 진행합니다.**
+
+- 이메일과 비밀번호를 입력해 로그인을 완료합니다.
+
+### ✅ [요청 필드]
+- `email` : 회원 이메일 주소
+- `password` : 회원 비밀번호
+
+### ✅ [응답 필드]
+- `email` : 로그인한 이메일 주소
+- `access_token` : 인증 토큰
+""",
+)
+def login(payload: LoginRequest, db: Session = Depends(get_db)):
+    user = db.query(User).filter(User.email == payload.email).first()
+
+    if not user or not verify_password(payload.password, user.password):
+        raise HTTPException(status_code=401, detail="이메일 또는 비밀번호가 올바르지 않습니다.")
+
+    token = create_access_token({"sub": user.email})
+
+    login_result = LoginResult(email=user.email, access_token=token)
+
+    return ResponseModel(
+        isSuccess=True,
+        code=200,
+        message="로그인에 성공하였습니다.",
+        result=login_result
+    )

@@ -9,4 +9,4 @@ class User(Base):
     userId = Column(Integer, primary_key=True, index=True, autoincrement=True)
     email = Column(String, unique=True, index=True)
     password = Column("password", String)  # Actual DB column name is `password`
-    created_at = Column(DateTime, default=datetime.utcnow) 
+    createdAt = Column(DateTime, default=datetime.utcnow) 
