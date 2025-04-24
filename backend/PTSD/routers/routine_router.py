@@ -4,8 +4,8 @@ from pydantic import BaseModel
 from datetime import datetime
 from typing import Optional, List
 from enum import Enum
-from ..schemas import routines, ResponseModel
-from ..models import Routine, User
+from ..schemas import routines, response
+from ..models import routines, user
 from ..core.database import get_db
 
 
