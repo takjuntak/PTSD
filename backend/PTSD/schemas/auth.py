@@ -13,12 +13,12 @@ class SignupRequest(BaseModel):
         return value
 
 class LoginRequest(BaseModel):
-    email: str
+    email: EmailStr
     password: str
 
 class LoginResult(BaseModel):
     email: str
-    access_token: str
+    accessToken: str
 
 class SignupResponse(BaseModel):
     email: str
