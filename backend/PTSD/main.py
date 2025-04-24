@@ -4,6 +4,8 @@ from PTSD.exceptions import register_exception_handlers
 from PTSD.routers import user_router, schedule_router , history_router
 from fastapi.openapi.utils import get_openapi
 from fastapi.middleware.cors import CORSMiddleware
+from PTSD.core.database import Base, engine
+from PTSD.models import user, routines
 
 
 app = FastAPI(
@@ -15,13 +17,21 @@ app = FastAPI(
     openapi_url="/openapi.json",
 )
 
+
+
 # ✅ 예외 핸들러 등록
 register_exception_handlers(app)
 
 # ✅ 회원 API 라우터 등록
 app.include_router(user_router.router, tags=["회원관리"])
-app.include_router(schedule_router.router)
+app.include_router(routine_router.router)
 app.include_router(history_router.router)
+
+# ✅ 서버 시작 시 테이블 생성
+@app.on_event("startup")
+async def startup_event():
+    Base.metadata.create_all(bind=engine)
+    print("테이블 생성 완료!")
 
 
 # ✅ Swagger에 Bearer Token 인증 정보 추가
