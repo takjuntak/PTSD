@@ -57,7 +57,7 @@
       </td>
       <td align="center">
         <a href="#"><img src="./image/yj.png" width="100px;" alt=""/><br />
-        <sub><b>Infra : 최연지<br>rokmc17047200@gmail.com</b></sub></a><br />
+        <sub><b>Infra,Backend : 최연지<br>rokmc17047200@gmail.com</b></sub></a><br />
       </td>
     </tr>
   </tbody>
