@@ -18,7 +18,7 @@ class DeviceRead(BaseModel):
     name : str
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 # 수정
 class DeviceUpdate(BaseModel):
