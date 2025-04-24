@@ -17,11 +17,10 @@ class LoginRequest(BaseModel):
     password: str
 
 class LoginResult(BaseModel):
-    access_token: str
-    token_type: str
+    email: str
+    accessToken: str
 
 class SignupResponse(BaseModel):
     email: str
-    created_at: datetime
-    access_token: str 
-    message: str
+    createdAt: datetime
+    accessToken: str 
