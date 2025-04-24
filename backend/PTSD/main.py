@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.security import OAuth2PasswordBearer
 from PTSD.exceptions import register_exception_handlers
-from PTSD.routers import user_router, schedule_router , history_router
+from PTSD.routers import user_router, schedule_router , history_router, devices_router
 from fastapi.openapi.utils import get_openapi
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -22,6 +22,7 @@ register_exception_handlers(app)
 app.include_router(user_router.router, tags=["회원관리"])
 app.include_router(schedule_router.router)
 app.include_router(history_router.router)
+app.include_router(devices_router.router)
 
 
 # ✅ Swagger에 Bearer Token 인증 정보 추가
