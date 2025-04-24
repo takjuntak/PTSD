@@ -17,8 +17,8 @@ class LoginRequest(BaseModel):
     password: str
 
 class LoginResult(BaseModel):
+    email: str
     access_token: str
-    token_type: str
 
 class SignupResponse(BaseModel):
     email: str
