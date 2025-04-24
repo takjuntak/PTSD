@@ -1,9 +1,12 @@
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, HTTPException, Depends, status
+from fastapi.responses import JSONResponse
+
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
 from PTSD.core.database import SessionLocal
 from PTSD.models.user import User
 from PTSD.schemas.auth import SignupRequest, LoginRequest, SignupResponse, LoginResult
+from PTSD.schemas.response import ResponseModel
 from PTSD.utils.jwt_handler import create_access_token
 from PTSD.utils.security import hash_password, verify_password
 import logging
@@ -27,6 +30,8 @@ def get_db():
 @router.post(
     "/api/auth/signup",
     summary="회원가입",
+    response_model=ResponseModel[SignupResponse],
+    status_code=status.HTTP_201_CREATED,  # HTTP 응답 자체도 201
     description="""  
 📌 **회원가입을 진행합니다.**
 
@@ -41,14 +46,21 @@ def get_db():
 - `created_at` : 계정 생성일
 - `access_token` : 인증 토큰
 """,
-    response_model=SignupResponse
 )
 def signup(payload: SignupRequest, db: Session = Depends(get_db)):
     # 이메일 중복 체크
     user = db.query(User).filter(User.email == payload.email).first()
     if user:
-        raise HTTPException(status_code=400, detail="이메일이 이미 존재합니다.")
-
+        return JSONResponse(
+            status_code=400,
+            content={
+                "isSuccess": False,
+                "code": 400,
+                "message": "이메일이 이미 존재합니다.",
+                "result": None
+            }
+        )
+    
     # 비밀번호 해싱 후 저장
     hashed_password = hash_password(payload.password)
     new_user = User(email=payload.email, password=hashed_password)
@@ -60,12 +72,19 @@ def signup(payload: SignupRequest, db: Session = Depends(get_db)):
     access_token = create_access_token({"sub": new_user.email})
 
     logger.info(f"회원가입 성공: 이메일 {new_user.email}")
-    return SignupResponse(
+    
+    signup_response = SignupResponse(
         email=new_user.email,
         created_at=new_user.created_at,
         access_token=access_token,
-        message="회원가입이 성공적으로 완료되었습니다."
     )
+    return ResponseModel(
+        isSuccess=True,
+        code=status.HTTP_201_CREATED,  # 응답 내부 코드 필드도 201
+        message="회원가입이 성공적으로 완료되었습니다.",
+        result=signup_response
+    )
+
 @router.post("/api/auth/login", summary="로그인")
 def login():
     return {"msg": "user login"}

@@ -14,6 +14,22 @@ class ErrorResponse(BaseModel):
     code: int
     message: str
     errors: list[FieldErrorDetail] | None = None
+from fastapi import Request, HTTPException, status
+from fastapi.responses import JSONResponse
+from pydantic import BaseModel, ValidationError
+from starlette.exceptions import HTTPException as StarletteHTTPException
+from fastapi.exceptions import RequestValidationError
+
+# 예외 응답 모델
+class FieldErrorDetail(BaseModel):
+    field: str
+    message: str
+
+class ErrorResponse(BaseModel):
+    isSuccess: bool = False
+    code: int
+    message: str
+    errors: list[FieldErrorDetail] | None = None
 
 # 핸들러 등록 함수들만 정의 (FastAPI 인스턴스는 인자로 받음)
 def register_exception_handlers(app):
@@ -62,6 +78,89 @@ def register_exception_handlers(app):
             ).model_dump()
         )
 
+    @app.exception_handler(HTTPException)
+    async def unauthorized_exception_handler(request: Request, exc: HTTPException):
+        if exc.status_code == 401:
+            return JSONResponse(
+                status_code=401,
+                content=ErrorResponse(
+                    isSuccess=False,
+                    code=401,
+                    message="인증이 필요합니다. 로그인 후 다시 시도해주세요.",
+                    errors=None
+                ).model_dump()
+            )
+        elif exc.status_code == 422:
+            return JSONResponse(
+                status_code=422,
+                content=ErrorResponse(
+                    isSuccess=False,
+                    code=422,
+                    message="요청 데이터를 처리할 수 없습니다.",
+                    errors=None
+                ).model_dump()
+            )
+        raise exc
+
+    @app.exception_handler(StarletteHTTPException)
+    async def starlette_exception_handler(request: Request, exc: StarletteHTTPException):
+        if exc.status_code == 403:
+            return JSONResponse(
+                status_code=403,
+                content=ErrorResponse(
+                    isSuccess=False,
+                    code=403,
+                    message="접근이 거부되었습니다.",
+                    errors=None
+                ).model_dump()
+            )
+        elif exc.status_code == 404:
+            return JSONResponse(
+                status_code=404,
+                content=ErrorResponse(
+                    isSuccess=False,
+                    code=404,
+                    message="요청하신 리소스를 찾을 수 없습니다.",
+                    errors=None
+                ).model_dump()
+            )
+        raise exc
+
+    @app.exception_handler(ValueError)
+    async def conflict_handler(request: Request, exc: ValueError):
+        return JSONResponse(
+            status_code=409,
+            content=ErrorResponse(
+                isSuccess=False,
+                code=409,
+                message="이미 존재하는 데이터입니다.",
+                errors=None
+            ).model_dump()
+        )
+
+    @app.exception_handler(Exception)
+    async def global_exception_handler(request: Request, exc: Exception):
+        return JSONResponse(
+            status_code=500,
+            content=ErrorResponse(
+                isSuccess=False,
+                code=500,
+                message="서버 내부 오류가 발생했습니다.",
+                errors=None
+            ).model_dump()
+        )
+
+    @app.exception_handler(StarletteHTTPException)
+    async def custom_http_exception_handler(request: Request, exc: StarletteHTTPException):
+        return JSONResponse(
+            status_code=exc.status_code,
+            content={
+                "isSuccess": False,
+                "code": exc.status_code,
+                "message": str(exc.detail),
+                "result": None
+            },
+        )
     @app.exception_handler(HTTPException)
     async def unauthorized_exception_handler(request: Request, exc: HTTPException):
         if exc.status_code == 401:
