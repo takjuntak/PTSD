@@ -14,22 +14,7 @@ class ErrorResponse(BaseModel):
     code: int
     message: str
     errors: list[FieldErrorDetail] | None = None
-from fastapi import Request, HTTPException, status
-from fastapi.responses import JSONResponse
-from pydantic import BaseModel, ValidationError
-from starlette.exceptions import HTTPException as StarletteHTTPException
-from fastapi.exceptions import RequestValidationError
 
-# 예외 응답 모델
-class FieldErrorDetail(BaseModel):
-    field: str
-    message: str
-
-class ErrorResponse(BaseModel):
-    isSuccess: bool = False
-    code: int
-    message: str
-    errors: list[FieldErrorDetail] | None = None
 
 # 핸들러 등록 함수들만 정의 (FastAPI 인스턴스는 인자로 받음)
 def register_exception_handlers(app):

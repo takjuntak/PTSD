@@ -26,6 +26,7 @@ register_exception_handlers(app)
 app.include_router(user_router.router, tags=["회원관리"])
 app.include_router(routine_router.router)
 app.include_router(history_router.router)
+app.include_router(devices_router.router)
 
 # ✅ 서버 시작 시 테이블 생성
 @app.on_event("startup")
