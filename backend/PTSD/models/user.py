@@ -14,3 +14,7 @@ class User(Base):
     
     # User 모델에 routines 속성을 추가하여 Routine과 관계를 설정
     routines = relationship("Routine", back_populates="user")
+    
+    # cascade 옵션 추가
+    routines = relationship("Routine", back_populates="user", cascade="all, delete-orphan")
+    devices = relationship("Device", back_populates="user", cascade="all, delete-orphan")
