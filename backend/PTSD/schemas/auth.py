@@ -15,10 +15,11 @@ class SignupRequest(BaseModel):
 class LoginRequest(BaseModel):
     email: EmailStr
     password: str
-
+    
 class LoginResult(BaseModel):
     email: str
     accessToken: str
+
 
 class SignupResponse(BaseModel):
     email: str
