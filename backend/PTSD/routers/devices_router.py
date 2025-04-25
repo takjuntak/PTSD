@@ -4,9 +4,12 @@ from PTSD.core.database import get_db
 from PTSD.models.devices import Device
 from PTSD.schemas.devices import DeviceCreate, DeviceRead, DeviceUpdate
 from typing import List
+from PTSD.utils.dependency import get_current_user 
 
-router = APIRouter()
-
+router = APIRouter(
+    tags=["기기"],
+    dependencies=[Depends(get_current_user)] 
+)
 
 # 📌 기기 등록
 @router.post("/api/devices/", response_model=DeviceRead, tags=["기기"], summary="기기 등록")
