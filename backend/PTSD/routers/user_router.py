@@ -1,12 +1,9 @@
-from fastapi import APIRouter, HTTPException, Depends, status
-from fastapi.responses import JSONResponse
-
+from fastapi import APIRouter, HTTPException, Depends
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
 from PTSD.core.database import SessionLocal
 from PTSD.models.user import User
 from PTSD.schemas.auth import SignupRequest, LoginRequest, SignupResponse, LoginResult
-from PTSD.schemas.response import ResponseModel
 from PTSD.utils.jwt_handler import create_access_token
 from PTSD.utils.security import hash_password, verify_password
 import logging
@@ -23,9 +20,6 @@ def get_db():
     db = SessionLocal()
     try:
         yield db
-    except Exception as e:
-        db.rollback()  # 트랜잭션 롤백
-        raise e
     finally:
         db.close()
         
@@ -33,8 +27,6 @@ def get_db():
 @router.post(
     "/api/auth/signup",
     summary="회원가입",
-    response_model=ResponseModel[SignupResponse],
-    status_code=status.HTTP_201_CREATED,  # HTTP 응답 자체도 201
     description="""  
 📌 **회원가입을 진행합니다.**
 
@@ -49,112 +41,68 @@ def get_db():
 - `created_at` : 계정 생성일
 - `access_token` : 인증 토큰
 """,
+    response_model=SignupResponse
 )
 def signup(payload: SignupRequest, db: Session = Depends(get_db)):
     # 이메일 중복 체크
     user = db.query(User).filter(User.email == payload.email).first()
     if user:
-        return JSONResponse(
-            status_code=400,
-            content={
-                "isSuccess": False,
-                "code": 400,
-                "message": "이메일이 이미 존재합니다.",
-                "result": None
-            }
-        )
-    
+        raise HTTPException(status_code=400, detail="이메일이 이미 존재합니다.")
+
     # 비밀번호 해싱 후 저장
     hashed_password = hash_password(payload.password)
     new_user = User(email=payload.email, password=hashed_password)
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
-    
+
     # JWT 토큰 생성
     access_token = create_access_token({"sub": new_user.email})
 
-    signup_response = SignupResponse(
+    logger.info(f"회원가입 성공: 이메일 {new_user.email}")
+    return SignupResponse(
         email=new_user.email,
-        createdAt=new_user.createdAt,
-        accessToken=access_token
-    )
-    return ResponseModel(
-        isSuccess=True,
-        code=status.HTTP_201_CREATED,  # 응답 내부 코드 필드도 201
-        message="회원가입이 성공적으로 완료되었습니다.",
-        result=signup_response
-    )
+        created_at = new_user.created_at,
+        access_token=access_token,
+        message="회원가입이 성공적으로 완료되었습니다."
+    ).model_dump(by_alias=True)
+
+
+#로그인
+# @router.post("/api/auth/login", summary="로그인")
+# def login():
+#     return {"msg": "user login"}
 
 @router.post(
     "/api/auth/login",
     summary="로그인",
-    response_model=ResponseModel[LoginResult],
     description="""
 📌 **로그인을 진행합니다.**
 
-- 이메일과 비밀번호를 입력해 로그인을 완료합니다.
+- 이메일과 비밀번호를 입력해 로그인합니다.
 
 ### ✅ [요청 필드]
 - `email` : 회원 이메일 주소
 - `password` : 회원 비밀번호
 
 ### ✅ [응답 필드]
-- `email` : 로그인한 이메일 주소
-- `access_token` : 인증 토큰
+- `email` : 로그인한 사용자 이메일
+- `access_token` : JWT 인증 토큰
 """,
+    response_model=LoginResult
 )
 def login(payload: LoginRequest, db: Session = Depends(get_db)):
+    # 이메일로 사용자 검색
     user = db.query(User).filter(User.email == payload.email).first()
-    
     if not user:
-        logger.info(f"사용자 {payload.email}을 찾을 수 없음.")
-        return JSONResponse(
-            status_code=401,
-            content={
-                "isSuccess": False,
-                "code": 401,
-                "message": "이메일 또는 비밀번호가 올바르지 않습니다.",
-                "errors": None
-            }
-        )
+        raise HTTPException(status_code=401, detail="이메일 또는 비밀번호가 올바르지 않습니다.")
 
+    # 비밀번호 확인
     if not verify_password(payload.password, user.password):
-        logger.info(f"비밀번호 불일치: {payload.email}")
-        return JSONResponse(
-            status_code=401,
-            content={
-                "isSuccess": False,
-                "code": 401,
-                "message": "이메일 또는 비밀번호가 올바르지 않습니다.",
-                "errors": None
-            }
-        )
+        raise HTTPException(status_code=401, detail="이메일 또는 비밀번호가 올바르지 않습니다.")
 
-    logger.info(f"사용자 {user.email}에 대한 토큰 생성 시작")
-    try:
-        token = create_access_token({"sub": user.email})
-        logger.info(f"토큰 생성 완료: {token}")
-    except Exception as e:
-        logger.error(f"토큰 생성 중 오류 발생: {e}")
-        return JSONResponse(
-            status_code=500,
-            content={
-                "isSuccess": False,
-                "code": 500,
-                "message": "토큰 생성 중 오류가 발생했습니다.",
-                "errors": None
-            }
-        )
+    # JWT 발급
+    access_token = create_access_token({"sub": user.email})
 
-    login_result = LoginResult(
-        email=user.email,
-        accessToken=token
-    )
-
-    return ResponseModel(
-        isSuccess=True,
-        code=status.HTTP_200_OK,
-        message="로그인에 성공하였습니다.",
-        result=login_result
-    ).model_dump()
+    logger.info(f"로그인 성공: 이메일 {user.email}")
+    return LoginResult(email=user.email, access_token=access_token).model_dump(by_alias=True)
