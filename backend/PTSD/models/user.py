@@ -9,11 +9,11 @@ class User(Base):
 
     userId = Column(Integer, primary_key=True, index=True, autoincrement=True)
     email = Column(String, unique=True, index=True, nullable=False)
-    password = Column(String, nullable=False)
-    createdAt = Column(DateTime, default=datetime.utcnow) # User 모델에 routines 속성을 추가하여 Routine과 관계를 설정
+    password = Column(String(128), nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow) 
     
     # User 모델에 routines 속성을 추가하여 Routine과 관계를 설정
-    routines = relationship("Routine", back_populates="user")
+    # routines = relationship("Routine", back_populates="user")
     
     # cascade 옵션 추가
     routines = relationship("Routine", back_populates="user", cascade="all, delete-orphan")

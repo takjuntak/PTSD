@@ -1,5 +1,6 @@
 from pydantic import BaseModel, EmailStr, field_validator
 from datetime import datetime
+from pydantic import BaseModel, Field
 
 class SignupRequest(BaseModel):
     email: EmailStr  # 이메일 형식 자동 검증
@@ -18,10 +19,21 @@ class LoginRequest(BaseModel):
     
 class LoginResult(BaseModel):
     email: str
-    accessToken: str
+    access_token: str = Field(..., alias="accessToken")
+
+    class Config:
+        from_attributes = True
+        populate_by_name = True
+        validate_by_name = True
 
 
 class SignupResponse(BaseModel):
     email: str
-    createdAt: datetime
-    accessToken: str 
+    created_at: datetime = Field(..., alias="createdAt")
+    access_token: str = Field(..., alias="accessToken")
+    message: str
+
+    class Config:
+        from_attributes = True
+        populate_by_name = True
+        validate_by_name = True

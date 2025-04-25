@@ -6,6 +6,7 @@ from fastapi.openapi.utils import get_openapi
 from fastapi.middleware.cors import CORSMiddleware
 from PTSD.core.database import Base, engine
 from PTSD.models import user, routines
+from fastapi.openapi.utils import get_openapi
 
 
 app = FastAPI(
@@ -46,13 +47,14 @@ def custom_openapi():
     if app.openapi_schema:
         return app.openapi_schema
 
+    # ✅ 핵심: Swagger 문서에서 alias 사용하지 않도록 설정
     openapi_schema = get_openapi(
         title=app.title,
         version=app.version,
         description=app.description,
-        routes=app.routes,
+        routes=app.routes
     )
-
+    
     # ✅ components가 없으면 초기화
     if "components" not in openapi_schema:
         openapi_schema["components"] = {}
