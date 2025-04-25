@@ -23,6 +23,9 @@ def get_db():
     db = SessionLocal()
     try:
         yield db
+    except Exception as e:
+        db.rollback()  # 트랜잭션 롤백
+        raise e
     finally:
         db.close()
         
@@ -81,7 +84,7 @@ def signup(payload: SignupRequest, db: Session = Depends(get_db)):
         code=status.HTTP_201_CREATED,  # 응답 내부 코드 필드도 201
         message="회원가입이 성공적으로 완료되었습니다.",
         result=signup_response
-    ).model_dump()
+    )
 
 @router.post(
     "/api/auth/login",
@@ -103,17 +106,55 @@ def signup(payload: SignupRequest, db: Session = Depends(get_db)):
 )
 def login(payload: LoginRequest, db: Session = Depends(get_db)):
     user = db.query(User).filter(User.email == payload.email).first()
+    
+    if not user:
+        logger.info(f"사용자 {payload.email}을 찾을 수 없음.")
+        return JSONResponse(
+            status_code=401,
+            content={
+                "isSuccess": False,
+                "code": 401,
+                "message": "이메일 또는 비밀번호가 올바르지 않습니다.",
+                "errors": None
+            }
+        )
 
-    if not user or not verify_password(payload.password, user.password):
-        raise HTTPException(status_code=401, detail="이메일 또는 비밀번호가 올바르지 않습니다.")
+    if not verify_password(payload.password, user.password):
+        logger.info(f"비밀번호 불일치: {payload.email}")
+        return JSONResponse(
+            status_code=401,
+            content={
+                "isSuccess": False,
+                "code": 401,
+                "message": "이메일 또는 비밀번호가 올바르지 않습니다.",
+                "errors": None
+            }
+        )
 
-    token = create_access_token({"sub": user.email})
+    logger.info(f"사용자 {user.email}에 대한 토큰 생성 시작")
+    try:
+        token = create_access_token({"sub": user.email})
+        logger.info(f"토큰 생성 완료: {token}")
+    except Exception as e:
+        logger.error(f"토큰 생성 중 오류 발생: {e}")
+        return JSONResponse(
+            status_code=500,
+            content={
+                "isSuccess": False,
+                "code": 500,
+                "message": "토큰 생성 중 오류가 발생했습니다.",
+                "errors": None
+            }
+        )
 
-    login_result = LoginResult(email=user.email, accessToken=token)
+    login_result = LoginResult(
+        email=user.email,
+        accessToken=token
+    )
 
     return ResponseModel(
         isSuccess=True,
-        code=200,
+        code=status.HTTP_200_OK,
         message="로그인에 성공하였습니다.",
         result=login_result
-    )
+    ).model_dump()

@@ -8,8 +8,8 @@ class User(Base):
     __tablename__ = "users"
 
     userId = Column(Integer, primary_key=True, index=True, autoincrement=True)
-    email = Column(String, unique=True, index=True)
-    password = Column("password", String)  # Actual DB column name is `password`
+    email = Column(String, unique=True, index=True, nullable=False)
+    password = Column(String, nullable=False)
     createdAt = Column(DateTime, default=datetime.utcnow) # User 모델에 routines 속성을 추가하여 Routine과 관계를 설정
     
     # User 모델에 routines 속성을 추가하여 Routine과 관계를 설정

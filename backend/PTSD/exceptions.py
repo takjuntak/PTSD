@@ -110,9 +110,20 @@ def register_exception_handlers(app):
                 ).model_dump()
             )
         raise exc
-
+    
     @app.exception_handler(ValueError)
     async def conflict_handler(request: Request, exc: ValueError):
+        # 로그인 시 발생하는 '409 Conflict'를 '401 Unauthorized'로 변경
+        if isinstance(exc, ValueError):
+            return JSONResponse(
+                status_code=401,
+                content=ErrorResponse(
+                    isSuccess=False,
+                    code=401,
+                    message="로그인 정보가 잘못되었습니다.",
+                    errors=None
+                ).model_dump()
+            )
         return JSONResponse(
             status_code=409,
             content=ErrorResponse(
@@ -122,6 +133,7 @@ def register_exception_handlers(app):
                 errors=None
             ).model_dump()
         )
+
 
     @app.exception_handler(Exception)
     async def global_exception_handler(request: Request, exc: Exception):
