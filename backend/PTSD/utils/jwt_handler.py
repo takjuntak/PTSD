@@ -28,6 +28,7 @@ def decode_access_token(token: str):
    
 # JWT 토큰에서 사용자 정보 추출하는 함수 추가
 def get_current_user(token: str = Depends(oauth2_scheme)):
+    print(f"Token received in get_current_user: {token}")  
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
@@ -37,6 +38,9 @@ def get_current_user(token: str = Depends(oauth2_scheme)):
     payload = decode_access_token(token)
     if payload is None:
         raise credentials_exception
+    
+    logger.info(f"Decoded payload: {payload}")  # 디코딩 결과 확인
+
     
     # JWT 페이로드에서 필요한 정보 추출
     email: str = payload.get("email")

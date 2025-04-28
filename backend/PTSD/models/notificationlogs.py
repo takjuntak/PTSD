@@ -17,7 +17,7 @@ class NotificationLog(Base):
     log_id = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
     # 알림 로그 고유 ID
 
-    user_id = Column(Integer, ForeignKey("users.user_id", ondelete="CASCADE"), nullable=False)
+    userId = Column(Integer, ForeignKey("users.userId", ondelete="CASCADE"), nullable=False)
     # 알림을 발생시킨 사용자 ID 
 
     timestamp = Column(DateTime, default=datetime.utcnow, nullable=False)
