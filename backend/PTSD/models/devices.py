@@ -1,4 +1,4 @@
-# models/devices/devices.py
+# 로봇 관리
 from datetime import datetime
 from sqlalchemy import Integer, DateTime, String, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column 
