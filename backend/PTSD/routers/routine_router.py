@@ -32,15 +32,7 @@ def create_routine(
     """
     
     try:
-        # repeat_days 유효성 검사 (None이 아닌 경우)
-        if routine_data.repeat_days:
-            if any(day < 1 or day >= 8 for day in routine_data.repeat_days):
-                raise HTTPException(
-                    status_code=status.HTTP_400_BAD_REQUEST,
-                    detail="repeat_days must be between 1 and 7"
-                )
-                # Routine 모델 인스턴스 생성
-                
+        # Routine 모델 인스턴스 생성
         new_routine = Routine(
             userId=current_user["user_id"],  # JWT에서 추출한 user_id
             start_time=routine_data.start_time,
@@ -83,8 +75,37 @@ def create_routine(
 
 
 @router.get("/api/routine", tags=["루틴"], summary="로봇 스케줄 조회")
-def get_routine(user_id: int):
-    ...
+def get_routine(
+    db: Session = Depends(get_db),
+    current_user: Dict = Depends(get_current_user)
+    ):
+    
+    try:
+        routines = db.query(Routine).filter(Routine.userId == current_user["user_id"]).all()
+        routines_list = []
+    
+        for routine in routines:
+            routines_list.append({
+                "routine_id": routine.routine_id,
+                "start_time": routine.start_time,
+                "routine_type": routine.routine_type,
+                "is_work": routine.is_work,
+                "repeat_days": routine.repeat_days
+            })
+    
+        return ResponseModel(
+            isSuccess=True,
+            code=200,
+            message="요청에 성공하였습니다.",
+            result={"routines": routines_list}
+        )
+
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"An error occurred while fetching routines: {str(e)}"
+        )
+
 
 @router.patch("/api/routine/{routine_id}", tags=["루틴"], summary="로봇 스케줄 편집")
 def update_schedule(user_id: int, routine_id: int):
