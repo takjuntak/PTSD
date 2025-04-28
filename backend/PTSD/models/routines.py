@@ -10,7 +10,7 @@ class Routine(Base):
     routine_id  = Column(Integer, primary_key=True, index=True, autoincrement=True)
     userId = Column(Integer, ForeignKey('users.userId',ondelete='CASCADE'), nullable=False)  # users 테이블의 user_id를 참조
     start_time = Column(DateTime, nullable=False)
-    routineType = Column(
+    routine_type = Column(
         Enum('once', 'daily', name='routine_type_enum'), 
         nullable=False, 
         default='once'

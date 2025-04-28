@@ -5,8 +5,9 @@ from PTSD.routers import user_router, routine_router , history_router, devices_r
 from fastapi.openapi.utils import get_openapi
 from fastapi.middleware.cors import CORSMiddleware
 from PTSD.core.database import Base, engine
-from PTSD.models import user, routines
+from PTSD.models import user, routines,notificationlogs, devices
 from fastapi.openapi.utils import get_openapi
+from fastapi.openapi.models import OAuthFlows, OAuthFlowPassword
 
 
 app = FastAPI(
@@ -19,6 +20,14 @@ app = FastAPI(
 )
 
 
+# CORS 미들웨어 추가
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # 개발용. 운영에서는 특정 도메인만 지정
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # ✅ 예외 핸들러 등록
 register_exception_handlers(app)
