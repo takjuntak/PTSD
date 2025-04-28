@@ -11,12 +11,12 @@ const MainPage = () => {
   return (
     <div className="flex flex-col w-full h-full">
       {/* 헤더 */}
-      <Header title="SSAFY 헬스장" />
+      <Header title="Gymbo" />
       
-      <main className="flex-1 px-4 w-full max-w-screen-sm mx-auto overflow-y-auto">
+      <main className="flex-1 flex flex-col items-center justify-start w-full px-4 overflow-y-auto">
         {/* PTSD 로봇 텍스트 - 왼쪽 정렬 */}
         <div className="text-left text-white text-lg font-medium mt-4 mb-4">
-          PTSD 로봇
+          김싸피님의 PTSD
         </div>
         
         {/* 로봇 이미지 */}
