@@ -3,9 +3,11 @@ from sqlalchemy.orm import Session
 from typing import Dict
 from pydantic import BaseModel
 from datetime import datetime
-from typing import Optional, List
+from typing import Dict, Generic, TypeVar, List
 from enum import Enum
 from ..schemas.routines import RoutineCreate, RoutineTypeEnum
+from ..schemas.response import ResponseModel
+
 from ..models.routines import Routine
 from ..core.database import get_db
 from ..utils.jwt_handler import get_current_user  
@@ -53,7 +55,7 @@ def create_routine(
         db.refresh(new_routine)
         
         
-        # 응답 데이터 구성
+      # 응답 데이터 구성
         response_data = {
             "routine_id": new_routine.routine_id,
             "userId": new_routine.userId,
@@ -63,8 +65,13 @@ def create_routine(
             "repeat_days": new_routine.repeat_days
         }
         
-        return response_data
-    
+        # ResponseModel 형식으로 응답
+        return ResponseModel(
+            isSuccess=True,
+            code=200,
+            message="요청에 성공하였습니다.",
+            result=response_data
+        )    
     except HTTPException:
         raise
     except Exception as e:
@@ -76,7 +83,7 @@ def create_routine(
 
 
 @router.get("/api/routine", tags=["루틴"], summary="로봇 스케줄 조회")
-def get_schedule(user_id: int):
+def get_routine(user_id: int):
     ...
 
 @router.patch("/api/routine/{routine_id}", tags=["루틴"], summary="로봇 스케줄 편집")
