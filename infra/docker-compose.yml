@@ -11,7 +11,7 @@ services:
     networks:
       - app-network
     env_file:
-      - ../backend/PTSD/.env
+      - ../backend/.env
 
 networks:
   app-network:
