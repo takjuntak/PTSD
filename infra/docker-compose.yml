@@ -14,3 +14,6 @@ services:
 networks:
   app-network:
     external: true
+
+
+#제발 되라

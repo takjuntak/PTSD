@@ -204,7 +204,7 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
-# #database.py 
-backend/PTSD/core/database.py
+# env
+backend/.env
 
 # End of https://www.toptal.com/developers/gitignore/api/python,windows
