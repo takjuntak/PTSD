@@ -8,6 +8,7 @@ from fastapi.security import OAuth2PasswordBearer
 # OAuth2 설정
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
+
 # 로깅 설정
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

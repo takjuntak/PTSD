@@ -13,6 +13,7 @@ def get_current_user(token: str = Depends(oauth2_scheme)):
     logger.info(f"받은 토큰: {token}")  # 여기서 토큰이 실제 들어오는지 확인!
 
     payload = decode_access_token(token)
+    logger.info(f"디코딩된 페이로드: {payload}")  # 디코딩된 페이로드 확인
 
     if payload is None:
         logger.warning("토큰 디코딩 실패! 인증되지 않은 사용자입니다.")

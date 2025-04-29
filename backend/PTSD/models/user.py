@@ -19,4 +19,4 @@ class User(Base):
     # 조인
     routines = relationship("Routine", back_populates="user", cascade="all, delete-orphan")
     devices = relationship("Device", back_populates="user", cascade="all, delete-orphan") # 로봇 관리
-    notification_logs = relationship("NotificationLog", back_populates="user") # 알림
+    notifications = relationship("Notification", back_populates="user") # 알림
