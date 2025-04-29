@@ -37,3 +37,4 @@ class NotificationLog(Base):
 
     # 조인
     user = relationship("User", back_populates="notification_logs")
+    

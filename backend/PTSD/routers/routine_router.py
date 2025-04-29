@@ -13,6 +13,7 @@ from ..core.database import get_db
 from ..utils.jwt_handler import get_current_user  
 from fastapi.security import OAuth2PasswordBearer
 from fastapi.responses import JSONResponse
+from datetime import datetime, timezone
 
 
 router = APIRouter()
@@ -33,6 +34,17 @@ def create_routine(
     """
     
     try:
+        # 현재 시간 확인
+        now = datetime.now(timezone.utc)
+        
+        # 'once' 타입인 경우 시작 시간이 현재 시간 이후인지 확인
+        if routine_data.routine_type.value == 'once' and routine_data.start_time < now:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="과거 시간으로 일회성 스케줄을 생성할 수 없습니다."
+            )
+
+        
         # Routine 모델 인스턴스 생성
         new_routine = Routine(
             user_id=current_user["user_id"],  # JWT에서 추출한 user_id
@@ -136,7 +148,6 @@ def update_routine(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="루틴을 찾을 수 없거나 수정 권한이 없습니다"
             )
-
             
     
         # 데이터 형식 JSON으로 변환    
@@ -202,7 +213,6 @@ def delete_routine(
         
         
         # 루틴이 존재하지 않을 경우
- 
         if not routine:
             raise HTTPException(status_code=400, detail="루틴을 찾을 수 없거나 삭제 권한이 없습니다")
 
