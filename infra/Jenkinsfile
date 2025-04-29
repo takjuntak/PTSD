@@ -40,7 +40,7 @@ pipeline {
                 echo 'Start building project...'
                 dir('../backend') {
                     sh '''
-                        pwds
+                        pwd
                         ls -R
                     '''
                 }
