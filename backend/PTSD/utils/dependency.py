@@ -23,4 +23,6 @@ def get_current_user(token: str = Depends(oauth2_scheme)):
         )
 
     logger.info(f"✅ 토큰 디코딩 성공: {payload}")  # 디코딩이 제대로 됐는지 확인!
+    
+    
     return payload
