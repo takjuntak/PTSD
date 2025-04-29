@@ -28,6 +28,7 @@ def decode_access_token(token: str):
    
 # JWT 토큰에서 사용자 정보 추출하는 함수 추가
 def get_current_user(token: str = Depends(oauth2_scheme)):
+    print(f"Token received in get_current_user: {token}")  
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
@@ -38,11 +39,24 @@ def get_current_user(token: str = Depends(oauth2_scheme)):
     if payload is None:
         raise credentials_exception
     
-    # JWT 페이로드에서 필요한 정보 추출
-    email: str = payload.get("email")
-    user_id: int = payload.get("user_id")
-    
-    if email is None or user_id is None:
+    logger.info(f"Decoded payload: {payload}")  # 디코딩 결과 확인
+
+    # email만 추출 (sub 필드에 있음)
+    email = payload.get("sub")
+
+    if email is None:
         raise credentials_exception
+
+    # 이메일로 사용자 조회하는 DB 함수 추가
+    from PTSD.core.database import get_db
+    from sqlalchemy.orm import Session
+    from PTSD.models.user import User
+
     
-    return {"email": email, "user_id": user_id} 
+    db = next(get_db())
+    user = db.query(User).filter(User.email == email).first()
+    
+    if not user:
+        raise credentials_exception
+    print(f'user_id = {user.userId}')
+    return {"email": email, "user_id": user.userId}
