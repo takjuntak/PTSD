@@ -7,7 +7,8 @@ from PTSD.core.database import Base
 class User(Base):
     __tablename__ = "users"
 
-    userId = Column(Integer, primary_key=True, index=True, autoincrement=True)
+    # userId = Column(Integer, primary_key=True, index=True, autoincrement=True)
+    user_id = Column(Integer, primary_key=True, index=True, autoincrement=True)
     email = Column(String, unique=True, index=True, nullable=False)
     password = Column(String(128), nullable=False)
     created_at = Column(DateTime, default=datetime.utcnow) 
