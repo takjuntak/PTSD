@@ -84,3 +84,5 @@ def custom_openapi():
     return openapi_schema
 
 app.openapi = custom_openapi
+
+#제발 되라
