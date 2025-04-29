@@ -1,0 +1,76 @@
+pipeline {
+    agent any
+    stages {
+        stage('Check Branch') {
+            steps {
+                script {
+                    def targetBranch = env.gitlabTargetBranch ?: env.BRANCH_NAME
+                    if (targetBranch != null && targetBranch != 'dev-be') {
+                        currentBuild.result = 'ABORTED'
+                        error("This pipeline only runs for merge requests to dev-be branch")
+                    }
+                }
+            }
+        }
+
+        stage('CheckOut') {
+            steps {
+                echo 'Start CheckOut project...'
+                git branch: 'dev-be',
+                    credentialsId: 'account', // 🔥 Jenkins에 등록한 GitLab 계정 크리덴셜 ID
+                    url: 'https://lab.ssafy.com/s12-final/S12P31D101.git' // 🔥 네 리포지토리 URL로 수정
+                sh '''
+                    pwd
+                    ls -R
+                '''
+                echo 'CheckOut finished!'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                echo 'Start building project...'
+                dir('backend') {
+                    sh '''
+                        pwd
+                        ls -R
+                    '''
+                    // FastAPI니까 빌드 따로 없음 (Spring처럼 gradlew 빌드할 필요 없음)
+                }
+                echo 'Build finished!'
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                script {
+                    dir('infra') {
+                        // 기존 컨테이너 중지 및 제거
+                        sh "docker compose down || true"
+
+                        // 새 이미지 빌드 및 컨테이너 시작
+                        sh "docker compose build --no-cache"
+                        sh "docker compose up -d"
+
+                        echo 'Deploy finished!'
+                    }
+                }
+            }
+        }
+    }
+    post {
+        success {
+            echo 'Pipeline succeeded!'
+        }
+        failure {
+            echo 'Pipeline failed!'
+            dir('infra') {
+                sh 'docker compose logs'
+            }
+        }
+        always {
+            echo 'Cleaning up workspace'
+            cleanWs()
+        }
+    }
+}
