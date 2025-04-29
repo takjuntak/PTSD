@@ -38,7 +38,7 @@ pipeline {
         stage('Build') {
             steps {
                 echo 'Start building project...'
-                dir('../backend') {
+                dir('backend') {
                     sh '''
                         pwd
                         ls -R
@@ -51,7 +51,7 @@ pipeline {
         stage('Deploy') {
             steps {
                 script {
-                    dir('ptsd') {
+                    dir('infra') {
                         sh "docker compose down || true"
                         sh "docker compose build --no-cache"
                         sh "docker compose up -d"
