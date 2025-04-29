@@ -1,11 +1,11 @@
 from fastapi import FastAPI
 from fastapi.security import OAuth2PasswordBearer
 from PTSD.exceptions import register_exception_handlers
-from PTSD.routers import user_router, routine_router , history_router, devices_router
+from PTSD.routers import notification_router, user_router, routine_router , devices_router
 from fastapi.openapi.utils import get_openapi
 from fastapi.middleware.cors import CORSMiddleware
 from PTSD.core.database import Base, engine
-from PTSD.models import user, routines,notificationlogs, devices
+from PTSD.models import notifications, user, routines,devices
 from fastapi.openapi.utils import get_openapi
 from fastapi.openapi.models import OAuthFlows, OAuthFlowPassword
 
@@ -35,7 +35,7 @@ register_exception_handlers(app)
 # ✅ 회원 API 라우터 등록
 app.include_router(user_router.router, tags=["회원관리"])
 app.include_router(routine_router.router)
-app.include_router(history_router.router)
+app.include_router(notification_router.router)
 app.include_router(devices_router.router)
 
 # ✅ 서버 시작 시 테이블 생성
