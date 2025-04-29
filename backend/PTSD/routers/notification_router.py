@@ -3,10 +3,8 @@ from sqlalchemy.orm import Session
 from typing import Dict
 from PTSD.core.database import get_db
 from PTSD.models.notifications import Notification
-from PTSD.schemas.notifications import NotificationLogsRead
 from PTSD.schemas.response import ResponseModel  # 공통 응답 포맷
 from PTSD.utils.dependency import get_current_user  # 사용자 인증
-# from PTSD.utils.jwt_handler import get_current_user  # 사용자 인증
 import logging
 
 router = APIRouter(
@@ -19,12 +17,12 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 @router.get(
-    "/api/notifications/{user_id}", 
+    "/api/notifications", 
     tags=["알림"], 
     summary="알림 로그 조회"
 )
 def get_notification_logs(
-    user_id: int,
+    current_user: Dict = Depends(get_current_user),
     sort: str = Query("desc", pattern="^(asc|desc)$", description="정렬 방식 (desc: 최신순, asc: 오래된순)"),
     page: int = Query(1, ge=1, description="페이지 번호 (기본값 1)"),
     limit: int = Query(20, ge=1, le=100, description="페이지당 항목 수 (기본값 20, 최대 100)"),
@@ -32,6 +30,7 @@ def get_notification_logs(
 ):
     
     try:
+        user_id = current_user["user_id"]
         query = db.query(Notification).filter(Notification.user_id == user_id)
 
         total_count = db.query(Notification).filter(Notification.user_id == user_id).count()
