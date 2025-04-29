@@ -5,7 +5,7 @@ from PTSD.routers import user_router, routine_router , history_router, devices_r
 from fastapi.openapi.utils import get_openapi
 from fastapi.middleware.cors import CORSMiddleware
 from PTSD.core.database import Base, engine
-from PTSD.models import user, routines,notificationlogs, devices
+from PTSD.models import notifications, user, routines,devices
 from fastapi.openapi.utils import get_openapi
 from fastapi.openapi.models import OAuthFlows, OAuthFlowPassword
 
