@@ -68,10 +68,14 @@ def create_routine(
         raise
     except Exception as e:
         db.rollback()  # 에러 발생 시 롤백
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"An error occurred while creating the routine: {str(e)}"
+    
+        return ResponseModel(
+            isSuccess=False,
+            code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            message=f"루틴 업데이트 중 오류가 발생했습니다: {str(e)}",
+            result=None
         )
+
 
 
 @router.get("/api/routine", tags=["루틴"], summary="로봇 스케줄 조회")
@@ -101,9 +105,11 @@ def get_routine(
         )
 
     except Exception as e:
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"An error occurred while fetching routines: {str(e)}"
+        return ResponseModel(
+            isSuccess=False,
+            code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            message=f"루틴 업데이트 중 오류가 발생했습니다: {str(e)}",
+            result=None
         )
 
 
@@ -138,12 +144,10 @@ def update_routine(
                 message="루틴을 찾을 수 없거나 수정 권한이 없습니다",
                 result=None
             )
-        
-        # 업데이트할 데이터 준비 - Pydantic 버전에 따라 적절한 메서드 사용
-        try:
-            update_data = routine_data.model_dump(exclude_unset=True)
-        except AttributeError:
-            update_data = routine_data.model_dump(exclude_unset=True)
+            
+    
+        # 데이터 형식 JSON으로 변환    
+        update_data = routine_data.model_dump(exclude_unset=True)
         
         # routine_type이 있고 Enum인 경우 value 추출
         if "routine_type" in update_data and update_data["routine_type"] is not None:
@@ -175,8 +179,6 @@ def update_routine(
             result=response_data
         )
         
-    except HTTPException:
-        raise
     except Exception as e:
         db.rollback()  # 에러 발생 시 롤백
         return ResponseModel(
