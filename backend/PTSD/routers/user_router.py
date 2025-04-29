@@ -6,12 +6,17 @@ from PTSD.models.user import User
 from PTSD.schemas.auth import SignupRequest, LoginRequest, SignupResponse, LoginResult
 from PTSD.utils.jwt_handler import create_access_token
 from PTSD.utils.security import hash_password, verify_password
+from fastapi.security import OAuth2PasswordBearer
 import logging
 
 
 # 로깅 설정
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
+# OAuth2 설정
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="api/auth/login")
+
 
 router = APIRouter()
 
@@ -68,11 +73,7 @@ def signup(payload: SignupRequest, db: Session = Depends(get_db)):
     ).model_dump(by_alias=True)
 
 
-#로그인
-# @router.post("/api/auth/login", summary="로그인")
-# def login():
-#     return {"msg": "user login"}
-
+# 로그인 API
 @router.post(
     "/api/auth/login",
     summary="로그인",
@@ -106,3 +107,12 @@ def login(payload: LoginRequest, db: Session = Depends(get_db)):
 
     logger.info(f"로그인 성공: 이메일 {user.email}")
     return LoginResult(email=user.email, access_token=access_token).model_dump(by_alias=True)
+
+@router.post(
+    "/api/auth/logout",
+    summary="로그아웃",
+    description="클라이언트가 저장된 Access Token을 삭제하도록 유도합니다.",
+)
+def logout():
+    logger.info("로그아웃 요청 처리 완료")
+    return {"isSuccess": True, "message": "로그아웃이 성공적으로 처리되었습니다."}
