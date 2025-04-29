@@ -34,7 +34,7 @@ def create_routine(
     try:
         # Routine 모델 인스턴스 생성
         new_routine = Routine(
-            userId=current_user["user_id"],  # JWT에서 추출한 user_id
+            user_id=current_user["user_id"],  # JWT에서 추출한 user_id
             start_time=routine_data.start_time,
             routine_type=routine_data.routine_type.value,  # Enum의 value 사용
             is_work=routine_data.is_work,
@@ -50,7 +50,7 @@ def create_routine(
       # 응답 데이터 구성
         response_data = {
             "routine_id": new_routine.routine_id,
-            "userId": new_routine.userId,
+            "user_id": new_routine.user_id,
             "start_time": new_routine.start_time,
             "routine_type": new_routine.routine_type,
             "is_work": new_routine.is_work,
@@ -85,7 +85,7 @@ def get_routine(
     ):
     
     try:
-        routines = db.query(Routine).filter(Routine.userId == current_user["user_id"]).all()
+        routines = db.query(Routine).filter(Routine.user_id == current_user["user_id"]).all()
         routines_list = []
     
         for routine in routines:
@@ -133,7 +133,7 @@ def update_routine(
         # 기존 루틴 조회
         routine = db.query(Routine).filter(
             Routine.routine_id == routine_id,
-            Routine.userId == current_user["user_id"]
+            Routine.user_id == current_user["user_id"]
         ).first()
         
         # 루틴이 존재하지 않을 경우
@@ -164,7 +164,7 @@ def update_routine(
         # 응답 데이터 구성
         response_data = {
             "routine_id": routine.routine_id,
-            "userId": routine.userId,
+            "user_id": routine.user_id,
             "start_time": routine.start_time,
             "routine_type": routine.routine_type,
             "is_work": routine.is_work,
