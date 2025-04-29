@@ -10,6 +10,8 @@ services:
     restart: always
     networks:
       - app-network
+    env_file:
+      - ../backend/PTSD/.env
 
 networks:
   app-network:
