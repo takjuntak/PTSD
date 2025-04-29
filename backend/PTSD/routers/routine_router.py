@@ -10,7 +10,7 @@ from ..schemas.response import ResponseModel
 
 from ..models.routines import Routine
 from ..core.database import get_db
-from ..utils.jwt_handler import get_current_user  
+from ..utils.dependency import get_current_user  
 from fastapi.security import OAuth2PasswordBearer
 from fastapi.responses import JSONResponse
 from datetime import datetime, timezone
