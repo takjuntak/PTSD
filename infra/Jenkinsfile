@@ -51,7 +51,7 @@ pipeline {
         stage('Deploy') {
             steps {
                 script {
-                    dir('infra') {
+                    dir('ptsd') {
                         sh "docker compose down || true"
                         sh "docker compose build --no-cache"
                         sh "docker compose up -d"
