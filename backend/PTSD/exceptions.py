@@ -229,4 +229,4 @@ def register_exception_handlers(app):
                 errors=None
             ).model_dump()
         )
-#제발 되라ㄷ하암ㄴ엄ㄴ
+#제발 되라
