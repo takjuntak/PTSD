@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import './App.css'
 import MainPage from './pages/MainPage'
 import SchedulePage from './pages/schedule/SchedulePage'
+import PlayPage from './pages/PlayPage'  // PlayPage import 추가
 import NavigationBar from './components/common/NavigationBar'
 import TimeSelectPage from './pages/schedule/TimeSelectPage'
 
@@ -15,6 +16,7 @@ function App() {
             <Route path="/" element={<MainPage />} />
             <Route path="/schedule" element={<SchedulePage />} />
             <Route path='/schedule/time-select' element={<TimeSelectPage />} />
+            <Route path="/play" element={<PlayPage />} />  {/* PlayPage 경로 추가 */}
             {/* 추가 경로는 여기에 작성 */}
           </Routes>
         </div>
