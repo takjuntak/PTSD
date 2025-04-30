@@ -1,9 +1,15 @@
-// src/pages/PlayPage.tsx
-import Header from '../components/common/Header';
-import { Battery, MapPin, Clock, AlertCircle, Settings } from 'lucide-react';
-import robot2Image from '../assets/robot2.png';
+// src/pages/ControlPage.tsx - 수동조작 버튼 기능 추가
+import { Play, Home, Calendar, Gamepad2, ChevronLeft } from 'lucide-react';
+import robotImage from '../assets/robot.png';
+import { useNavigate } from 'react-router-dom';
 
-const PlayPage = () => {
+const ControlPage = () => {
+  const navigate = useNavigate();
+
+  const handleGoBack = () => {
+    navigate(-1);
+  };
+
   return (
     <div style={{ 
       width: '100%', 
@@ -13,242 +19,178 @@ const PlayPage = () => {
       backgroundColor: '#1E1E1E', 
       color: '#FFFFFF' 
     }}>
-      <Header title="임정인님의 PTSD" />
-
-      <div style={{ 
-        flex: 1, 
-        padding: '16px', 
-        overflowY: 'auto', 
-        paddingBottom: '96px' 
+      {/* 헤더 */}
+      <header style={{
+        padding: '16px 24px',
+        backgroundColor: '#1E1E1E',
+        display: 'flex',
+        alignItems: 'center',
+        gap: '12px',
+        borderBottom: '1px solid #333',
+        position: 'sticky',
+        top: 0,
+        zIndex: 10
       }}>
-        {/* 로봇 카드 */}
+        <button 
+          onClick={handleGoBack}
+          style={{
+            background: 'none',
+            border: 'none',
+            padding: '4px',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            color: 'white'
+          }}
+        >
+          <ChevronLeft size={24} />
+        </button>
+        <span style={{ fontSize: '20px', fontWeight: 'bold' }}>제어</span>
+      </header>
+      
+      <main style={{ 
+        flex: 1, 
+        padding: '0 16px', 
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        overflowY: 'auto',
+        paddingBottom: '120px' // 하단 패딩 크게 증가
+      }}>
+        {/* 로봇 이미지 */}
         <div style={{ 
-          backgroundColor: '#2A2A2A', 
-          borderRadius: '8px', 
-          padding: '16px', 
-          marginBottom: '16px',
-          boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)' 
+          marginTop: '20px',
+          marginBottom: '5px' 
         }}>
-          <h2 style={{ 
-            fontSize: '1.25rem', 
-            fontWeight: 'bold', 
-            textAlign: 'center',
-            color: 'white' 
-          }}>
-            PTSD
-          </h2>
-          <div style={{ 
-            display: 'flex', 
-            justifyContent: 'center', 
-            alignItems: 'center', 
-            marginTop: '4px' 
-          }}>
-            <div style={{ 
-              width: '8px', 
-              height: '8px', 
-              borderRadius: '50%', 
-              backgroundColor: '#4CAF50', 
-              marginRight: '8px' 
-            }} />
-            <span style={{ 
-              fontSize: '0.875rem', 
-              color: '#4CAF50' 
-            }}>
-              연결됨
-            </span>
-          </div>
-          <div style={{ 
-            display: 'flex', 
-            justifyContent: 'center', 
-            margin: '8px 0' 
-          }}>
-            <img
-              src={robot2Image}
-              alt="PTSD 로봇"
-              style={{ height: '112px' }}
-            />
-          </div>
+          <img 
+            src={robotImage} 
+            alt="IoT 로봇" 
+            style={{ width: '180px', height: '180px' }}
+          />
         </div>
-
-        {/* 상태 카드 그리드 */}
+        
+        {/* 버튼 그리드 */}
         <div style={{ 
           display: 'grid', 
-          gridTemplateColumns: 'repeat(2, 1fr)', 
-          gap: '16px' 
+          gridTemplateColumns: 'repeat(2, 1fr)',
+          gap: '16px',
+          width: '100%',
+          maxWidth: '360px',
         }}>
-          {/* 배터리 카드 */}
-          <div style={{ 
-            backgroundColor: '#2A2A2A', 
-            borderRadius: '8px', 
-            padding: '16px', 
-            boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)' 
+          {/* 동작 제어 버튼 */}
+          <button style={{
+            backgroundColor: '#2A2A2A',
+            borderRadius: '8px',
+            padding: '24px 16px',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            border: 'none',
+            cursor: 'pointer'
           }}>
-            <div style={{ 
-              display: 'flex', 
-              flexDirection: 'column', 
-              alignItems: 'center' 
+            <div style={{
+              backgroundColor: '#0088FF',
+              borderRadius: '50%',
+              width: '48px',
+              height: '48px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              marginBottom: '12px'
             }}>
-              <Battery size={24} style={{ color: '#0088FF', marginBottom: '4px' }} />
-              <p style={{ 
-                fontSize: '1.25rem', 
-                fontWeight: 'bold', 
-                color: 'white', 
-                margin: '4px 0' 
-              }}>
-                82%
-              </p>
-              <p style={{ 
-                fontSize: '0.75rem', 
-                color: '#9CA3AF', 
-                margin: '2px 0' 
-              }}>
-                예상 남은 시간
-              </p>
-              <p style={{ 
-                fontSize: '0.875rem', 
-                color: 'white', 
-                margin: '2px 0' 
-              }}>
-                1시간 40분
-              </p>
+              <Play size={24} color="white" />
             </div>
-          </div>
+            <span style={{ color: 'white', fontSize: '14px' }}>동작 제어</span>
+          </button>
 
-          {/* 위치 카드 */}
-          <div style={{ 
-            backgroundColor: '#2A2A2A', 
-            borderRadius: '8px', 
-            padding: '16px', 
-            boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)' 
+          {/* 로봇 복귀 버튼 */}
+          <button style={{
+            backgroundColor: '#2A2A2A',
+            borderRadius: '8px',
+            padding: '24px 16px',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            border: 'none',
+            cursor: 'pointer'
           }}>
-            <div style={{ 
-              display: 'flex', 
-              flexDirection: 'column', 
-              alignItems: 'center' 
+            <div style={{
+              backgroundColor: '#4DD0E1',
+              borderRadius: '50%',
+              width: '48px',
+              height: '48px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              marginBottom: '12px'
             }}>
-              <MapPin size={24} style={{ color: '#0088FF', marginBottom: '4px' }} />
-              <p style={{ 
-                fontSize: '1.25rem', 
-                fontWeight: 'bold', 
-                color: 'white', 
-                margin: '4px 0' 
-              }}>
-                현재 위치
-              </p>
-              <p style={{ 
-                fontSize: '0.875rem', 
-                color: 'white', 
-                margin: '2px 0' 
-              }}>
-                웨이트 존
-              </p>
+              <Home size={24} color="white" />
             </div>
-          </div>
+            <span style={{ color: 'white', fontSize: '14px' }}>로봇 복귀</span>
+          </button>
 
-          {/* 청소 상태 카드 */}
-          <div style={{ 
-            backgroundColor: '#2A2A2A', 
-            borderRadius: '8px', 
-            padding: '16px', 
-            boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)' 
+          {/* 루틴 예약 버튼 */}
+          <button style={{
+            backgroundColor: '#2A2A2A',
+            borderRadius: '8px',
+            padding: '24px 16px',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            border: 'none',
+            cursor: 'pointer'
           }}>
-            <div style={{ 
-              display: 'flex', 
-              flexDirection: 'column', 
-              alignItems: 'center' 
+            <div style={{
+              backgroundColor: '#FF5252',
+              borderRadius: '50%',
+              width: '48px',
+              height: '48px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              marginBottom: '12px'
             }}>
-              <Settings size={24} style={{ color: '#0088FF', marginBottom: '4px' }} />
-              <p style={{ 
-                fontSize: '1.25rem', 
-                fontWeight: 'bold', 
-                color: 'white', 
-                margin: '4px 0' 
-              }}>
-                청소 중
-              </p>
-              <p style={{ 
-                fontSize: '0.75rem', 
-                color: '#9CA3AF', 
-                margin: '2px 0' 
-              }}>
-                예상 종료 시간
-              </p>
-              <p style={{ 
-                fontSize: '0.875rem', 
-                color: 'white', 
-                margin: '2px 0' 
-              }}>
-                오전 11:00
-              </p>
+              <Calendar size={24} color="white" />
             </div>
-          </div>
+            <span style={{ color: 'white', fontSize: '14px' }}>루틴 예약</span>
+          </button>
 
-          {/* 예약 상태 카드 */}
-          <div style={{ 
-            backgroundColor: '#2A2A2A', 
-            borderRadius: '8px', 
-            padding: '16px', 
-            boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)' 
-          }}>
-            <div style={{ 
-              display: 'flex', 
-              flexDirection: 'column', 
-              alignItems: 'center' 
+          {/* 수동 조작 버튼 - 클릭 시 RobotControlPage로 이동 */}
+          <button 
+            onClick={() => navigate('/robot-control')} 
+            style={{
+              backgroundColor: '#2A2A2A',
+              borderRadius: '8px',
+              padding: '24px 16px',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              border: 'none',
+              cursor: 'pointer'
+            }}
+          >
+            <div style={{
+              backgroundColor: '#9C7DF8',
+              borderRadius: '50%',
+              width: '48px',
+              height: '48px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              marginBottom: '12px'
             }}>
-              <Clock size={24} style={{ color: '#0088FF', marginBottom: '4px' }} />
-              <p style={{ 
-                fontSize: '1.25rem', 
-                fontWeight: 'bold', 
-                color: 'white', 
-                margin: '4px 0' 
-              }}>
-                예약 상태
-              </p>
-              <p style={{ 
-                fontSize: '0.875rem', 
-                color: 'white', 
-                margin: '2px 0' 
-              }}>
-                매일 오전 9:00
-              </p>
+              <Gamepad2 size={24} color="white" />
             </div>
-          </div>
+            <span style={{ color: 'white', fontSize: '14px' }}>수동 조작</span>
+          </button>
         </div>
-
-        {/* 알림 카드 */}
-        <div style={{ 
-          backgroundColor: '#2A2A2A', 
-          borderRadius: '8px', 
-          padding: '16px', 
-          marginTop: '16px',
-          boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)' 
-        }}>
-          <div style={{ 
-            display: 'flex', 
-            flexDirection: 'column', 
-            alignItems: 'center' 
-          }}>
-            <AlertCircle size={24} style={{ color: '#FF3B30', marginBottom: '4px' }} />
-            <p style={{ 
-              fontSize: '1.25rem', 
-              fontWeight: 'bold', 
-              color: 'white', 
-              margin: '4px 0' 
-            }}>
-              알림
-            </p>
-            <p style={{ 
-              fontSize: '0.875rem', 
-              color: 'white', 
-              margin: '2px 0' 
-            }}>
-              10분 전 : 청소 완료
-            </p>
-          </div>
-        </div>
-      </div>
+      </main>
     </div>
   );
 };
 
-export default PlayPage;
+export default ControlPage;
