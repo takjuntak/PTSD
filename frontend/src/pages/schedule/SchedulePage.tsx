@@ -23,6 +23,10 @@ interface Schedule {
   
     const [plusMenuOpen, setPlusMenuOpen] = useState(false);
     const [editMenuOpen, setEditMenuOpen] = useState(false);
+
+    // 삭제 버튼 
+    const [editMode, setEditMode] = useState(false);
+    const [selectedIds, setSelectedIds] = useState<number[]>([]);
   
     const togglePlusMenu = () => {
       setPlusMenuOpen(p => !p);
@@ -33,6 +37,22 @@ interface Schedule {
       setEditMenuOpen(p => !p);
       setPlusMenuOpen(false);
     };
+
+    // 편집 모드
+    const enterEditMode = () => {
+      setEditMode(true);
+      setEditMenuOpen(false);
+    };
+
+    const cancelEdieMode = () => {
+      setEditMode(false);
+      setSelectedIds([]);
+    }
+
+    const handleDelete = () => {
+      setSchedules(prev => prev.filter(s => !selectedIds.includes(s.id)));
+      cancelEdieMode();
+    }
   
     const handleToggle = (id: number) => {
       setSchedules(prev =>
@@ -71,7 +91,7 @@ interface Schedule {
               </button>
               {editMenuOpen && (
                 <div className="dropdown-menu">
-                  <div className="menu-item">편집</div>
+                  <div className="menu-item" onClick={enterEditMode}>편집</div>
                 </div>
               )}
             </div>
@@ -87,12 +107,27 @@ interface Schedule {
                   date={item.date}
                   active={item.active}
                   onToggle={() => handleToggle(item.id)}
+                  editMode={editMode}
+                  selected={selectedIds.includes(item.id)}
+                  onSelect={() => {
+                    setSelectedIds(prev =>
+                      prev.includes(item.id)
+                        ? prev.filter(id => id !== item.id)
+                        : [...prev, item.id]
+                    );
+                  }}
                 />
               ))
             ) : (
               <div className="schedule-empty">아직 예약된 시간이 없어요.</div>
             )}
           </div>
+          {editMode && (
+            <div className='bottom-button'>
+              <button className='cancel-button' onClick={cancelEdieMode}>취소</button>
+              <button className='delete-button' onClick={handleDelete}>삭제</button>
+            </div>
+          )}
         </div>
 
       <style>{`
@@ -175,7 +210,7 @@ interface Schedule {
           justify-content: space-between;
           align-items: center;
           width: 100%;
-          padding: 28px 24px;
+          padding: 28px 40px;
           background-color: #2B2B2B;
           border-radius: 10px;
           box-sizing: border-box;
@@ -258,7 +293,58 @@ interface Schedule {
           text-align: center;
           margin-top: 80px;
         }
-        @media (max-width: 640px) {
+
+        .bottom-button {
+          position: fixed;
+          bottom: 100px;
+          left: 50%;
+          transform: translateX(-50%);
+          display: flex;
+          flex-direction: row;
+          justify-content: center;
+          align-items: center;
+          gap: 16px;
+          width: 520px;
+          background: transparent;
+          padding: 0;
+          z-index: 1000;
+        }
+
+        .cancel-button, .delete-button {
+          flex: 1;
+          min-width: 200px;
+          width: 100%;
+          flex-shrink: 0;
+          height: 48px;
+          font-size: 18px;
+          padding: 10px 24px;
+          border-radius: 10px;
+          font-weight: bold;
+          justify-content: center;
+          align-items: center;
+          display: flex;
+          border-radius: 10px;
+          box-shadow: 0px 2px 4px rgba(97, 123, 238, 0.3);
+        }
+
+        .cancel-button {
+          background: #FFFFFF;
+          color: #617BEE;
+          border: 2px solid #617BEE;
+          padding: 14px 32px;
+          box-shadow: 0px 2px 4px rgba(97, 123, 238, 0.3);
+        }
+
+        .delete-button {
+          background: #617BEE;
+          color: #FFFFFF;
+          border: none;
+          padding: 14px 32px;
+          box-shadow: 0px 2px 4px rgba(97, 123, 238, 0.3);
+        }
+
+
+        @media (max-width: 412px) {
           .schedule-content {
             padding: 16px;
           }
@@ -268,7 +354,25 @@ interface Schedule {
           .schedule-subtitle {
             font-size: 16px;
           }
-        }
+          .bottom-button {
+            bottom: 72px;
+            left: 50px;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 600px;
+            padding: 16px;
+            background: transparent;
+            width: auto;
+            display: flex;
+            justify-content: center; 
+            align-items: center;
+            gap: 16px;
+            flex-wrap: nowrap; 
+            overflow-x: auto;
+            box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.5);
+          }
+
+        
       `}</style>
     </div>
   );

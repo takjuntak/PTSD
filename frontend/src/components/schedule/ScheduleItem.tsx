@@ -1,129 +1,189 @@
+import React from 'react';
+
 interface ScheduleItemProps {
-    id: number;
-    time: string;
-    date: string;
-    active: boolean;
-    onToggle: () => void;
-  }
-  
-  const ScheduleItem: React.FC<ScheduleItemProps> = ({
-    time,
-    date,
-    active,
-    onToggle,
-  }) => {
-    const [ampm, clock] = time.split(' ');
-  
-    return (
-      <div className={`schedule-item ${!active ? 'inactive' : ''}`}>
+  id: number;
+  time: string;
+  date: string;
+  active: boolean;
+  onToggle: () => void;
+
+  editMode?: boolean;
+  selected?: boolean;
+  onSelect?: () => void;
+}
+
+const ScheduleItem: React.FC<ScheduleItemProps> = ({
+  time,
+  date,
+  active,
+  onToggle,
+  editMode = false,
+  selected = false,
+  onSelect,
+}) => {
+  const [ampm, clock] = time.split(' ');
+
+  return (
+    <div className={`schedule-item ${!active ? 'inactive' : ''}`}>
+      <div className='schedule-left'>
+        {editMode && (
+          <label className="custom-checkbox">
+            <input
+              type="checkbox"
+              checked={selected}
+              onChange={onSelect}
+            />
+            <span className="checkbox-icon"></span>
+          </label>
+        )}
+
         <div className="schedule-time">
           <span className="schedule-ampm">{ampm}</span>&nbsp;
           <span className="schedule-clock">{clock}</span>
         </div>
-  
+      </div>
+      
+      <div className='schedule-right'>
         <div className="schedule-right">
           <div className="schedule-date">{date}</div>
           <label className="switch">
             <input type="checkbox" checked={active} onChange={onToggle} />
-            <span className="slider"></span>
+            <span className="slider" />
           </label>
         </div>
+      </div>
 
       <style>{`
-        .schedule-page {
-          width: 100%;
-          height: 100%;
+        .schedule-item {
           display: flex;
-          justify-content: center;
-        }
-        .schedule-content {
-          width: 100%;
-          max-width: 600px;
-          padding: 24px 16px;
-          box-sizing: border-box;
-          overflow: hidden;
-          position: relative;
-        }
-        .schedule-title {
-          color: white;
-          font-size: 20px;
-          font-weight: bold;
-          margin-bottom: 8px;
-          text-align: left;
-        }
-        .schedule-subtitle {
-          color: white;
-          font-size: 18px;
-          font-weight: 600;
-          text-align: center;
-          margin: 40px 0 24px;
-        }
-        .schedule-buttons {
-          display: flex;
-          justify-content: flex-end;
           align-items: center;
-          gap: 8px;
-          margin-bottom: 24px;
-        }
-        .relative {
-          position: relative;
-        }
-        .icon-button {
-          background: none;
-          border: none;
-          color: white;
-          padding: 0;
-          cursor: pointer;
-        }
-        .dropdown-menu {
-          position: absolute;
-          top: 100%;
-          right: 0;
-          margin-top: 8px;
-          width: 140px;
-          background-color: #2B2B2B;
+          justify-content: flex-start;
+          gap: 80px;
+          background: #373738;
           border-radius: 10px;
-          box-shadow: 0 4px 8px rgba(0,0,0,0.4);
-          padding: 8px 0;
-          z-index: 10;
+          box-sizing: border-box;
         }
-        .menu-item {
-          color: white;
-          font-size: 16px;
-          padding: 12px 16px;
+
+        .schedule-item.inactive {
+          opacity: 0.5;
+        }
+
+        .schedule-checkbox {
+          margin-right: 12px;
+          width: 20px;
+          height: 20px;
+          accent-color: #5C6BC0;
           cursor: pointer;
-          transition: background-color 0.2s;
         }
-        .menu-item:hover {
-          background-color: #3c3c3c;
-        }
-        .menu-divider {
-          border: none;
-          margin: 4px 0;
-          border-top: 1px dotted #555;
-        }
-        .schedule-list {
+
+        .schedule-time {
           display: flex;
-          flex-direction: column;
+          align-items: baseline;
+          gap: 4px;
+        }
+
+        .schedule-ampm {
+          color: white;
+          font-size: 15px;
+          font-weight: 600;
+        }
+
+        .schedule-clock {
+          color: white;
+          font-size: 24px;
+          font-weight: 800;
+        }
+
+        .schedule-right {
+          display: flex;
+          align-items: center;
           gap: 16px;
-          padding-bottom: 80px;
         }
-        .schedule-empty {
-          color: #888;
-          text-align: center;
-          margin-top: 80px;
+
+        .schedule-date {
+          color: #aaa;
+          font-size: 12px;
         }
-        @media (max-width: 640px) {
-          .schedule-content {
-            padding: 16px;
-          }
-          .schedule-title {
-            font-size: 18px;
-          }
-          .schedule-subtitle {
-            font-size: 16px;
-          }
+
+        .switch {
+          position: relative;
+          display: inline-block;
+          width: 44px;
+          height: 24px;
         }
+
+        .switch input {
+          opacity: 0;
+          width: 0;
+          height: 0;
+        }
+
+        .slider {
+          position: absolute;
+          cursor: pointer;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background-color: #555;
+          transition: .4s;
+          border-radius: 24px;
+        }
+
+        .slider::before {
+          content: "";
+          position: absolute;
+          height: 18px;
+          width: 18px;
+          left: 3px;
+          bottom: 3px;
+          background-color: white;
+          transition: .4s;
+          border-radius: 50%;
+        }
+
+        .switch input:checked + .slider {
+          background-color: #0088FF;
+        }
+
+        .switch input:checked + .slider::before {
+          transform: translateX(20px);
+        }
+        .custom-checkbox {
+          position: relative;
+          width: 24px;
+          height: 24px;
+          margin-right: 12px;
+          display: inline-block;
+          cursor: pointer;
+        }
+
+        .custom-checkbox input {
+          opacity: 0;
+          width: 0;
+          height: 0;
+        }
+
+        .checkbox-icon {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 24px;
+          height: 24px;
+          background-image: url('/schedule/unchecked.svg');
+          background-size: cover;
+          background-repeat: no-repeat;
+        }
+
+        .custom-checkbox input:checked + .checkbox-icon {
+          background-image: url('/schedule/checked.svg');
+        }
+        .schedule-left {
+          display: flex;
+          align-items: center;
+          gap: 24px; 
+        }
+
       `}</style>
     </div>
   );
