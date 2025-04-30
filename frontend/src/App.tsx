@@ -2,8 +2,9 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import './App.css'
 import MainPage from './pages/MainPage'
-import PlayPage from './pages/PlayPage'
+import SchedulePage from './pages/schedule/SchedulePage'
 import NavigationBar from './components/common/NavigationBar'
+import TimeSelectPage from './pages/schedule/TimeSelectPage'
 
 function App() {
   return (
@@ -12,7 +13,8 @@ function App() {
         <div className="flex-1 w-full overflow-y-auto"> {/* 스크롤이 가능하도록 설정 */}
           <Routes>
             <Route path="/" element={<MainPage />} />
-            <Route path="/play" element={<PlayPage />} />
+            <Route path="/schedule" element={<SchedulePage />} />
+            <Route path='/schedule/time-select' element={<TimeSelectPage />} />
             {/* 추가 경로는 여기에 작성 */}
           </Routes>
         </div>

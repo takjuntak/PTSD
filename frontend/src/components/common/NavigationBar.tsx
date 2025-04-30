@@ -1,5 +1,5 @@
 // src/components/common/NavigationBar.tsx
-import { Home, Settings, BarChart3, Layers, Play } from 'lucide-react';
+import { Home, SlidersHorizontal, AlarmClock, Layers, Play } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import React from 'react';
 
@@ -78,7 +78,7 @@ const NavigationBar: React.FC = () => {
             color: isActive('/control') ? '#0088FF' : '#888'
           }}
         >
-          <Settings size={20} style={{ marginBottom: '4px' }} />
+          <SlidersHorizontal size={20} style={{ marginBottom: '4px' }} />
           <span style={{ fontSize: '10px' }}>제어</span>
         </button>
       </div>
@@ -130,7 +130,7 @@ const NavigationBar: React.FC = () => {
         }}
       >
         <button 
-          onClick={() => navigate('/report')}
+          onClick={() => navigate('/schedule')}
           style={{
             background: 'none',
             border: 'none',
@@ -138,11 +138,11 @@ const NavigationBar: React.FC = () => {
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
-            color: isActive('/report') ? '#0088FF' : '#888'
+            color: isActive('/schedule') ? '#0088FF' : '#888'
           }}
         >
-          <BarChart3 size={20} style={{ marginBottom: '4px' }} />
-          <span style={{ fontSize: '10px' }}>리포트</span>
+          <AlarmClock size={20} style={{ marginBottom: '4px' }} />
+          <span style={{ fontSize: '10px' }}>예약</span>
         </button>
       </div>
       
