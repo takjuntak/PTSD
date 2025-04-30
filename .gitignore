@@ -206,5 +206,6 @@ $RECYCLE.BIN/
 
 # env
 backend/.env
+backend/.env.prod
 
 # End of https://www.toptal.com/developers/gitignore/api/python,windows
