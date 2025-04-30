@@ -3,10 +3,17 @@ import { useState } from 'react';
 import robotImage from '../assets/robot.png'; 
 import ChargeIndicator from '../components/charge';
 import Header from '../components/common/Header';
+import LocationMap from '../components/location/LocationMap';
+import useScroll from '../hooks/useScroll';
 
 const MainPage = () => {
-  // 배터리 상태 (75%)로 변경
+  // useScroll 훅 사용 - 매개변수 없이 사용하면 내부에서 containerRef 생성
+  const { containerRef } = useScroll();
+  
+  // 배터리 상태 (75%)
   const [isCharging] = useState(false);
+  // 현재 위치 정보 상태
+  const [currentLocation] = useState("현재 위치: 운동장 A구역");
 
   return (
     <div className="flex flex-col w-full h-full">

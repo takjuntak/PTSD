@@ -9,8 +9,8 @@ import TimeSelectPage from './pages/schedule/TimeSelectPage'
 function App() {
   return (
     <Router>
-      <div className="flex flex-col bg-app-dark text-white w-full overflow-x-hidden" style={{ height: '100vh' }}>
-        <div className="flex-1 pb-16 w-full overflow-y-auto"> {/* 스크롤 추가 */}
+      <div className="flex flex-col bg-app-dark text-white w-full h-screen overflow-hidden">
+        <div className="flex-1 w-full overflow-y-auto"> {/* 스크롤이 가능하도록 설정 */}
           <Routes>
             <Route path="/" element={<MainPage />} />
             <Route path="/schedule" element={<SchedulePage />} />
