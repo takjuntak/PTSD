@@ -1,192 +1,41 @@
 // src/pages/ControlPage.tsx - 수동조작 버튼 기능 추가
 import { Play, Home, Calendar, Gamepad2, ChevronLeft } from 'lucide-react';
-import robotImage from '../assets/robot.png';
 import { useNavigate } from 'react-router-dom';
+import robotImage from '../assets/robot.png';
 
 const ControlPage = () => {
   const navigate = useNavigate();
 
-  const handleGoBack = () => {
-    navigate(-1);
-  };
-
   return (
-    <div style={{ 
-      width: '100%', 
-      height: '100%', 
-      display: 'flex', 
-      flexDirection: 'column', 
-      backgroundColor: '#1E1E1E', 
-      color: '#FFFFFF' 
-    }}>
-      {/* 헤더 */}
-      <header style={{
-        padding: '16px 24px',
-        backgroundColor: '#1E1E1E',
-        display: 'flex',
-        alignItems: 'center',
-        gap: '12px',
-        borderBottom: '1px solid #333',
-        position: 'sticky',
-        top: 0,
-        zIndex: 10
-      }}>
-        <button 
-          onClick={handleGoBack}
-          style={{
-            background: 'none',
-            border: 'none',
-            padding: '4px',
-            cursor: 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            color: 'white'
-          }}
-        >
+    <div className="w-full h-full flex flex-col bg-app-dark text-white">
+      <header className="p-4 px-6 bg-app-dark flex items-center gap-3 border-b border-neutral-700 sticky top-0 z-10">
+        <button onClick={() => navigate(-1)} className="p-1 text-white hover:opacity-80">
           <ChevronLeft size={24} />
         </button>
-        <span style={{ fontSize: '20px', fontWeight: 'bold' }}>제어</span>
+        <span className="text-xl font-bold">제어</span>
       </header>
-      
-      <main style={{ 
-        flex: 1, 
-        padding: '0 16px', 
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        overflowY: 'auto',
-        paddingBottom: '120px' // 하단 패딩 크게 증가
-      }}>
-        {/* 로봇 이미지 */}
-        <div style={{ 
-          marginTop: '20px',
-          marginBottom: '5px' 
-        }}>
-          <img 
-            src={robotImage} 
-            alt="IoT 로봇" 
-            style={{ width: '180px', height: '180px' }}
-          />
-        </div>
-        
-        {/* 버튼 그리드 */}
-        <div style={{ 
-          display: 'grid', 
-          gridTemplateColumns: 'repeat(2, 1fr)',
-          gap: '16px',
-          width: '100%',
-          maxWidth: '360px',
-        }}>
-          {/* 동작 제어 버튼 */}
-          <button style={{
-            backgroundColor: '#2A2A2A',
-            borderRadius: '8px',
-            padding: '24px 16px',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-            border: 'none',
-            cursor: 'pointer'
-          }}>
-            <div style={{
-              backgroundColor: '#0088FF',
-              borderRadius: '50%',
-              width: '48px',
-              height: '48px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              marginBottom: '12px'
-            }}>
-              <Play size={24} color="white" />
-            </div>
-            <span style={{ color: 'white', fontSize: '14px' }}>동작 제어</span>
-          </button>
 
-          {/* 로봇 복귀 버튼 */}
-          <button style={{
-            backgroundColor: '#2A2A2A',
-            borderRadius: '8px',
-            padding: '24px 16px',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-            border: 'none',
-            cursor: 'pointer'
-          }}>
-            <div style={{
-              backgroundColor: '#4DD0E1',
-              borderRadius: '50%',
-              width: '48px',
-              height: '48px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              marginBottom: '12px'
-            }}>
-              <Home size={24} color="white" />
-            </div>
-            <span style={{ color: 'white', fontSize: '14px' }}>로봇 복귀</span>
-          </button>
+      <main className="flex-1 px-4 pb-32 overflow-y-auto flex flex-col items-center">
+        <img src={robotImage} alt="IoT 로봇" className="w-44 h-44 my-5" />
 
-          {/* 루틴 예약 버튼 */}
-          <button style={{
-            backgroundColor: '#2A2A2A',
-            borderRadius: '8px',
-            padding: '24px 16px',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-            border: 'none',
-            cursor: 'pointer'
-          }}>
-            <div style={{
-              backgroundColor: '#FF5252',
-              borderRadius: '50%',
-              width: '48px',
-              height: '48px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              marginBottom: '12px'
-            }}>
-              <Calendar size={24} color="white" />
-            </div>
-            <span style={{ color: 'white', fontSize: '14px' }}>루틴 예약</span>
-          </button>
-
-          {/* 수동 조작 버튼 - 클릭 시 RobotControlPage로 이동 */}
-          <button 
-            onClick={() => navigate('/robot-control')} 
-            style={{
-              backgroundColor: '#2A2A2A',
-              borderRadius: '8px',
-              padding: '24px 16px',
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              justifyContent: 'center',
-              border: 'none',
-              cursor: 'pointer'
-            }}
-          >
-            <div style={{
-              backgroundColor: '#9C7DF8',
-              borderRadius: '50%',
-              width: '48px',
-              height: '48px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              marginBottom: '12px'
-            }}>
-              <Gamepad2 size={24} color="white" />
-            </div>
-            <span style={{ color: 'white', fontSize: '14px' }}>수동 조작</span>
-          </button>
+        <div className="grid grid-cols-2 gap-4 w-full max-w-sm">
+          {[
+            { icon: <Play size={24} color="white" />, label: '동작 제어', color: 'bg-app-blue' },
+            { icon: <Home size={24} color="white" />, label: '로봇 복귀', color: 'bg-cyan-300' },
+            { icon: <Calendar size={24} color="white" />, label: '루틴 예약', color: 'bg-red-400' },
+            { icon: <Gamepad2 size={24} color="white" />, label: '수동 조작', color: 'bg-violet-400', route: '/robot-control' },
+          ].map(({ icon, label, color, route }, i) => (
+            <button
+              key={i}
+              onClick={() => route && navigate(route)}
+              className="bg-app-card rounded-lg p-6 flex flex-col items-center justify-center"
+            >
+              <div className={`w-12 h-12 rounded-full ${color} flex items-center justify-center mb-3`}>
+                {icon}
+              </div>
+              <span className="text-sm text-white">{label}</span>
+            </button>
+          ))}
         </div>
       </main>
     </div>
