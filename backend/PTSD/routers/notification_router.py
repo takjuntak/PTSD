@@ -5,6 +5,8 @@ from PTSD.core.database import get_db
 from PTSD.models.notifications import Notification
 from PTSD.schemas.response import ResponseModel  # 공통 응답 포맷
 from PTSD.utils.dependency import get_current_user  # 사용자 인증
+from PTSD.utils.notifier import send_notification_to_user  # 알림 전송 함수
+from pydantic import BaseModel
 import logging
 
 router = APIRouter(
@@ -15,6 +17,12 @@ router = APIRouter(
 # 로깅 설정
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
+# 요청 바디 스키마 정의
+class NotificationRequest(BaseModel):
+    user_id: int
+    title: str
+    message: str
 
 @router.get(
     "/api/notifications", 
@@ -78,4 +86,46 @@ def get_notification_logs(
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"알림 로그 조회 중 오류가 발생했습니다: {str(e)}"
+        )
+
+# 알림 전송
+@router.post(
+    "/api/notifications",
+    tags=["알림"],
+    summary="알림 로그 보내기 (웹소켓으로 프론트 실시간 전달)",
+)
+async def send_notification(
+    payload: NotificationRequest,
+    db: Session = Depends(get_db)
+):
+    try:
+        # DB 저장
+        new_notification = Notification(
+            user_id=payload.user_id,
+            title=payload.title,
+            message=payload.message
+        )   
+        db.add(new_notification)
+        db.commit()
+        db.refresh(new_notification)
+
+        # WebSocket 실시간 푸시
+        await send_notification_to_user(payload.user_id, {
+            "notification_id": new_notification.notification_id,
+            "title": payload.title,
+            "message": payload.message,
+            "timestamp": new_notification.timestamp.isoformat(),
+        })
+
+        return ResponseModel(
+            isSuccess=True,
+            code=200,
+            message="알림이 전송되었습니다.",
+            result=None
+        )
+    
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"알림 전송 중 오류가 발생했습니다: {str(e)}"
         )
