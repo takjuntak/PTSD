@@ -1,39 +1,53 @@
-# WebSocket 연결 + 유저별 관리
-from fastapi import APIRouter, WebSocket, WebSocketDisconnect, Header, status
-from PTSD.utils.jwt_handler import verify_jwt_token
+from fastapi import WebSocket, WebSocketDisconnect, APIRouter, status
+from typing import Dict, List
+from PTSD.models.user import User  # 유저 모델 (예시)
 
 router = APIRouter()
-connected_users = {}  # user_id: WebSocket
+active_connections: Dict[int, List[WebSocket]] = {}  # user_id -> WebSocket 목록
+
+
+async def connect_user(user_id: int, websocket: WebSocket):
+    await websocket.accept()
+    if user_id not in active_connections:
+        active_connections[user_id] = []
+    active_connections[user_id].append(websocket)
+
+
+def disconnect_user(user_id: int, websocket: WebSocket):
+    if user_id in active_connections:
+        active_connections[user_id].remove(websocket)
+        if not active_connections[user_id]:
+            del active_connections[user_id]
+
+
+async def send_notification_to_user(user_id: int, data: dict):
+    connections = active_connections.get(user_id, [])
+    for conn in connections:
+        await conn.send_json(data)
+
 
 @router.websocket("/ws/notifications")
-async def websocket_endpoint(websocket: WebSocket, authorization: str = Header(None)):
-    if not authorization:
-        await websocket.close(code=status.WS_1008_POLICY_VIOLATION)
-        return
+async def websocket_endpoint(websocket: WebSocket):
+    token = websocket.query_params.get("token")
 
-    token = authorization.split(" ")[1] if authorization.startswith("Bearer ") else None
     if not token:
         await websocket.close(code=status.WS_1008_POLICY_VIOLATION)
         return
 
     try:
+        # JWT 디코드 → 사용자 정보 추출
         payload = verify_jwt_token(token)
         user_id = payload.get("user_id")
 
         if not user_id:
-            await websocket.close(code=status.WS_1008_POLICY_VIOLATION)
-            return
+            raise ValueError("유저 정보 없음")
 
-        await websocket.accept()
-        connected_users[user_id] = websocket
-        print(f"✅ 사용자 {user_id} WebSocket 연결됨")
+        await connect_user(user_id, websocket)
 
         while True:
-            await websocket.receive_text()  # 메시지 수신 대기 (사용 안해도 끊김 방지)
+            await websocket.receive_text()
 
     except WebSocketDisconnect:
-        connected_users.pop(user_id, None)
-        print(f"❌ 사용자 {user_id} WebSocket 연결 종료됨")
+        disconnect_user(user_id, websocket)
     except Exception as e:
-        print(f"⚠️ 오류: {e}")
-        await websocket.close(code=status.WS_1011_INTERNAL_ERROR)
+        await websocket.close(code=status.WS_1008_POLICY_VIOLATION)

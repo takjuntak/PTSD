@@ -8,6 +8,7 @@ from fastapi.security import OAuth2PasswordBearer
 # OAuth2 설정
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
+
 # 로깅 설정
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -59,21 +60,3 @@ def get_current_user(token: str = Depends(oauth2_scheme)):
         raise credentials_exception
     print(f'user_id = {user.user_id}')
     return {"email": email, "user_id": user.user_id}
-
-
-def verify_jwt_token(token: str):
-    try:
-        # 토큰 디코딩
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        logger.debug(f"Decoded payload: {payload}")
-
-        # 토큰 만료 시간 확인
-        exp = payload.get("exp")
-        if exp and datetime.utcfromtimestamp(exp) < datetime.utcnow():
-            logger.warning(f"Token expired: {exp}")
-            return None
-
-        return payload
-    except JWTError as e:
-        logger.error(f"JWT decoding error: {e}")
-        return None
