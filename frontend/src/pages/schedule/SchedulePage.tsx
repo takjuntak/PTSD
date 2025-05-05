@@ -149,7 +149,7 @@ interface Schedule {
           color: white;
           font-size: 20px;
           font-weight: bold;
-          margin-bottom: 8px;
+          margin-top: 20px 0 40px 18px;
           text-align: left;
         }
         .schedule-subtitle {

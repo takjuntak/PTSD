@@ -55,6 +55,8 @@ const ScheduleItem: React.FC<ScheduleItemProps> = ({
 
       <style>{`
         .schedule-item {
+          width: 376px;
+          height: 90px;
           display: flex;
           align-items: center;
           justify-content: flex-start;
