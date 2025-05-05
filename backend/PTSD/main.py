@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.security import OAuth2PasswordBearer
 from PTSD.exceptions import register_exception_handlers
-from PTSD.routers import notification_router, user_router, routine_router , devices_router, mqtt_router
+from PTSD.routers import notification_router, user_router, routine_router , devices_router, mqtt_router, websocket_router
 from fastapi.openapi.utils import get_openapi
 from fastapi.middleware.cors import CORSMiddleware
 from PTSD.core.database import Base, engine
@@ -42,6 +42,10 @@ app.include_router(devices_router.router)
 
 # ✅ MQTT 라우터 등록
 app.include_router(mqtt_router.router)
+
+# ✅ 웹소켓 라우터 등록
+app.include_router(websocket_router.router)
+
 
 # ✅ 서버 시작 시 테이블 생성
 @app.on_event("startup")
