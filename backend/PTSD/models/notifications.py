@@ -9,6 +9,7 @@ import enum
 class NotificationType(str, enum.Enum):
     start = "start"      # 작업 시작 알림
     complete = "complete"  # 작업 완료 알림
+    battery = "battery"    # 배터리 알림
 
 # 알림 로그 모델 정의
 class Notification(Base):

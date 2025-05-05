@@ -6,6 +6,10 @@ from PTSD.models.notifications import Notification
 from PTSD.schemas.response import ResponseModel  # 공통 응답 포맷
 from PTSD.utils.dependency import get_current_user  # 사용자 인증
 import logging
+from datetime import datetime
+from pydantic import BaseModel
+from PTSD.routers.websocket_router import manager  # 웹소켓 매니저
+from enum import Enum
 
 router = APIRouter(
     tags=["알림"],
@@ -15,6 +19,18 @@ router = APIRouter(
 # 로깅 설정
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
+class NotificationType(str, Enum):
+    START = "start"
+    COMPLETE = "complete"
+    BATTERY = "battery"
+
+# 요청 바디 스키마 정의
+class NotificationRequest(BaseModel):
+    user_id: int
+    title: str
+    message: str
+    type: NotificationType
 
 @router.get(
     "/api/notifications", 
@@ -79,3 +95,51 @@ def get_notification_logs(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"알림 로그 조회 중 오류가 발생했습니다: {str(e)}"
         )
+
+# 아래의 코드는 user_id를 가진 사용자가 다른 user_id를 가진 사용자에게 알림을 보내는 코드라서 수정해야 함!
+# @router.post(
+#     "/api/notifications",
+#     tags=["알림"],
+#     summary="알림 로그 보내기 (웹소켓으로 프론트 실시간 전달)",
+# )
+# async def send_notification(
+#     payload: NotificationRequest, 
+#     # current_user: Dict = Depends(get_current_user),
+#     db: Session = Depends(get_db)
+# ):
+#     try:
+#         # DB에 알림 로그 저장
+#         notification = Notification(
+#             user_id=payload.user_id,
+#             title=payload.title,
+#             message=payload.message,
+#             type=payload.type,
+#             timestamp=datetime.utcnow(),
+#             is_read=False
+#         )
+#         db.add(notification)
+#         db.commit()
+#         db.refresh(notification)
+
+#         # 실시간 웹소켓 메시지 전송
+#         await manager.send_to_user(payload.user_id, {
+#             "notification_id": notification.notification_id,
+#             "title": payload.title,
+#             "message": payload.message,
+#             "type": payload.type,
+#             "timestamp": notification.timestamp.isoformat(),
+#             "is_read": notification.is_read,
+#         })
+
+#         return ResponseModel(
+#             isSuccess=True,
+#             code=200,
+#             message="알림이 성공적으로 전송되었습니다.",
+#             result={"notification_id": notification.notification_id}
+#         )
+#     except Exception as e:
+#         db.rollback()
+#         raise HTTPException(
+#             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+#             detail=f"알림 전송 중 오류 발생: {str(e)}"
+#         )
