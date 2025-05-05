@@ -64,6 +64,7 @@ def signup(payload: SignupRequest, db: Session = Depends(get_db)):
     access_token = create_access_token({"sub": new_user.email})
 
     logger.info(f"회원가입 성공: 이메일 {new_user.email}")
+    
     return SignupResponse(
         email=new_user.email,
         created_at = new_user.created_at,

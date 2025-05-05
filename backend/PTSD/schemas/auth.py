@@ -12,7 +12,7 @@ class SignupRequest(BaseModel):
         if len(value) < 8:
             raise ValueError("비밀번호는 최소 8자 이상이어야 합니다.")
         return value
-
+    
 class LoginRequest(BaseModel):
     email: EmailStr
     password: str
