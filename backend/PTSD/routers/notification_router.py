@@ -9,7 +9,7 @@ import logging
 from datetime import datetime
 from pydantic import BaseModel
 from PTSD.routers.websocket_router import manager  # 웹소켓 매니저
-from enum import Enum
+from PTSD.models.notifications import Notification, NotificationType
 
 router = APIRouter(
     tags=["알림"],
@@ -20,10 +20,6 @@ router = APIRouter(
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-class NotificationType(str, Enum):
-    START = "start"
-    COMPLETE = "complete"
-    BATTERY = "battery"
 
 # 요청 바디 스키마 정의
 class NotificationRequest(BaseModel):
