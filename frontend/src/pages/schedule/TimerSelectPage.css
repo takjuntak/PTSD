@@ -1,0 +1,152 @@
+html, body {
+    background: linear-gradient(180deg, #2E2E37 0%, #1D1E23 100%);
+    margin: 0;
+    padding: 0;
+    font-family: 'Montserrat', sans-serif;
+  }
+  
+  .timer-select-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 412px;
+    margin: 0 auto;
+    min-height: 100vh;
+    color: white;
+    padding: 24px 16px 80px;
+    box-sizing: border-box;
+  }
+
+  .timer-header {
+    display: flex;
+    align-items: center;
+    height: 40px;
+    margin-bottom: 12px;
+  }
+  
+  .back-button {
+    font-family: 'Inter', sans-serif;
+    font-size: 16px;
+    font-weight: 800;
+    color: #FFFFFF;
+    cursor: pointer;
+  }
+  
+  .timer-title {
+    font-size: 20px;
+    font-weight: 800;
+    text-align: center;
+    margin-bottom: 12px;
+  }
+  
+  .timer-sub {
+    font-size: 14px;
+    text-align: center;
+    margin-bottom: 24px;
+  }
+  
+  .timer-circle-wrapper {
+    position: relative;
+    width: 282px;
+    height: 282px;
+    margin: 0 auto;
+  }
+  
+  .timer-circle {
+    position: relative;
+    width: 282px;
+    height: 282px;
+    border: 7px dashed #E0E0E0;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .timer-circle::before {
+    content: "";
+    position: absolute;
+    width: 248px;
+    height: 248px;
+    background: linear-gradient(180deg, #0098FF 0%, #BF00FF 100%);
+    border-radius: 50%;
+    z-index: -1;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+  }
+  
+  .circle-center {
+    text-align: center;
+    z-index: 1;
+  }
+  
+  .end-label {
+    font-size: 14px;
+    margin-bottom: 4px;
+    font-weight: 600;
+  }
+  
+  .end-time {
+    font-size: 16px;
+    font-weight: 800;
+    line-height: 24px;
+    margin-bottom: 8px;
+    color: #617BEE;
+  }
+  
+  .current-label {
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 17px;
+  }
+  
+  .clock-numbers {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+  }
+  
+  .clock-number {
+    font-size: 14px;
+    font-weight: 500;
+    color: #FFFFFF;
+  }
+  
+  .clock-number.highlight {
+    font-weight: 800;
+    font-size: 16px;
+    color: #617BEE;
+  }
+  
+  .circle-knob {
+    position: absolute;
+    width: 35px;
+    height: 35px;
+    background: rgba(97, 123, 238, 0.72);
+    border-radius: 50%;
+    top: 50%;
+    left: 85%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+  }
+  
+  .timer-confirm-button {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 316px;
+    height: 46px;
+    background: #617BEE;
+    border: none;
+    border-radius: 10px;
+    font-size: 18px;
+    font-weight: 700;
+    color: white;
+    box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.25);
+    cursor: pointer;
+  }
+  

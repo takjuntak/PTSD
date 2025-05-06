@@ -55,12 +55,12 @@ const ScheduleItem: React.FC<ScheduleItemProps> = ({
 
       <style>{`
         .schedule-item {
-          width: 376px;
+          width: 100%;
           height: 90px;
           display: flex;
           align-items: center;
-          justify-content: flex-start;
-          gap: 80px;
+          justify-content: space-between;
+          padding: 0 20px; /* ✅ 양쪽 20px */
           background: #373738;
           border-radius: 10px;
           box-sizing: border-box;
@@ -68,6 +68,12 @@ const ScheduleItem: React.FC<ScheduleItemProps> = ({
 
         .schedule-item.inactive {
           opacity: 0.5;
+        }
+
+        .schedule-left {
+          display: flex;
+          align-items: center;
+          gap: 4px;
         }
 
         .schedule-checkbox {
@@ -81,7 +87,6 @@ const ScheduleItem: React.FC<ScheduleItemProps> = ({
         .schedule-time {
           display: flex;
           align-items: baseline;
-          gap: 4px;
         }
 
         .schedule-ampm {
@@ -151,6 +156,7 @@ const ScheduleItem: React.FC<ScheduleItemProps> = ({
         .switch input:checked + .slider::before {
           transform: translateX(20px);
         }
+
         .custom-checkbox {
           position: relative;
           width: 24px;
@@ -180,13 +186,7 @@ const ScheduleItem: React.FC<ScheduleItemProps> = ({
         .custom-checkbox input:checked + .checkbox-icon {
           background-image: url('/schedule/checked.svg');
         }
-        .schedule-left {
-          display: flex;
-          align-items: center;
-          gap: 24px; 
-        }
-
-      `}</style>
+    `}</style>
     </div>
   );
 };

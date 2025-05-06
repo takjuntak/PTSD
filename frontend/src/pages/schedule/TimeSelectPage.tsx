@@ -186,7 +186,6 @@ export default function TimeSelectPage() {
       <style>{`
         .schedule-content {
           max-width: 600px;
-          padding: 24px 16px;
           margin: 0 auto;
         }
         .time-box, .option-box {
@@ -205,7 +204,7 @@ export default function TimeSelectPage() {
           justify-content: center;
         }
         .option-box {
-          height: 45vh; /* 화면 높이의 45% */
+          height: 50vh; /* 화면 높이의 45% */
           padding: 26px 26px 26px 26px; /* 아래 패딩 없앰 */
           min-height: 300px;
           max-height: 500px;
@@ -250,9 +249,10 @@ export default function TimeSelectPage() {
         }
         .day-select {
           display: flex;
+          flex-wrap: nowrap;
           justify-content: center;
-          gap: 16px;
-          margin-bottom: 30px;
+          gap: 12px;
+          margin-bottom: 25px;
         }
         .day-btn {
           width: 40px;
@@ -278,7 +278,7 @@ export default function TimeSelectPage() {
         }
         .separator {
           border-top: 1px dashed #666;
-          margin: 24px 0;
+          margin: 0;
         }
         .toggle-section {
           display: flex;
