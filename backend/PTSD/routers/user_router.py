@@ -94,6 +94,7 @@ def signup(payload: SignupRequest, db: Session = Depends(get_db)):
 - `user_id` : 사용자 ID
 - `email` : 로그인한 사용자 이메일
 - `access_token` : JWT 인증 토큰
+- `name` : 로그인한 사용자 이름
 """,
     response_model=LoginResult
 )
@@ -111,7 +112,7 @@ def login(payload: LoginRequest, db: Session = Depends(get_db)):
     access_token = create_access_token({"sub": user.email})
 
     logger.info(f"로그인 성공: 이메일 {user.email}")
-    return LoginResult(user_id=user.user_id,email=user.email, access_token=access_token).model_dump(by_alias=True)
+    return LoginResult(user_id=user.user_id,email=user.email, access_token=access_token, name=user.name).model_dump(by_alias=True)
 
 @router.post(
     "/api/auth/logout",
