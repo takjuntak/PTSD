@@ -1,45 +1,78 @@
 // src/hooks/useDevices.ts
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
+import { deviceService, DeviceResponse } from '../services/deviceService';
 
-export interface Device {
-  id: string;
-  name: string;
+export interface Device extends DeviceResponse {
   isConnected: boolean;
   image?: string;
 }
 
 export const useDevices = () => {
-  // 로컬 스토리지에서 기기 정보 불러오기
-  const [devices, setDevices] = useState<Device[]>(() => {
-    const savedDevices = localStorage.getItem('connectedDevices');
-    return savedDevices ? JSON.parse(savedDevices) : [];
-  });
+  const [devices, setDevices] = useState<Device[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  // 기기 정보가 변경될 때마다 로컬 스토리지에 저장
+  // 기기 목록 가져오기
+  const fetchDevices = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      const response = await deviceService.getAllDevices();
+      const devicesWithStatus = response.map(device => ({
+        ...device,
+        isConnected: true, // 연결 상태는 별도 API로 관리해야 할 수 있음
+      }));
+      setDevices(devicesWithStatus);
+      setError(null);
+    } catch (err) {
+      setError('기기 목록을 불러오는데 실패했습니다.');
+      console.error('Error fetching devices:', err);
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
   useEffect(() => {
-    localStorage.setItem('connectedDevices', JSON.stringify(devices));
-  }, [devices]);
+    fetchDevices();
+  }, [fetchDevices]);
 
   // 기기 추가
-  const addDevice = (device: Omit<Device, 'id'>) => {
-    const newDevice = {
-      ...device,
-      id: Date.now().toString()
-    };
-    setDevices(prev => [...prev, newDevice]);
-    return newDevice;
+  const addDevice = async (data: { serial_number: string; name: string }) => {
+    try {
+      // user_id 필드 제거
+      const newDevice = await deviceService.registerDevice({
+        serial_number: data.serial_number,
+        name: data.name
+      });
+      const deviceWithStatus = {
+        ...newDevice,
+        isConnected: true
+      };
+      setDevices(prev => [...prev, deviceWithStatus]);
+      return deviceWithStatus;
+    } catch (err) {
+      setError('기기 등록에 실패했습니다.');
+      console.error('Error adding device:', err);
+      throw err;
+    }
   };
 
   // 기기 제거
-  const removeDevice = (deviceId: string) => {
-    setDevices(prev => prev.filter(device => device.id !== deviceId));
+  const removeDevice = async (deviceId: number) => {
+    try {
+      await deviceService.deleteDevice(deviceId);
+      setDevices(prev => prev.filter(device => device.device_id !== deviceId));
+    } catch (err) {
+      setError('기기 삭제에 실패했습니다.');
+      console.error('Error removing device:', err);
+      throw err;
+    }
   };
 
-  // 기기 연결 상태 변경
-  const toggleConnection = (deviceId: string, isConnected: boolean) => {
+  // 기기 연결 상태 변경 (로컬 상태만 업데이트)
+  const toggleConnection = (deviceId: number, isConnected: boolean) => {
     setDevices(prev => 
       prev.map(device => 
-        device.id === deviceId 
+        device.device_id === deviceId 
           ? { ...device, isConnected } 
           : device
       )
@@ -60,6 +93,9 @@ export const useDevices = () => {
     toggleConnection,
     disconnectAll,
     hasDevices: devices.length > 0,
-    connectedDevices: devices.filter(d => d.isConnected)
+    connectedDevices: devices.filter(d => d.isConnected),
+    isLoading,
+    error,
+    refresh: fetchDevices
   };
 };
