@@ -18,6 +18,7 @@ class LoginRequest(BaseModel):
     password: str
     
 class LoginResult(BaseModel):
+    user_id: int = Field(..., alias="userId")
     email: str
     access_token: str = Field(..., alias="accessToken")
 

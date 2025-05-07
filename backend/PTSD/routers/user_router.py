@@ -106,7 +106,7 @@ def login(payload: LoginRequest, db: Session = Depends(get_db)):
     access_token = create_access_token({"sub": user.email})
 
     logger.info(f"로그인 성공: 이메일 {user.email}")
-    return LoginResult(email=user.email, access_token=access_token).model_dump(by_alias=True)
+    return LoginResult(user_id=user.user_id,email=user.email, access_token=access_token).model_dump(by_alias=True)
 
 @router.post(
     "/api/auth/logout",
