@@ -39,9 +39,12 @@ def get_db():
 ### ✅ [요청 필드]
 - `email` : 회원 이메일 주소
 - `password` : 회원 비밀번호
+- `password_confirm` : 비밀번호 확인
+- `name` : 회원 이름   
 
 ### ✅ [응답 필드]
 - `email` : 가입한 이메일 주소
+- `name` : 가입한 회원 이름
 - `created_at` : 계정 생성일
 - `access_token` : 인증 토큰
 """,
@@ -55,7 +58,7 @@ def signup(payload: SignupRequest, db: Session = Depends(get_db)):
 
     # 비밀번호 해싱 후 저장
     hashed_password = hash_password(payload.password)
-    new_user = User(email=payload.email, password=hashed_password)
+    new_user = User(email=payload.email, password=hashed_password, name=payload.name)
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
@@ -69,6 +72,7 @@ def signup(payload: SignupRequest, db: Session = Depends(get_db)):
         email=new_user.email,
         created_at = new_user.created_at,
         access_token=access_token,
+        name=new_user.name, 
         message="회원가입이 성공적으로 완료되었습니다."
     ).model_dump(by_alias=True)
 
@@ -87,6 +91,7 @@ def signup(payload: SignupRequest, db: Session = Depends(get_db)):
 - `password` : 회원 비밀번호
 
 ### ✅ [응답 필드]
+- `user_id` : 사용자 ID
 - `email` : 로그인한 사용자 이메일
 - `access_token` : JWT 인증 토큰
 """,
@@ -106,7 +111,7 @@ def login(payload: LoginRequest, db: Session = Depends(get_db)):
     access_token = create_access_token({"sub": user.email})
 
     logger.info(f"로그인 성공: 이메일 {user.email}")
-    return LoginResult(email=user.email, access_token=access_token).model_dump(by_alias=True)
+    return LoginResult(user_id=user.user_id,email=user.email, access_token=access_token).model_dump(by_alias=True)
 
 @router.post(
     "/api/auth/logout",
