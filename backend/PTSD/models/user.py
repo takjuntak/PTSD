@@ -11,6 +11,7 @@ class User(Base):
     email = Column(String, unique=True, index=True, nullable=False)
     password = Column(String(128), nullable=False)
     created_at = Column(DateTime, default=datetime.utcnow) 
+    name = Column(String(50), nullable=False)
  
     # 조인
     routines = relationship("Routine", back_populates="user", cascade="all, delete-orphan")
