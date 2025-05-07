@@ -1,46 +1,61 @@
 // src/pages/DeviceConnectPage.tsx
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ChevronLeft, Camera, Check, MoreHorizontal } from 'lucide-react';
+import { ChevronLeft, Camera, Check, MoreHorizontal, Loader2 } from 'lucide-react';
 import { useDevices } from '../hooks/useDevices';
 import Portal from '../components/common/Portal';
 import robotImage from '../assets/robot2.png';
 
 const DeviceConnectPage = () => {
   const navigate = useNavigate();
-  const { devices, addDevice, removeDevice, hasDevices } = useDevices();
+  const { devices, addDevice, removeDevice, hasDevices, isLoading, error } = useDevices();
 
   const [currentView, setCurrentView] = useState<'list' | 'register' | 'serial'>('list');
   const [serialNumber, setSerialNumber] = useState('');
   const [deviceName, setDeviceName] = useState('');
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [deviceToDelete, setDeviceToDelete] = useState<string | null>(null);
-  const [activeMenu, setActiveMenu] = useState<string | null>(null);
+  const [deviceToDelete, setDeviceToDelete] = useState<number | null>(null);
+  const [activeMenu, setActiveMenu] = useState<number | null>(null);
+  const [isRegistering, setIsRegistering] = useState(false);
 
-  const handleRegisterDevice = () => {
+  const handleRegisterDevice = async () => {
     if (serialNumber && deviceName) {
-      addDevice({ name: deviceName, isConnected: true });
-      setSerialNumber('');
-      setDeviceName('');
-      setCurrentView('list');
+      try {
+        setIsRegistering(true);
+        await addDevice({ 
+          serial_number: serialNumber, 
+          name: deviceName 
+        });
+        setSerialNumber('');
+        setDeviceName('');
+        setCurrentView('list');
+      } catch (err) {
+        // 에러는 useDevices 훅에서 처리됨
+      } finally {
+        setIsRegistering(false);
+      }
     }
   };
 
-  const handleDeleteRequest = (deviceId: string) => {
+  const handleDeleteRequest = (deviceId: number) => {
     setDeviceToDelete(deviceId);
     setActiveMenu(null);
     setIsDeleteModalOpen(true);
   };
 
-  const handleConfirmDelete = () => {
-    if (deviceToDelete) {
-      removeDevice(deviceToDelete);
-      setDeviceToDelete(null);
-      setIsDeleteModalOpen(false);
+  const handleConfirmDelete = async () => {
+    if (deviceToDelete !== null) {
+      try {
+        await removeDevice(deviceToDelete);
+        setDeviceToDelete(null);
+        setIsDeleteModalOpen(false);
+      } catch (err) {
+        // 에러는 useDevices 훅에서 처리됨
+      }
     }
   };
 
-  const toggleMenu = (deviceId: string) => {
+  const toggleMenu = (deviceId: number) => {
     setActiveMenu(activeMenu === deviceId ? null : deviceId);
   };
 
@@ -58,7 +73,18 @@ const DeviceConnectPage = () => {
       <div className="flex-1 overflow-y-auto p-3 pb-20">
         {currentView === 'list' && (
           <>
-            {!hasDevices ? (
+            {error && (
+              <div className="bg-red-900 border border-red-700 text-red-300 px-4 py-2 rounded-lg mb-4">
+                {error}
+              </div>
+            )}
+            
+            {isLoading ? (
+              <div className="bg-app-card rounded-lg p-4 flex flex-col items-center justify-center h-36">
+                <Loader2 size={24} className="animate-spin text-gray-400 mb-2" />
+                <p className="text-gray-400 text-sm">기기 목록을 불러오는 중...</p>
+              </div>
+            ) : !hasDevices ? (
               <div className="bg-app-card rounded-lg p-4 flex flex-col items-center justify-center h-36">
                 <p className="text-gray-400 text-sm">현재 등록된 기기가 없습니다.</p>
               </div>
@@ -68,7 +94,7 @@ const DeviceConnectPage = () => {
                   <h3 className="text-sm font-bold">기기 관리</h3>
                 </div>
                 {devices.map(device => (
-                  <div key={device.id} className="relative flex items-center p-3 border-b border-neutral-700">
+                  <div key={device.device_id} className="relative flex items-center p-3 border-b border-neutral-700">
                     <div className="flex-1 flex items-center justify-center">
                       <div className="flex flex-col mr-3">
                         <div className="flex items-center">
@@ -78,18 +104,21 @@ const DeviceConnectPage = () => {
                           {device.isConnected && <Check size={12} className="text-green-500 mr-1" />}
                           <span>{device.isConnected ? '연결됨' : '연결 해제됨'}</span>
                         </div>
+                        <div className="text-[10px] text-gray-500 mt-0.5">
+                          S/N: {device.serial_number}
+                        </div>
                       </div>
                       <div className="w-20 h-20 flex items-center justify-center">
                         <img src={robotImage} alt={device.name} className="w-16 h-16 object-contain" />
                       </div>
                     </div>
-                    <button onClick={() => toggleMenu(device.id)} className="ml-2 p-1 text-gray-400">
+                    <button onClick={() => toggleMenu(device.device_id)} className="ml-2 p-1 text-gray-400">
                       <MoreHorizontal size={16} />
                     </button>
-                    {activeMenu === device.id && (
+                    {activeMenu === device.device_id && (
                       <div className="absolute right-2 top-10 bg-black bg-opacity-80 rounded-md overflow-hidden z-10">
                         <button 
-                          onClick={() => handleDeleteRequest(device.id)} 
+                          onClick={() => handleDeleteRequest(device.device_id)} 
                           className="text-red-500 text-xs py-2 px-4 w-full text-center whitespace-nowrap"
                         >
                           기기 제거
@@ -151,10 +180,19 @@ const DeviceConnectPage = () => {
             </div>
             <button
               onClick={handleRegisterDevice}
-              disabled={!serialNumber || !deviceName}
-              className={`w-full py-2 rounded-lg text-sm ${serialNumber && deviceName ? 'bg-blue-500 text-white' : 'bg-gray-700 text-gray-400'}`}
+              disabled={!serialNumber || !deviceName || isRegistering}
+              className={`w-full py-2 rounded-lg text-sm flex items-center justify-center gap-2 ${
+                serialNumber && deviceName ? 'bg-blue-500 text-white' : 'bg-gray-700 text-gray-400'
+              }`}
             >
-              기기 등록하기
+              {isRegistering ? (
+                <>
+                  <Loader2 size={16} className="animate-spin" />
+                  등록 중...
+                </>
+              ) : (
+                '기기 등록하기'
+              )}
             </button>
           </div>
         )}
