@@ -32,7 +32,8 @@ class LoginResult(BaseModel):
     user_id: int = Field(..., alias="userId")
     email: str
     access_token: str = Field(..., alias="accessToken")
-
+    name: str = Field(..., alias="name")
+    
     class Config:
         from_attributes = True
         populate_by_name = True
