@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import moreImage from '../../assets/schedule/more.svg';
 import plusImage from '../../assets/schedule/plus.svg';
-import ScheduleItem from '../../components/schedule/ScheduleItem';
+import ScheduleItem from './ScheduleItem';
 
 interface Schedule {
   id: number;
