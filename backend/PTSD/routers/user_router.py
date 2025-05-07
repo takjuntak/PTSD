@@ -87,6 +87,7 @@ def signup(payload: SignupRequest, db: Session = Depends(get_db)):
 - `password` : 회원 비밀번호
 
 ### ✅ [응답 필드]
+- `user_id` : 사용자 ID
 - `email` : 로그인한 사용자 이메일
 - `access_token` : JWT 인증 토큰
 """,
