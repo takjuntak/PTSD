@@ -7,7 +7,7 @@ class SignupRequest(BaseModel):
     email: EmailStr  # 이메일 형식 자동 검증
     password: str
     password_confirm: str
-    name: str
+    name: str = Field(..., max_length=50) 
 
     @field_validator("password")
     @classmethod
