@@ -34,20 +34,28 @@ router = APIRouter(
 - `created_at` : 기기 등록일
 """
 )
-def create_device(device: DeviceCreate, db: Session = Depends(get_db)):
-    db_device = Device(**device.dict())
+
+def create_device(
+    device: DeviceCreate,
+    db: Session = Depends(get_db),
+    current_user: dict = Depends(get_current_user),
+):
+    db_device = Device(
+        user_id=current_user["user_id"],  # ✅ 현재 로그인한 사용자 ID로 지정
+        serial_number=device.serial_number,
+        name=device.name
+    )
     db.add(db_device)
     db.commit()
     db.refresh(db_device)
     return db_device
-
 
 # 기기 단일 조회
 @router.get(
     "/api/devices/{device_id}",
     response_model=DeviceRead,
     tags=["기기"],
-    summary="기기 조회",
+    summary="기기 단일 조회",
     description="""
  **등록된 기기의 정보를 조회합니다.**
 
@@ -70,6 +78,30 @@ def read_device(device_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Device not found")
     return db_device
 
+
+# 기기 전체 조회
+@router.get(
+    "/api/devices/",
+    response_model=List[DeviceRead],
+    tags=["기기"],
+    summary="기기 전체 조회",
+    description="""
+**등록된 모든 기기 정보를 조회합니다.**
+
+- 사용자 인증 후, 본인이 등록한 기기 목록을 모두 조회합니다.
+
+### ✅ [응답 필드]
+- 각 기기에 대해:
+  - `device_id` : 기기의 고유 ID
+  - `serial_number` : 기기의 시리얼 번호
+  - `name` : 기기의 별칭
+  - `user_id` : 등록한 사용자 ID
+  - `created_at` : 등록 일시
+"""
+)
+def read_all_devices(db: Session = Depends(get_db), user=Depends(get_current_user)):
+    devices = db.query(Device).filter(Device.user_id == user["user_id"]).all()
+    return devices
 
 
 # 기기 수정 (부분 수정용 PATCH)
