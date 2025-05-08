@@ -23,7 +23,7 @@ body {
   padding: 0;
   min-width: 320px;
   height: 100vh;
-  /* overflow: hidden; 제거 - 스크롤을 위해 */
+  overflow: hidden;
 }
 
 #root {
@@ -32,7 +32,7 @@ body {
   margin: 0;
   padding: 0;
   text-align: center;
-  /* overflow: hidden; 제거 - 스크롤을 위해 */
+  overflow: hidden;
 }
 
 button {
@@ -47,20 +47,14 @@ button {
   transition: border-color 0.25s;
 }
 
-/* 스크롤바 스타일링 */
+/* 나머지 기본 스타일은 기존 스타일을 따르되 필요한 것만 수정 */
+
+/* 스크롤바 숨기기 */
 ::-webkit-scrollbar {
-  width: 4px;
+  display: none; /* Chrome, Safari, Opera에서 스크롤바 숨기기 */
 }
 
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.4);
+* {
+  -ms-overflow-style: none;  /* IE, Edge에서 스크롤바 숨기기 */
+  scrollbar-width: none;  /* Firefox에서 스크롤바 숨기기 */
 }

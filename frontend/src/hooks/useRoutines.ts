@@ -11,13 +11,12 @@ export const useRoutines = () => {
   const fetchRoutines = useCallback(async () => {
     try {
       setIsLoading(true);
-      setError(null);
       const data = await routineService.getAllRoutines();
-      console.log('useRoutines에서 가져온 데이터:', data);
       setRoutines(data);
+      setError(null);
     } catch (err) {
-      console.error('Error fetching routines:', err);
       setError('스케줄 목록을 불러오는데 실패했습니다.');
+      console.error('Error fetching routines:', err);
     } finally {
       setIsLoading(false);
     }
@@ -30,15 +29,24 @@ export const useRoutines = () => {
   // 루틴 추가
   const addRoutine = async (data: RoutineCreateRequest) => {
     try {
-      const success = await routineService.createRoutine(data);
-      if (success) {
-        await fetchRoutines(); // 목록 다시 가져오기
-        return true;
-      }
-      return false;
+      // 자바스크립트의 0(일요일)~6(토요일)에서 API 형식인 1(월요일)~7(일요일)로 변환
+      const convertedRepeatDays = data.repeat_days.map(day => {
+        // 일요일(0)은 7로 변환, 나머지는 그대로 사용 (월:1, 화:2, ...)
+        return day === 0 ? 7 : day;
+      });
+
+      // 변환된 요일 데이터로 요청
+      const requestData = {
+        ...data,
+        repeat_days: convertedRepeatDays
+      };
+
+      await routineService.createRoutine(requestData);
+      await fetchRoutines(); // 목록 다시 가져오기
+      return true;
     } catch (err) {
-      console.error('Error adding routine:', err);
       setError('스케줄 등록에 실패했습니다.');
+      console.error('Error adding routine:', err);
       return false;
     }
   };
@@ -46,15 +54,20 @@ export const useRoutines = () => {
   // 루틴 업데이트
   const updateRoutine = async (routineId: number, data: RoutineUpdateRequest) => {
     try {
-      const success = await routineService.updateRoutine(routineId, data);
-      if (success) {
-        await fetchRoutines(); // 목록 다시 가져오기
-        return true;
+      // 요일 데이터가 있는 경우 변환
+      if (data.repeat_days) {
+        const convertedRepeatDays = data.repeat_days.map(day => {
+          return day === 0 ? 7 : day;
+        });
+        data = { ...data, repeat_days: convertedRepeatDays };
       }
-      return false;
+
+      await routineService.updateRoutine(routineId, data);
+      await fetchRoutines(); // 목록 다시 가져오기
+      return true;
     } catch (err) {
-      console.error('Error updating routine:', err);
       setError('스케줄 수정에 실패했습니다.');
+      console.error('Error updating routine:', err);
       return false;
     }
   };
@@ -63,16 +76,12 @@ export const useRoutines = () => {
   const deleteRoutines = async (routineIds: number[]) => {
     try {
       const deletePromises = routineIds.map(id => routineService.deleteRoutine(id));
-      const results = await Promise.all(deletePromises);
-      
-      if (results.every(result => result)) {
-        await fetchRoutines(); // 목록 다시 가져오기
-        return true;
-      }
-      return false;
+      await Promise.all(deletePromises);
+      await fetchRoutines(); // 목록 다시 가져오기
+      return true;
     } catch (err) {
-      console.error('Error deleting routines:', err);
       setError('스케줄 삭제에 실패했습니다.');
+      console.error('Error deleting routines:', err);
       return false;
     }
   };
@@ -80,22 +89,18 @@ export const useRoutines = () => {
   // 루틴 활성화/비활성화 토글
   const toggleRoutineActive = async (routineId: number, isActive: boolean) => {
     try {
-      const success = await routineService.updateRoutine(routineId, { is_work: isActive });
-      if (success) {
-        // 로컬 상태 업데이트
-        setRoutines(prev => 
-          prev.map(routine => 
-            routine.routine_id === routineId 
-              ? { ...routine, is_work: isActive } 
-              : routine
-          )
-        );
-        return true;
-      }
-      return false;
+      await routineService.updateRoutine(routineId, { is_work: isActive });
+      setRoutines(prev => 
+        prev.map(routine => 
+          routine.routine_id === routineId 
+            ? { ...routine, is_work: isActive } 
+            : routine
+        )
+      );
+      return true;
     } catch (err) {
-      console.error('Error toggling routine:', err);
       setError('스케줄 상태 변경에 실패했습니다.');
+      console.error('Error toggling routine:', err);
       return false;
     }
   };

@@ -1,4 +1,3 @@
-// src/pages/schedule/TimeSelectPage.tsx
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useRoutines } from '../../hooks/useRoutines';
@@ -8,14 +7,12 @@ export default function TimeSelectPage() {
   const { addRoutine } = useRoutines();
 
   const [isAM, setIsAM] = useState(true);
-  const [hour, setHour] = useState(9);
+  const [hour, setHour] = useState(6);
   const [minute, setMinute] = useState(0);
   const [selectedDays, setSelectedDays] = useState<boolean[]>(Array(7).fill(false));
   const [enabled, setEnabled] = useState(true);
   const [skipHolidays, setSkipHolidays] = useState(false);
   const [defaultDate, setDefaultDate] = useState('');
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
   const amPmTouchStartY = useRef<number>(0);
   const hourTouchStartY = useRef<number>(0);
@@ -52,9 +49,9 @@ export default function TimeSelectPage() {
       });
     } else if (type === 'minute') {
       setMinute(prev => {
-        let next = prev + (deltaY > 0 ? 5 : -5);
-        if (next > 55) next = 0;
-        if (next < 0) next = 55;
+        let next = prev + (deltaY > 0 ? 1 : -1);
+        if (next > 59) next = 0;
+        if (next < 0) next = 59;
         return next;
       });
     }
@@ -89,56 +86,44 @@ export default function TimeSelectPage() {
   };
 
   const handleSave = async () => {
+    // 현재 선택된 시간 계산
+    const now = new Date();
+    const startTime = new Date(now);
+    
+    // 시간 설정
+    let actualHour = hour;
+    if (!isAM && hour !== 12) actualHour += 12;
+    if (isAM && hour === 12) actualHour = 0;
+    
+    startTime.setHours(actualHour, minute, 0, 0);
+    
+    // 선택된 요일이 있는지 확인
+    const hasSelectedDays = selectedDays.some(selected => selected);
+    
+    // 루틴 타입 결정
+    const routineType = hasSelectedDays ? 'daily' : 'once';
+    
+    // 선택된 요일 인덱스 배열 생성
+    const repeatDays = selectedDays
+      .map((selected, index) => selected ? index : -1)
+      .filter(index => index !== -1);
+    
     try {
-      // 버튼 중복 클릭 방지
-      if (isSubmitting) return;
-      setIsSubmitting(true);
-      setError(null);
-
-      // 선택된 요일이 없으면 반복 타입은 once(한 번)
-      const hasSelectedDays = selectedDays.some(day => day);
-      const routineType = hasSelectedDays ? 'daily' : 'once';
-      
-      // 24시간 형식으로 시간 변환
-      let hour24 = isAM ? (hour === 12 ? 0 : hour) : (hour === 12 ? 12 : hour + 12);
-      
-      // ISO 문자열로 시간 생성 (daily인 경우는 내일 날짜, once인 경우는 선택된 요일에 따라)
-      const startTime = new Date();
-      startTime.setHours(hour24, minute, 0, 0);
-      
-      if (routineType === 'once') {
-        // 일회성 예약 - 내일 날짜로 설정
-        startTime.setDate(startTime.getDate() + 1);
-      }
-      
-      // 선택된 요일 인덱스 배열 생성 (API에서는 월(1)~일(7)을 사용)
-      const repeatDays = selectedDays
-        .map((selected, index) => (selected ? (index === 0 ? 7 : index) : null))
-        .filter((day): day is number => day !== null);
-      
-      // 요일을 선택하지 않았고 반복이 아닌 경우, 내일의 요일을 설정
-      if (repeatDays.length === 0 && routineType === 'once') {
-        const tomorrowDay = (new Date().getDay() + 1) % 7;
-        repeatDays.push(tomorrowDay === 0 ? 7 : tomorrowDay);
-      }
-
       const success = await addRoutine({
         start_time: startTime.toISOString(),
         routine_type: routineType,
-        is_work: enabled,
+        iswork: enabled, 
         repeat_days: repeatDays
       });
-
+      
       if (success) {
         navigate('/schedule');
       } else {
-        setError('스케줄 저장에 실패했습니다.');
+        alert('저장 중 오류가 발생했습니다.');
       }
-    } catch (err) {
-      setError('오류가 발생했습니다. 다시 시도해주세요.');
-      console.error('Error saving schedule:', err);
-    } finally {
-      setIsSubmitting(false);
+    } catch (error) {
+      console.error('Failed to save routine:', error);
+      alert('저장 중 오류가 발생했습니다.');
     }
   };
 
@@ -186,9 +171,9 @@ export default function TimeSelectPage() {
             onTouchMove={e => handleTouchMove('minute', e)}
           >
             <div className="scroll-list">
-              <div className="faded-text">{minute === 0 ? '55' : (minute - 5).toString().padStart(2, '0')}</div>
+              <div className="faded-text">{minute === 0 ? '59' : (minute - 1).toString().padStart(2, '0')}</div>
               <div className="selected-text">{minute.toString().padStart(2, '0')}</div>
-              <div className="faded-text">{minute === 55 ? '00' : (minute + 5).toString().padStart(2, '0')}</div>
+              <div className="faded-text">{minute === 59 ? '00' : (minute + 1).toString().padStart(2, '0')}</div>
             </div>
           </div>
         </div>
@@ -236,17 +221,9 @@ export default function TimeSelectPage() {
           </div>
         </div>
 
-        {error && <div className="error-message">{error}</div>}
-
         <div className="button-row">
           <button className="cancel-btn" onClick={() => navigate('/schedule')}>취소</button>
-          <button 
-            className="save-btn" 
-            onClick={handleSave}
-            disabled={isSubmitting}
-          >
-            {isSubmitting ? '저장 중...' : '저장'}
-          </button>
+          <button className="save-btn" onClick={handleSave}>저장</button>
         </div>
       </div>
 
@@ -254,7 +231,7 @@ export default function TimeSelectPage() {
         .schedule-content {
           max-width: 600px;
           margin: 0 auto;
-          padding-bottom: 100px;
+          padding-bottom: 150px;
         }
         .time-box, .option-box {
           background: #373738;
@@ -272,10 +249,10 @@ export default function TimeSelectPage() {
           justify-content: center;
         }
         .option-box {
-          height: 50vh; /* 화면 높이의 45% */
+          height: 52vh;
           padding: 26px 26px 26px 26px; /* 아래 패딩 없앰 */
-          min-height: 300px;
-          max-height: 500px;
+          min-height: 315px;
+          max-height: 510px;
           display: flex;
           flex-direction: column;
         }
@@ -319,24 +296,25 @@ export default function TimeSelectPage() {
           display: flex;
           flex-wrap: nowrap;
           justify-content: center;
-          gap: 12px;
+          gap: 0px;
           margin-bottom: 25px;
         }
         .day-btn {
           width: 40px;
           height: 40px;
-          border: none;
+          border: 2px solid transparent; /* 항상 2px 테두리를 가지지만 기본은 투명 */
           background: transparent;
-          color: white;
-          font-size: 16px;
+          color: white; /* 기본 글자색 */
+          font-size: 14px;
           display: flex;
           align-items: center;
           justify-content: center;
           border-radius: 50%;
+          box-sizing: border-box; /* 테두리를 크기에 포함 */
         }
+
         .day-btn.active {
-          border: 2px solid #0098FF;
-          color: #0098FF;
+          border-color: #0098FF; /* 활성화 상태에서 테두리 색상만 변경 */
         }
         .day-btn.sun {
           color: #FF0044;
@@ -354,6 +332,7 @@ export default function TimeSelectPage() {
           gap: 40px;
           margin-bottom: 0; /* 기존 여백 제거 */
           margin-top: 34px;
+
         }
         .toggle-item {
           display: flex;
@@ -415,7 +394,7 @@ export default function TimeSelectPage() {
           display: flex;
           gap: 8px;
           margin-top: auto;
-          padding-top: 24px; /* 버튼과 위 내용 사이 여백 */
+          padding-top: 36px; /* 버튼과 위 내용 사이 여백 */
         }
         .cancel-btn, .save-btn {
           flex: 1;
@@ -433,19 +412,6 @@ export default function TimeSelectPage() {
         .save-btn {
           background: #0098FF;
           color: white;
-        }
-        .save-btn:disabled {
-          background: #777;
-          cursor: not-allowed;
-        }
-        .error-message {
-          color: #ff6b6b;
-          background-color: rgba(255, 107, 107, 0.1);
-          border-radius: 6px;
-          padding: 10px;
-          margin-top: 16px;
-          text-align: center;
-          font-size: 14px;
         }
       `}</style>
     </div>
