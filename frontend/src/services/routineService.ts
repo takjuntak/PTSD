@@ -49,7 +49,7 @@ interface RoutinesApiResponse {
 export interface RoutineCreateRequest {
   start_time: string;
   routine_type: 'once' | 'daily';
-  is_work: boolean;
+  iswork: boolean;
   repeat_days: number[];
 }
 
