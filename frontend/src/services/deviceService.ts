@@ -8,14 +8,15 @@ const api = axios.create({
   }
 });
 
-// 고정된 액세스 토큰
-const ACCESS_TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyM0BleGFtcGxlLmNvbSIsImV4cCI6MTc0NjU5NDk3MH0.2ZcpkX42Glene6mvGG_RTt3KiSYLLYxsWvdTb5wb0Ak';
-
 // 요청 인터셉터
 api.interceptors.request.use(
   config => {
-    // 인증 토큰을 고정값으로 설정
-    config.headers['Authorization'] = `Bearer ${ACCESS_TOKEN}`;
+    // 로컬 스토리지에서 액세스 토큰 가져오기
+    const token = localStorage.getItem('accessToken');
+    // 토큰이 있을 경우에만 헤더에 추가
+    if (token) {
+      config.headers['Authorization'] = `Bearer ${token}`;
+    }
     return config;
   },
   error => {
@@ -38,8 +39,10 @@ api.interceptors.response.use(
                       '서버 오류가 발생했습니다.';
       
       if (status === 401) {
-        // 인증 오류 처리
+        // 인증 오류 처리 - 토큰 만료 등의 경우
         console.log('인증이 필요합니다.');
+        // 로그인 페이지로 리다이렉트 등의 처리 추가 가능
+        // window.location.href = '/login';
       }
       
       return Promise.reject(new Error(message));
@@ -69,7 +72,12 @@ export interface DeviceRequest {
 export const deviceService = {
   // 기기 등록
   async registerDevice(data: DeviceRequest): Promise<DeviceResponse> {
-    const response = await api.post('/api/devices/', data);
+    const requestData = {
+      user_id: 0, // 서버가 필요로 하는 필드, 실제 값은 서버에서 토큰을 통해 결정됨
+      serial_number: data.serial_number,
+      name: data.name
+    };
+    const response = await api.post('/api/devices/', requestData);
     return response.data;
   },
 
@@ -84,7 +92,7 @@ export const deviceService = {
     await api.delete(`/api/devices/${deviceId}`);
   },
 
-  // 모든 기기 조회 (API 경로 수정)
+  // 모든 기기 조회
   async getAllDevices(): Promise<DeviceResponse[]> {
     const response = await api.get('/api/devices/');
     return response.data;

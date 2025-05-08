@@ -1,10 +1,12 @@
+// src/pages/schedule/SchedulePage.tsx
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import moreImage from '../../assets/schedule/more.svg';
 import plusImage from '../../assets/schedule/plus.svg';
 import ScheduleItem from './ScheduleItem';
+import { useRoutines } from '../../hooks/useRoutines';
 
-interface Schedule {
+interface ScheduleItemType {
   id: number;
   time: string;
   date: string;
@@ -13,15 +15,9 @@ interface Schedule {
 
 const SchedulePage = () => {
   const navigate = useNavigate();
-
-  const [schedules, setSchedules] = useState<Schedule[]>([
-    { id: 1, time: '오전 9:30', date: '5월 11일 (일)', active: true },
-    { id: 2, time: '오후 12:30', date: '5월 11일 (일)', active: true },
-    { id: 3, time: '오후 3:30', date: '5월 11일 (일)', active: true },
-    { id: 4, time: '오후 4:00', date: '5월 11일 (일)', active: false },
-    { id: 5, time: '오후 6:30', date: '일 월 화 수 목 금 토', active: true },
-  ]);
-
+  const { routines, isLoading, error, toggleRoutineActive, deleteRoutines } = useRoutines();
+  
+  const [scheduleItems, setScheduleItems] = useState<ScheduleItemType[]>([]);
   const [plusMenuOpen, setPlusMenuOpen] = useState(false);
   const [editMenuOpen, setEditMenuOpen] = useState(false);
   const [editMode, setEditMode] = useState(false);
@@ -29,6 +25,47 @@ const SchedulePage = () => {
 
   const plusMenuRef = useRef<HTMLDivElement>(null);
   const editMenuRef = useRef<HTMLDivElement>(null);
+
+  // 루틴 데이터를 가공하여 화면에 표시할 형태로 변환
+  useEffect(() => {
+    if (routines.length > 0) {
+      const items = routines.map(routine => {
+        // 시간 포맷팅
+        const startTime = new Date(routine.start_time);
+        const hour = startTime.getHours();
+        const minute = startTime.getMinutes();
+        const ampm = hour >= 12 ? '오후' : '오전';
+        const hour12 = hour % 12 || 12;
+        const timeString = `${ampm} ${hour12}:${minute.toString().padStart(2, '0')}`;
+        
+        // 날짜 포맷팅 (한 번 실행) 또는 반복 요일 (매일 반복)
+        let dateString = '';
+        if (routine.routine_type === 'once') {
+          const date = startTime.getDate();
+          const month = startTime.getMonth() + 1;
+          const day = ['일', '월', '화', '수', '목', '금', '토'][startTime.getDay()];
+          dateString = `${month}월 ${date}일 (${day})`;
+        } else {
+          // 요일 배열로 변환
+          const days = ['일', '월', '화', '수', '목', '금', '토'];
+          dateString = routine.repeat_days.length === 7 
+            ? '매일' 
+            : routine.repeat_days.map(day => days[day % 7]).join(' ');
+        }
+
+        return {
+          id: routine.routine_id,
+          time: timeString,
+          date: dateString,
+          active: routine.is_work
+        };
+      });
+      
+      setScheduleItems(items);
+    } else {
+      setScheduleItems([]);
+    }
+  }, [routines]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -67,27 +104,34 @@ const SchedulePage = () => {
     setSelectedIds([]);
   };
 
-  const handleDelete = () => {
-    setSchedules(prev => prev.filter(s => !selectedIds.includes(s.id)));
-    cancelEditMode();
+  const handleDelete = async () => {
+    if (selectedIds.length > 0) {
+      const success = await deleteRoutines(selectedIds);
+      if (success) {
+        cancelEditMode();
+      }
+    }
   };
 
-  const handleToggle = (id: number) => {
-    setSchedules(prev =>
-      prev.map(s => (s.id === id ? { ...s, active: !s.active } : s))
-    );
+  const handleToggle = async (id: number, currentState: boolean) => {
+    await toggleRoutineActive(id, !currentState);
   };
 
   const handleTimeSelect = () => {
     navigate('/schedule/time-select');
   };
-  
 
   return (
     <div className="schedule-page">
       <div className="schedule-content">
         <div className="schedule-title">예약</div>
         <div className="schedule-subtitle">원하는 청소 시간을 설정해 주세요.</div>
+
+        {error && (
+          <div className="error-message">
+            {error}
+          </div>
+        )}
 
         <div className="schedule-buttons">
           <div className="relative" ref={plusMenuRef}>
@@ -115,15 +159,17 @@ const SchedulePage = () => {
         </div>
 
         <div className="schedule-list">
-          {schedules.length > 0 ? (
-            schedules.map(item => (
+          {isLoading ? (
+            <div className="schedule-loading">데이터를 불러오는 중...</div>
+          ) : scheduleItems.length > 0 ? (
+            scheduleItems.map(item => (
               <ScheduleItem
                 key={item.id}
                 id={item.id}
                 time={item.time}
                 date={item.date}
                 active={item.active}
-                onToggle={() => handleToggle(item.id)}
+                onToggle={() => handleToggle(item.id, item.active)}
                 editMode={editMode}
                 selected={selectedIds.includes(item.id)}
                 onSelect={() => {
@@ -143,11 +189,32 @@ const SchedulePage = () => {
         {editMode && (
           <div className="bottom-button">
             <button className="cancel-button" onClick={cancelEditMode}>취소</button>
-            <button className="delete-button" onClick={handleDelete}>삭제</button>
+            <button 
+              className="delete-button" 
+              onClick={handleDelete}
+              disabled={selectedIds.length === 0}
+            >
+              삭제
+            </button>
           </div>
         )}
 
         <style>{`
+          .error-message {
+            background-color: rgba(255, 0, 0, 0.1);
+            border: 1px solid rgba(255, 0, 0, 0.3);
+            color: #ff6b6b;
+            padding: 10px;
+            border-radius: 8px;
+            margin: 20px 0;
+            text-align: center;
+          }
+          .schedule-loading {
+            text-align: center;
+            color: #fff;
+            margin-top: 40px;
+            font-size: 16px;
+          }
           html, body {
             height: 100%;
             background: linear-gradient(180deg, #2E2E37 0%, #1D1E23 100%);
@@ -196,6 +263,9 @@ const SchedulePage = () => {
           .icon-button svg {
             width: 24px;
             height: 24px;
+          }
+          .relative {
+            position: relative;
           }
           .dropdown-menu {
             position: absolute;
@@ -268,6 +338,10 @@ const SchedulePage = () => {
             background: #617BEE;
             color: white;
             border: none;
+          }
+          .delete-button:disabled {
+            background: #999;
+            cursor: not-allowed;
           }
         `}</style>
       </div>
