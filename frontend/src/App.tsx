@@ -6,6 +6,7 @@ import './App.css'
 import MainPage from './pages/MainPage'
 import SchedulePage from './pages/schedule/SchedulePage'
 import NavigationBar from './components/common/NavigationBar'
+import Header from './components/common/Header'
 import TimeSelectPage from './pages/schedule/TimeSelectPage'
 import ControlPage from './pages/ControlPage'
 import PlayPage from './pages/PlayPage'
@@ -18,11 +19,15 @@ import SignupPage from './pages/user/signup/SignupPage'
 function AppContent() {
   const location = useLocation()
   const hideNavPaths = ['/login', '/signup']
+  const hideHeaderPaths = ['/login', '/signup', '/schedule']
   const shouldHideNav = hideNavPaths.includes(location.pathname)
+  const shouldHideHeader = hideHeaderPaths.includes(location.pathname)
 
   return (
     <div className="flex flex-col text-white w-full h-screen overflow-hidden">
-      <div className="flex-1 w-full overflow-y-auto">
+      {!shouldHideHeader && <Header />}
+      
+      <div className="flex-1 w-full overflow-y-auto" style={{ paddingTop: !shouldHideHeader ? 36 : 0 }}>
         <Routes>
           {/* 공개 라우트 */}
           <Route path="/login" element={<LoginPage />} />

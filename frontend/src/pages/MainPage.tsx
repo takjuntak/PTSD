@@ -2,7 +2,6 @@
 import { useState } from 'react';
 import robotImage from '../assets/robot.png'; 
 import ChargeIndicator from '../components/charge';
-import Header from '../components/common/Header';
 import LocationMap from '../components/location/LocationMap'; // 주석 해제
 import useScroll from '../hooks/useScroll';
 
@@ -17,8 +16,6 @@ const MainPage = () => {
 
   return (
     <div className="flex flex-col w-full h-full">
-      {/* 헤더 */}
-      <Header title="Gymbo" />
       
       <main className="flex-1 flex flex-col items-center justify-start w-full px-4 overflow-y-auto" ref={containerRef}>
         {/* PTSD 로봇 텍스트 - 왼쪽 정렬 */}

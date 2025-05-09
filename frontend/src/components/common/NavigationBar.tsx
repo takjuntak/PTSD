@@ -1,178 +1,155 @@
-// src/components/common/NavigationBar.tsx
-import { Home, SlidersHorizontal, AlarmClock, Layers, Play } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import React from 'react';
+
+import homeActive from '../../assets/navigation/home-activate.svg';
+import homeInactive from '../../assets/navigation/home-deactivate.svg';
+import controlActive from '../../assets/navigation/control-activate.svg';
+import controlInactive from '../../assets/navigation/control-deactivate.svg';
+import scheduleActive from '../../assets/navigation/schedule-activate.svg';
+import scheduleInactive from '../../assets/navigation/schedule-deactivate.svg';
+import menuActive from '../../assets/navigation/menu-activate.svg';
+import menuInactive from '../../assets/navigation/menu-deactivate.svg';
+import playButtonIcon from '../../assets/navigation/play.svg';
 
 const NavigationBar: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const currentPath = location.pathname;
 
-  // 현재 활성화된 경로 확인
-  const isActive = (path: string): boolean => {
-    if (path === '/' && currentPath === '/') return true;
-    if (path !== '/' && currentPath === path) return true;
-    return false;
-  };
+  const BASE_WIDTH = 416;
+
+  const isActive = (path: string) => currentPath === path;
+
+  const navItems = [
+    { path: '/', label: '홈', activeIcon: homeActive, inactiveIcon: homeInactive },
+    { path: '/control', label: '제어', activeIcon: controlActive, inactiveIcon: controlInactive },
+    { path: '/schedule', label: '예약', activeIcon: scheduleActive, inactiveIcon: scheduleInactive },
+    { path: '/menu', label: '메뉴', activeIcon: menuActive, inactiveIcon: menuInactive },
+  ];
 
   return (
-    <div 
+    <div
       style={{
         position: 'fixed',
         bottom: 0,
         left: 0,
         right: 0,
+        backgroundColor: '#32333B',
+        height: 74,
+        zIndex: 100,
         display: 'flex',
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        backgroundColor: '#1E1E1E',
-        borderTop: '1px solid #444',
-        height: '56px',
-        width: '100%'
+        justifyContent: 'center',
       }}
     >
-      <div 
+      <div
         style={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-          flex: 1
+          width: BASE_WIDTH,
+          height: 74,
+          position: 'relative',
         }}
       >
-        <button 
-          onClick={() => navigate('/')}
+        <div
           style={{
-            background: 'none',
-            border: 'none',
-            padding: 0,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            color: isActive('/') ? '#0088FF' : '#888'
-          }}
-        >
-          <Home size={20} style={{ marginBottom: '4px' }} />
-          <span style={{ fontSize: '10px' }}>홈</span>
-        </button>
-      </div>
-      
-      <div 
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-          flex: 1
-        }}
-      >
-        <button 
-          onClick={() => navigate('/control')}
-          style={{
-            background: 'none',
-            border: 'none',
-            padding: 0,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            color: isActive('/control') ? '#0088FF' : '#888'
-          }}
-        >
-          <SlidersHorizontal size={20} style={{ marginBottom: '4px' }} />
-          <span style={{ fontSize: '10px' }}>제어</span>
-        </button>
-      </div>
-      
-      <div 
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-          flex: 1
-        }}
-      >
-        <button 
-          onClick={() => navigate('/play')}
-          style={{
-            background: 'none',
-            border: 'none',
-            padding: 0,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center'
-          }}
-        >
-          <div style={{
-            backgroundColor: '#0088FF',
-            color: 'white',
-            borderRadius: '50%',
-            width: '40px',
-            height: '40px',
+            width: '100%',
+            height: '100%',
             display: 'flex',
             alignItems: 'center',
-            justifyContent: 'center',
-            marginBottom: '4px'
-          }}>
-            <Play size={20} />
+          }}
+        >
+          {/* 홈 */}
+          <div style={{ marginLeft: 16 }}>
+            <NavItem {...navItems[0]} isActive={isActive(navItems[0].path)} navigate={navigate} />
           </div>
-          <span style={{ fontSize: '10px', visibility: 'hidden' }}>플레이</span>
-        </button>
-      </div>
-      
-      <div 
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-          flex: 1
-        }}
-      >
-        <button 
-          onClick={() => navigate('/schedule')}
-          style={{
-            background: 'none',
-            border: 'none',
-            padding: 0,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            color: isActive('/schedule') ? '#0088FF' : '#888'
-          }}
-        >
-          <AlarmClock size={20} style={{ marginBottom: '4px' }} />
-          <span style={{ fontSize: '10px' }}>예약</span>
-        </button>
-      </div>
-      
-      <div 
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-          flex: 1
-        }}
-      >
-        <button 
-          onClick={() => navigate('/menu')}
-          style={{
-            background: 'none',
-            border: 'none',
-            padding: 0,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            color: isActive('/menu') ? '#0088FF' : '#888'
-          }}
-        >
-          <Layers size={20} style={{ marginBottom: '4px' }} />
-          <span style={{ fontSize: '10px' }}>메뉴</span>
-        </button>
+
+          {/* 제어 */}
+          <div style={{ marginLeft: 26 }}>
+            <NavItem {...navItems[1]} isActive={isActive(navItems[1].path)} navigate={navigate} />
+          </div>
+
+          {/* 중앙 플레이 버튼 */}
+          <div
+            style={{
+              position: 'absolute',
+              bottom: 17,
+              left: '50%',
+              transform: 'translateX(-50%)',
+              width: 80,
+              height: 80,
+              zIndex: 10,
+            }}
+          >
+            <button
+              onClick={() => navigate('/play')}
+              style={{
+                width: '100%',
+                height: '100%',
+                background: 'none',
+                border: 'none',
+                padding: 0,
+              }}
+            >
+              <img src={playButtonIcon} alt="플레이" style={{ width: '100%', height: '100%' }} />
+            </button>
+          </div>
+
+          {/* 예약 */}
+          <div style={{ marginLeft: 132 }}>
+            <NavItem {...navItems[2]} isActive={isActive(navItems[2].path)} navigate={navigate} />
+          </div>
+
+          {/* 메뉴 */}
+          <div style={{ marginLeft: 26 }}>
+            <NavItem {...navItems[3]} isActive={isActive(navItems[3].path)} navigate={navigate} />
+          </div>
+        </div>
       </div>
     </div>
   );
 };
+
+interface NavItemProps {
+  path: string;
+  label: string;
+  activeIcon: string;
+  inactiveIcon: string;
+  isActive: boolean;
+  navigate: ReturnType<typeof useNavigate>;
+}
+
+const NavItem: React.FC<NavItemProps> = ({ path, label, activeIcon, inactiveIcon, isActive, navigate }) => (
+  <button
+    onClick={() => navigate(path)}
+    style={{
+      background: 'none',
+      border: 'none',
+      width: 50,
+      height: 46,
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+      gap: 4,
+      padding: 0,
+    }}
+  >
+    <img
+      src={isActive ? activeIcon : inactiveIcon}
+      alt={label}
+      style={{ width: 24, height: 24 }}
+    />
+    <span
+      style={{
+        fontSize: 14,
+        fontWeight: 800,
+        color: isActive ? '#66A1F7' : '#767676',
+        fontFamily: 'Inter',
+        lineHeight: '17px',
+        whiteSpace: 'nowrap',
+      }}
+    >
+      {label}
+    </span>
+  </button>
+);
 
 export default NavigationBar;
