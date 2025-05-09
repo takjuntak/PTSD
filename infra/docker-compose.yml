@@ -1,15 +1,17 @@
 services:
   backend:
     build:
-      context: ../../backend/ptsd  
+      context: ../backend
       dockerfile: Dockerfile        
     image: ptsd-app
     container_name: ptsd-app
     ports:
-      - "8081:8081"
+      - "8081:8000"
     volumes:
       - jenkins-data:/var/jenkins_home
       - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - ENV=production
     restart: always
     networks:
       - app-network
