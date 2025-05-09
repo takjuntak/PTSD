@@ -40,7 +40,7 @@ app.include_router(notification_router.router)
 app.include_router(devices_router.router)
 
 # ✅ 웹소켓 라우터 등록
-app.include_router(websocket_router.router)
+# app.include_router(websocket_router.router)
 
 # 배터리 웹소켓 라우터 등록 -> 테스트
 app.include_router(battery_ws.router)
