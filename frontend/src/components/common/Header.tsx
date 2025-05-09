@@ -1,105 +1,80 @@
-// src/components/common/Header.tsx
-import { useState } from 'react';
-import { ChevronDown, Settings, Check } from 'lucide-react';
+import React, { useState } from 'react';
+import plusImage from '../../assets/header/header-plus.svg';
+import bellImage from '../../assets/header/header-bell.svg';
+import unreadbellImage from '../../assets/header/header-bell-unread.svg';
+import menuImage from '../../assets/header/header-more.svg';
+import LocationDropdown from './LocationDropdown';
 
-interface HeaderProps {
-  title: string;
-}
-
-const Header: React.FC<HeaderProps> = ({ title }) => {
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-
-  const toggleDropdown = () => {
-    setIsDropdownOpen(prev => !prev);
-  };
+const AppHeader: React.FC = () => {
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [hasUnread, setHasUnread] = useState(true); // 읽지 않은 알림 여부
 
   return (
-    <header className="py-4 px-6 bg-app-dark text-white">
+    <div
+      style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        backgroundColor: '#2E2E37',
+        height: 64,
+        display: 'flex',
+        justifyContent: 'center',
+        zIndex: 999,
+      }}
+    >
       <div
         style={{
-          position: 'relative',
-          textAlign: 'left',
           width: '100%',
-          zIndex: 1000
+          maxWidth: 416,
+          padding: '0 16px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          position: 'relative',
         }}
       >
+        {/* ▼ [기기이름] 버튼 */}
         <button
-          className="flex items-center gap-2 text-white bg-transparent border-none focus:outline-none"
-          style={{ margin: '0', padding: '0' }}
-          onClick={toggleDropdown}
-        >
-          <span className="text-xl font-bold">{title}</span>
-          <ChevronDown size={20} />
-        </button>
-
-        <div
+          onClick={() => setDropdownOpen(!dropdownOpen)}
           style={{
-            position: 'absolute',
-            top: '100%',
-            left: '0',
-            width: '208px',
-            backgroundColor: '#2A2A2A',
-            borderRadius: '6px',
-            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
-            padding: '8px 0',
-            marginTop: '8px',
-            zIndex: 1000,
-            display: isDropdownOpen ? 'block' : 'none',
+            background: 'none',
+            border: 'none',
+            color: '#FFFFFF',
+            fontSize: 20,
+            fontWeight: 800,
+            fontFamily: 'Inter',
           }}
         >
-          <div
-            style={{
-              padding: '8px 16px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              color: '#0088FF',
-              fontWeight: 600
-            }}
-          >
-            <span>{title}</span>
-            <Check size={16} />
+          Gymbo ▼
+        </button>
+
+        {/* 아이콘 */}
+        <div style={{ display: 'flex', gap: 20 }}>
+          <img src={plusImage} alt="추가" width={24} height={24} />
+
+          {/* 알림 아이콘 (이미지에 파란 점 포함) */}
+          <div style={{ position: 'relative' }}>
+            <img
+              src={hasUnread ? unreadbellImage : bellImage}
+              alt="알림"
+              width={24}
+              height={24}
+              onClick={() => setHasUnread(false)}
+              style={{ cursor: 'pointer' }}
+            />
           </div>
-          
-          <div 
-            style={{
-              borderTop: '1px dashed #444',
-              margin: '4px 0'
-            }}
-          />
-          
-          <button
-            style={{
-              width: '100%',
-              textAlign: 'left',
-              padding: '8px 16px',
-              color: 'white',
-              backgroundColor: 'transparent',
-              border: 'none',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '8px',
-              cursor: 'pointer',
-              transition: 'background-color 0.2s'
-            }}
-            onMouseOver={(e) => {
-              e.currentTarget.style.backgroundColor = '#0088FF';
-            }}
-            onMouseOut={(e) => {
-              e.currentTarget.style.backgroundColor = 'transparent';
-            }}
-            onClick={() => {
-              console.log('장소 관리 클릭');
-              setIsDropdownOpen(false);
-            }}
-          >
-            <Settings size={16} />
-            <span>장소 관리</span>
-          </button>
+
+          <img src={menuImage} alt="더보기" width={24} height={24} />
         </div>
+
+        {/* 드롭다운 */}
+        {dropdownOpen && (
+          <LocationDropdown onClose={() => setDropdownOpen(false)} />
+        )}
       </div>
-    </header>
+    </div>
   );
 };
 
-export default Header;
+export default AppHeader;
