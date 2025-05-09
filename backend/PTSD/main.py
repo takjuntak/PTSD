@@ -1,16 +1,15 @@
+# main.py
 from fastapi import FastAPI
 from fastapi.security import OAuth2PasswordBearer
 from PTSD.exceptions import register_exception_handlers
-from PTSD.routers import notification_router, user_router, routine_router , devices_router, mqtt_router, websocket_router
+from PTSD.routers import notification_router, user_router, routine_router , devices_router
+from PTSD.routers import battery_ws, websocket_router, battery_router
 from fastapi.openapi.utils import get_openapi
 from fastapi.middleware.cors import CORSMiddleware
 from PTSD.core.database import Base, engine
 from PTSD.models import notifications, user, routines,devices
 from fastapi.openapi.utils import get_openapi
 from fastapi.openapi.models import OAuthFlows, OAuthFlowPassword
-import paho.mqtt.client as mqtt
-import logging
-
 
 app = FastAPI(
     title="PTSD API",
@@ -40,11 +39,12 @@ app.include_router(routine_router.router)
 app.include_router(notification_router.router)
 app.include_router(devices_router.router)
 
-# ✅ MQTT 라우터 등록
-app.include_router(mqtt_router.router)
-
 # ✅ 웹소켓 라우터 등록
 app.include_router(websocket_router.router)
+
+# 배터리 웹소켓 라우터 등록 -> 테스트
+app.include_router(battery_ws.router)
+app.include_router(battery_router.router)
 
 
 # ✅ 서버 시작 시 테이블 생성
@@ -53,33 +53,6 @@ async def startup_event():
     Base.metadata.create_all(bind=engine)
     print("테이블 생성 완료!")
 
-    # MQTT 클라이언트 연결 설정
-    mqtt_client.connect("localhost", 1883, 60)
-    mqtt_client.loop_start()  # 비동기적으로 메시지 처리 시작
-
-# ✅ 서버 종료 시 MQTT 클라이언트 종료
-@app.on_event("shutdown")
-async def shutdown_event():
-    mqtt_client.loop_stop()  # MQTT 메시지 루프 종료
-    mqtt_client.disconnect()  # MQTT 연결 종료
-
-# ✅ MQTT 클라이언트 설정
-mqtt_client = mqtt.Client()
-
-# 메시지 수신 처리
-received_messages = []
-
-def on_connect(client, userdata, flags, rc):
-    print(f"MQTT Connected with result code {rc}")
-    client.subscribe("iot/notification")  # 알림을 받을 토픽을 구독
-
-def on_message(client, userdata, msg):
-    message = msg.payload.decode()
-    print(f"Received MQTT message: {message}")
-    received_messages.append(message)  # 수신된 메시지를 리스트에 저장
-
-mqtt_client.on_connect = on_connect
-mqtt_client.on_message = on_message
 
 # ✅ Swagger에 Bearer Token 인증 정보 추가
 from fastapi.openapi.models import APIKey, APIKeyIn, SecuritySchemeType
