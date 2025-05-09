@@ -30,7 +30,7 @@ class BatteryStatus(BaseModel):
     percentage: float
 
 @router.post(
-    "/api/battery-state",
+    "/api/battery-notification",
     tags=["배터리 상태"],
     summary="배터리 상태 알림 전송"
 )
@@ -40,16 +40,15 @@ async def send_battery_notification(
 ):
     try:
         # percentage 추출 및 메시지 구성
-        percentage = round(payload.get("percentage", 0.0), 2)
-        voltage = round(payload.get("voltage", 0.0), 2)
-        message = f"배터리 잔량: {percentage}%, 전압: {voltage}V"
+        percentage = payload.get("percentage", 0)
+        message = f"배터리 잔량: {percentage}%"
 
         # NotificationRequest로 변환
         notification_data = Notification(
             user_id=1,  # 실제 사용자의 ID로 설정
             title="배터리 상태 알림",
             message=message,
-            type="battery",
+            type=NotificationType.BATTERY,
             timestamp=datetime.utcnow(),
             is_read=False
         )
