@@ -1,4 +1,4 @@
-// MenuPage.tsx (with CSS Module + LogoutModal integration)
+// MenuPage.tsx
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -7,10 +7,12 @@ import {
 } from 'lucide-react';
 import styles from './MenuPage.module.css';
 import LogoutModal from './LogoutModal';
+import { useAuth } from '../../hooks/useAuth'; // useAuth 훅 추가
 
 const MenuPage: React.FC = () => {
   const navigate = useNavigate();
   const [isLogoutOpen, setLogoutOpen] = useState(false);
+  const { user } = useAuth(); // 현재 로그인한 사용자 정보 가져오기
 
   const handleGoBack = () => navigate(-1);
   const handleDeviceConnect = () => navigate('/device-connect');
@@ -51,16 +53,22 @@ const MenuPage: React.FC = () => {
   return (
     <div className={styles.wrapper}>
       <header className={styles.header}>
-        <button onClick={handleGoBack} className={styles.backButton}>
+        <button 
+          onClick={handleGoBack} 
+          className="text-white border-none bg-transparent p-0"
+          style={{ background: 'transparent' }}
+        >
           <ChevronLeft size={24} />
         </button>
-        <span className={styles.title}>메뉴</span>
+        <span className="text-xl font-bold">메뉴</span>
       </header>
 
-      <div className={styles.content}>
+      <div className={styles.content} style={{ paddingBottom: '120px' }}>
         <section className={styles.profileSection}>
           <div className={styles.avatar} />
-          <span className={styles.username}>SSAFY</span>
+          <span className={styles.username}>
+            {user?.name || '로그인이 필요합니다'}
+          </span>
         </section>
 
         <section className={styles.sectionCard}>

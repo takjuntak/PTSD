@@ -1,3 +1,4 @@
+// src/pages/auth/LoginPage.tsx
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from './LoginPage.module.css';
@@ -5,6 +6,7 @@ import logoImage from '../../../assets/PTSD-logo-neon.png';
 import eyeImage from '../../../assets/user/eye-outline.svg';
 import hideImage from '../../../assets/user/hide-outline.svg';
 import axios from 'axios';
+import { useAuth } from "../../../hooks/useAuth";
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
@@ -12,6 +14,7 @@ export default function LoginPage() {
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const handleLogin = async () => {
     try {
@@ -19,9 +22,10 @@ export default function LoginPage() {
         email,
         password,
       });
-      const token = response.data.accessToken;
-      if (token) {
-        localStorage.setItem('accessToken', token);
+      
+      // API 응답에서 받은 사용자 정보로 로그인 처리
+      if (response.data) {
+        login(response.data);
         navigate('/');
       }
     } catch (error: any) {

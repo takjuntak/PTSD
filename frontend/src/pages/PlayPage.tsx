@@ -1,12 +1,10 @@
 // src/pages/PlayPage.tsx (Tailwind CSS 적용 버전)
-import Header from '../components/common/Header';
 import { Battery, MapPin, Clock, AlertCircle, Settings } from 'lucide-react';
 import robot2Image from '../assets/robot2.png';
 
 const PlayPage = () => {
   return (
     <div className="w-full h-full flex flex-col bg-app-dark text-white">
-      <Header title="김싸피님의 PTSD" />
 
       <div className="flex-1 overflow-y-auto p-4 pb-24">
         {/* 로봇 카드 */}

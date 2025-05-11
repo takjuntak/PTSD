@@ -1,4 +1,4 @@
-// src/pages/ControlPage.tsx - 수동조작 버튼 기능 추가
+// src/pages/ControlPage.tsx - 그라데이션 제거
 import { Play, Home, Calendar, Gamepad2, ChevronLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import robotImage from '../assets/robot.png';
@@ -7,9 +7,13 @@ const ControlPage = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="w-full h-full flex flex-col bg-app-dark text-white">
-      <header className="p-4 px-6 bg-app-dark flex items-center gap-3 border-b border-neutral-700 sticky top-0 z-10">
-        <button onClick={() => navigate(-1)} className="p-1 text-white hover:opacity-80">
+    <div className="w-full h-full flex flex-col text-white" style={{ backgroundColor: '#2E2E37' }}>
+      <header className="p-4 px-3 flex items-center gap-3 sticky top-0 z-10" style={{ backgroundColor: '#2E2E37' }}>
+        <button 
+          onClick={() => navigate(-1)} 
+          className="text-white border-none bg-transparent p-0"
+          style={{ background: 'transparent' }}
+        >
           <ChevronLeft size={24} />
         </button>
         <span className="text-xl font-bold">제어</span>
