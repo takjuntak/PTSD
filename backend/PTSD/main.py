@@ -10,6 +10,8 @@ from PTSD.core.database import Base, engine
 from PTSD.models import notifications, user, routines,devices
 from fastapi.openapi.utils import get_openapi
 from fastapi.openapi.models import OAuthFlows, OAuthFlowPassword
+from PTSD.utils.mqtt_battery_listener import start_mqtt_loop
+import threading
 
 app = FastAPI(
     title="PTSD API",
@@ -52,7 +54,9 @@ app.include_router(battery_router.router)
 async def startup_event():
     Base.metadata.create_all(bind=engine)
     print("테이블 생성 완료!")
-
+    thread = threading.Thread(target=start_mqtt_loop)
+    thread.daemon = True
+    thread.start()
 
 # ✅ Swagger에 Bearer Token 인증 정보 추가
 from fastapi.openapi.models import APIKey, APIKeyIn, SecuritySchemeType
