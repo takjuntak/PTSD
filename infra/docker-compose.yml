@@ -23,7 +23,7 @@ services:
       - "1883:1883"
       - "9001:9001"
     volumes:
-      - ../backend/PTSD/core/mosquitto/mosquitto.conf:/mosquitto/mosquitto.conf
+      - /home/ubuntu/S12P31D101/backend/PTSD/core/mosquitto/mosquitto.conf:/mosquitto/mosquitto.conf
       - mosquitto-data:/mosquitto/data
       - mosquitto-log:/mosquitto/log
     command: mosquitto -c /mosquitto/mosquitto.conf
