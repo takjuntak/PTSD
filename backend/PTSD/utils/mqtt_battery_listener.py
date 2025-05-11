@@ -29,6 +29,7 @@ def get_user_id_by_serial(serial_number):
     finally:
         db.close()  # 세션 종료
 
+
 def on_message(client, userdata, msg):
     payload = json.loads(msg.payload.decode())
     percentage = math.floor(payload.get("percentage", 0))
@@ -46,15 +47,26 @@ def on_message(client, userdata, msg):
         if percentage >= prev_min:
             print(f"[스킵] 이전 값({prev_min}%)보다 높거나 같음.")
             return
-    
+
     # serial_number로 user_id 조회
     user_id = get_user_id_by_serial(serial_number)
     
     if user_id:
         try:
+            # 배터리 퍼센트가 40% 이하일 때 배터리 부족 알림 전송
+            if percentage <= 40:
+                response = requests.post(
+                    "http://192.168.0.65:8000/api/battery-notification",  # 배터리 부족 알림 API
+                    json={"user_id": user_id, "percentage": percentage}
+                )
+            if response.status_code == 200:
+                print(f"[알림 전송 완료] 배터리 부족 알림: {percentage}%")
+            else:
+                print(f"배터리 부족 알림 전송 실패: {response.status_code}")
+
             # 배터리 상태와 user_id를 FastAPI로 전송
             response = requests.post(
-                "http://192.168.228.30:8000/api/battery-state",
+                "http://192.168.0.65:8000/api/battery-state",
                 json={"percentage": percentage, "user_id": user_id}
             )
             if response.status_code == 200:
@@ -70,6 +82,7 @@ def on_message(client, userdata, msg):
 def start_mqtt_loop():
     client = mqtt.Client()
     client.on_message = on_message
-    client.connect("192.168.228.76", 1883, 60)  # broker_ip에 맞게 수정
+    MQTT_BROKER = "k12d101.p.ssafy.io"
+    client.connect(MQTT_BROKER, 1883, 60)  # broker_ip에 맞게 수정
     client.subscribe("mqtt/battery")
     client.loop_forever()
