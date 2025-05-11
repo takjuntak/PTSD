@@ -46,7 +46,7 @@ const AppHeader: React.FC = () => {
             fontFamily: 'Inter',
           }}
         >
-          Gymbo ▼
+          PTSD ▼
         </button>
 
         {/* 아이콘 */}

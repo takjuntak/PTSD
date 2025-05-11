@@ -1,5 +1,6 @@
+// src/components/common/NavigationBar.tsx
 import { useNavigate, useLocation } from 'react-router-dom';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 import homeActive from '../../assets/navigation/home-activate.svg';
 import homeInactive from '../../assets/navigation/home-deactivate.svg';
@@ -15,8 +16,26 @@ const NavigationBar: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const currentPath = location.pathname;
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
+  // 기준 너비
   const BASE_WIDTH = 416;
+
+  // 창 크기 변경 감지
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  // 실제 컨테이너 너비 계산 (최대 BASE_WIDTH)
+  const containerWidth = Math.min(windowWidth, BASE_WIDTH);
+
+  // 각 아이템 간 간격 비율 조정 (창 크기에 따라)
+  const widthRatio = containerWidth / BASE_WIDTH;
 
   const isActive = (path: string) => currentPath === path;
 
@@ -43,7 +62,8 @@ const NavigationBar: React.FC = () => {
     >
       <div
         style={{
-          width: BASE_WIDTH,
+          width: '100%',
+          maxWidth: BASE_WIDTH,
           height: 74,
           position: 'relative',
         }}
@@ -57,12 +77,12 @@ const NavigationBar: React.FC = () => {
           }}
         >
           {/* 홈 */}
-          <div style={{ marginLeft: 16 }}>
+          <div style={{ marginLeft: 16 * widthRatio }}>
             <NavItem {...navItems[0]} isActive={isActive(navItems[0].path)} navigate={navigate} />
           </div>
 
           {/* 제어 */}
-          <div style={{ marginLeft: 26 }}>
+          <div style={{ marginLeft: 26 * widthRatio }}>
             <NavItem {...navItems[1]} isActive={isActive(navItems[1].path)} navigate={navigate} />
           </div>
 
@@ -73,8 +93,8 @@ const NavigationBar: React.FC = () => {
               bottom: 17,
               left: '50%',
               transform: 'translateX(-50%)',
-              width: 80,
-              height: 80,
+              width: 80 * (windowWidth < 350 ? 0.8 : 1), // 작은 화면에서는 버튼 크기 조정
+              height: 80 * (windowWidth < 350 ? 0.8 : 1),
               zIndex: 10,
             }}
           >
@@ -93,12 +113,16 @@ const NavigationBar: React.FC = () => {
           </div>
 
           {/* 예약 */}
-          <div style={{ marginLeft: 132 }}>
+          <div style={{ 
+            marginLeft: 'auto', 
+            marginRight: 26 * widthRatio,
+            paddingLeft: 40 * widthRatio // 플레이 버튼을 위한 공간 확보
+          }}>
             <NavItem {...navItems[2]} isActive={isActive(navItems[2].path)} navigate={navigate} />
           </div>
 
           {/* 메뉴 */}
-          <div style={{ marginLeft: 26 }}>
+          <div style={{ marginRight: 16 * widthRatio }}>
             <NavItem {...navItems[3]} isActive={isActive(navItems[3].path)} navigate={navigate} />
           </div>
         </div>
@@ -116,40 +140,57 @@ interface NavItemProps {
   navigate: ReturnType<typeof useNavigate>;
 }
 
-const NavItem: React.FC<NavItemProps> = ({ path, label, activeIcon, inactiveIcon, isActive, navigate }) => (
-  <button
-    onClick={() => navigate(path)}
-    style={{
-      background: 'none',
-      border: 'none',
-      width: 50,
-      height: 46,
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      justifyContent: 'center',
-      gap: 4,
-      padding: 0,
-    }}
-  >
-    <img
-      src={isActive ? activeIcon : inactiveIcon}
-      alt={label}
-      style={{ width: 24, height: 24 }}
-    />
-    <span
+const NavItem: React.FC<NavItemProps> = ({ path, label, activeIcon, inactiveIcon, isActive, navigate }) => {
+  // 화면 크기에 따라 아이콘과 텍스트 크기 조정
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
+    
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+  
+  // 작은 화면에서 아이콘/텍스트 크기 조정
+  const scale = windowWidth < 350 ? 0.85 : 1;
+  
+  return (
+    <button
+      onClick={() => navigate(path)}
       style={{
-        fontSize: 14,
-        fontWeight: 800,
-        color: isActive ? '#66A1F7' : '#767676',
-        fontFamily: 'Inter',
-        lineHeight: '17px',
-        whiteSpace: 'nowrap',
+        background: 'none',
+        border: 'none',
+        width: 50 * scale,
+        height: 46 * scale,
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: 4 * scale,
+        padding: 0,
       }}
     >
-      {label}
-    </span>
-  </button>
-);
+      <img
+        src={isActive ? activeIcon : inactiveIcon}
+        alt={label}
+        style={{ width: 24 * scale, height: 24 * scale }}
+      />
+      <span
+        style={{
+          fontSize: 14 * scale,
+          fontWeight: 800,
+          color: isActive ? '#66A1F7' : '#767676',
+          fontFamily: 'Inter',
+          lineHeight: '17px',
+          whiteSpace: 'nowrap',
+        }}
+      >
+        {label}
+      </span>
+    </button>
+  );
+};
 
 export default NavigationBar;

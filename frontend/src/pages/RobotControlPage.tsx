@@ -9,9 +9,13 @@ const RobotControlPage = () => {
   const log = (dir: string) => () => console.log(dir);
 
   return (
-    <div className="w-full h-full flex flex-col bg-app-dark text-white">
-      <header className="p-4 px-6 bg-app-dark flex items-center gap-3 border-b border-neutral-700 sticky top-0 z-10">
-        <button onClick={() => navigate(-1)} className="p-1 text-white hover:opacity-80">
+    <div className="w-full h-full flex flex-col bg-app-dark text-white" style={{ backgroundColor: '#2E2E37' }}>
+      <header className="p-4 px-3 bg-app-dark flex items-center gap-3 border-b border-neutral-700 sticky top-0 z-10" style={{ backgroundColor: '#2E2E37' }}>
+        <button 
+          onClick={() => navigate(-1)} 
+          className="text-white border-none bg-transparent p-0"
+          style={{ background: 'transparent' }}
+        >
           <ChevronLeft size={24} />
         </button>
         <span className="text-xl font-bold">수동 조작</span>
