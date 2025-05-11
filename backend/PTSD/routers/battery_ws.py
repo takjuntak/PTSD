@@ -30,7 +30,10 @@ async def websocket_endpoint(websocket: WebSocket):
 @router.post("/api/battery-state")
 async def receive_battery_state(data: BatteryData):
     percentage_int = math.floor(data.percentage)  # 소수점 아래 내림 처리
-    message = {"battery": percentage_int }
+    message = {"battery": percentage_int}
+
+    # 문자열로 변환->postman에서 테스트용
+    # message =f"배터리: {percentage_int}"
 
     try:
         await manager.broadcast(message)
