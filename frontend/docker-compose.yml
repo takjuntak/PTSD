@@ -2,7 +2,7 @@ services:
   react:
     image: s12p31d101-react
     build:
-      context: ./frontend
+      context: .
       dockerfile: Dockerfile
     container_name: react
     ports:
