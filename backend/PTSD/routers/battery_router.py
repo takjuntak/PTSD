@@ -10,7 +10,7 @@ from PTSD.schemas.response import ResponseModel  # 공통 응답 포맷
 import logging
 from datetime import datetime
 from pydantic import BaseModel
-
+import math
 
 router = APIRouter()
 
@@ -27,7 +27,9 @@ class NotificationRequest(BaseModel):
 
 # 요청 데이터 스키마 정의
 class BatteryStatus(BaseModel):
+    user_id: int 
     percentage: float
+
 
 @router.post(
     "/api/battery-notification",
@@ -35,20 +37,20 @@ class BatteryStatus(BaseModel):
     summary="배터리 상태 알림 전송"
 )
 async def send_battery_notification(
-    payload: dict,  # /battery_state에서 전달받은 raw 데이터
+    payload: BatteryStatus,
     db: Session = Depends(get_db)
 ):
     try:
-        # percentage 추출 및 메시지 구성
-        percentage = payload.get("percentage", 0)
-        message = f"배터리 잔량: {percentage}%"
-
+        percentage_int = math.floor(payload.percentage)  # 소수점 아래 내림 처리
+        logging.info(f"배터리 부족 알림! 배터리 잔량: {percentage_int}%")
+        message = f"배터리 부족! 잔량: {percentage_int}%"
+        
         # NotificationRequest로 변환
         notification_data = Notification(
-            user_id=1,  # 실제 사용자의 ID로 설정
-            title="배터리 상태 알림",
+            user_id=payload.user_id,
+            title="배터리 부족 알림",
             message=message,
-            type=NotificationType.BATTERY,
+            type="battery",
             timestamp=datetime.utcnow(),
             is_read=False
         )
@@ -56,20 +58,25 @@ async def send_battery_notification(
         db.commit()
         db.refresh(notification_data)
 
-        # 웹소켓 메시지 전송
-        await manager.send_to_user(1, {
-            "notification_id": notification_data.notification_id,
-            "title": "배터리 상태 알림",
-            "message": message,
-            "type": "battery",
-            "timestamp": notification_data.timestamp.isoformat(),
-            "is_read": False
-        })
+        # message = {
+        #     "notification_id": notification_data.notification_id,
+        #     "title": "배터리 부족 알림",
+        #     "message": message,
+        #     "type": "battery",
+        #     "timestamp": notification_data.timestamp.isoformat(),
+        #     "is_read": False
+        # }
+
+        # 웹소켓 postman 테스트용
+        message = f"배터리 부족! 잔량: {percentage_int}%"
+
+        # 웹소켓을 통해 실시간 알림 전송
+        await manager.send_to_user(payload.user_id, message)
 
         return ResponseModel(
             isSuccess=True,
             code=200,
-            message="배터리 알림이 성공적으로 전송되었습니다.",
+            message="배터리 부족 알림이 성공적으로 전송되었습니다.",
             result={"notification_id": notification_data.notification_id}
         )
     except Exception as e:

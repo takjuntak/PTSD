@@ -58,8 +58,3 @@ async def websocket_endpoint(websocket: WebSocket, user_id: str):
     except WebSocketDisconnect:
         await manager.disconnect(user_id)
         
-# 테스트: HTTP API를 통해 특정 사용자에게 웹소켓 메시지를 전송
-@router.post("/api/notify_user/{user_id}")
-async def notify_user(user_id: str, message: str):
-    await manager.send_to_user(user_id, message)
-    return {"status": "message sent"}
