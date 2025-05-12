@@ -52,7 +52,7 @@ export default function SignupPage() {
   const handleSignup = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     try {
-      const res = await axios.post('http://127.0.0.1:8000/api/auth/signup', {
+      const res = await axios.post('https://k12d101.p.ssafy.io/api/auth/signup', {
         email, password, password_confirm, name
       });
       const token = res.data?.accessToken;

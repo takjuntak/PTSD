@@ -15,6 +15,7 @@ import MenuPage from './pages/menu/MenuPage' // MenuPage 추가 import
 import DeviceConnectPage from './pages/DeviceConnectPage'
 import LoginPage from './pages/user/login/LoginPage'
 import SignupPage from './pages/user/signup/SignupPage'
+import AlarmPage from './pages/AlarmPage' // 알람 페이지 추가
 
 function AppContent() {
   const location = useLocation()
@@ -36,7 +37,7 @@ function AppContent() {
           {/* 공개 라우트 */}
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignupPage />} />
-
+          
           {/* 보호된 라우트 그룹 */}
           <Route element={<ProtectedLayout />}>
             <Route path="/" element={<MainPage />} />
@@ -47,10 +48,11 @@ function AppContent() {
             <Route path="/robot-control" element={<RobotControlPage />} />
             <Route path='/menu' element={<MenuPage />} /> {/* MenuPage 라우트 추가 */}
             <Route path='/device-connect' element={<DeviceConnectPage />} />
+            <Route path='/alarm' element={<AlarmPage />} /> {/* 알람 페이지 라우트 추가 */}
           </Route>
         </Routes>
       </div>
-
+      
       {!shouldHideNav && (
         <div className="shrink-0 h-[60px]">
           <NavigationBar />

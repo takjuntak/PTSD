@@ -1,13 +1,21 @@
+// src/components/common/Header.tsx
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import plusImage from '../../assets/header/header-plus.svg';
 import bellImage from '../../assets/header/header-bell.svg';
 import unreadbellImage from '../../assets/header/header-bell-unread.svg';
 import menuImage from '../../assets/header/header-more.svg';
 import LocationDropdown from './LocationDropdown';
+import useAlarms from '../../hooks/useAlarms';
 
 const AppHeader: React.FC = () => {
+  const navigate = useNavigate();
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [hasUnread, setHasUnread] = useState(true); // 읽지 않은 알림 여부
+  const { hasUnread } = useAlarms();
+
+  const handleAlarmClick = () => {
+    navigate('/alarm');
+  };
 
   return (
     <div
@@ -59,7 +67,7 @@ const AppHeader: React.FC = () => {
               alt="알림"
               width={24}
               height={24}
-              onClick={() => setHasUnread(false)}
+              onClick={handleAlarmClick}
               style={{ cursor: 'pointer' }}
             />
           </div>
