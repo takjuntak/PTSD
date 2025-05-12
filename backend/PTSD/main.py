@@ -3,7 +3,7 @@ from fastapi import FastAPI
 from fastapi.security import OAuth2PasswordBearer
 from PTSD.exceptions import register_exception_handlers
 from PTSD.routers import notification_router, user_router, routine_router , devices_router
-from PTSD.routers import battery_ws, battery_router
+from PTSD.routers import battery_status, battery_alert
 from PTSD.utils import websocket_manager 
 from fastapi.openapi.utils import get_openapi
 from fastapi.middleware.cors import CORSMiddleware
@@ -44,8 +44,8 @@ app.include_router(notification_router.router)
 app.include_router(devices_router.router)
 
 # ✅ 배터리 웹소켓 라우터 등록
-app.include_router(battery_ws.router)
-app.include_router(battery_router.router)
+app.include_router(battery_status.router)
+app.include_router(battery_alert.router)
 app.include_router(websocket_manager.router)
 
 

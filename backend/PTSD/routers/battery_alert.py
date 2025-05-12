@@ -6,7 +6,6 @@ from PTSD.schemas.response import ResponseModel
 from PTSD.utils.websocket_manager import manager  # 웹소켓 매니저 객체
 from typing import Dict
 from PTSD.core.database import get_db
-from PTSD.schemas.response import ResponseModel  # 공통 응답 포맷
 import logging
 from datetime import datetime
 from pydantic import BaseModel
