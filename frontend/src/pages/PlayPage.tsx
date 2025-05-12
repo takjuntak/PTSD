@@ -1,12 +1,10 @@
 // src/pages/PlayPage.tsx (배경색 수정 버전)
-import Header from '../components/common/Header';
 import { Battery, MapPin, Clock, AlertCircle, Settings } from 'lucide-react';
 import robot2Image from '../assets/robot2.png';
 
 const PlayPage = () => {
   return (
     <div className="w-full h-full flex flex-col text-white" style={{ backgroundColor: '#2E2E37' }}>
-      <Header title="김싸피님의 PTSD" />
 
       <div className="flex-1 overflow-y-auto p-4" style={{ paddingBottom: '150px' }}>
         {/* 로봇 카드 */}
