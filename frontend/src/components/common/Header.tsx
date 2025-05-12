@@ -26,7 +26,6 @@ const AppHeader: React.FC = () => {
       <div
         style={{
           width: '100%',
-          maxWidth: 416,
           padding: '0 16px',
           display: 'flex',
           alignItems: 'center',

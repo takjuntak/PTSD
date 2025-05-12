@@ -25,8 +25,12 @@ function AppContent() {
 
   return (
     <div className="flex flex-col text-white w-full h-screen overflow-hidden">
-      {!shouldHideHeader && <Header />}
       
+      {!shouldHideHeader && (
+        <div className="shrink-0 h-[36px]">
+          <Header />
+        </div>
+      )}
       <div className="flex-1 w-full overflow-y-auto" style={{ paddingTop: !shouldHideHeader ? 36 : 0 }}>
         <Routes>
           {/* 공개 라우트 */}
@@ -47,7 +51,11 @@ function AppContent() {
         </Routes>
       </div>
 
-      {!shouldHideNav && <NavigationBar />}
+      {!shouldHideNav && (
+        <div className="shrink-0 h-[60px]">
+          <NavigationBar />
+        </div>
+      )}
     </div>
   )
 }
