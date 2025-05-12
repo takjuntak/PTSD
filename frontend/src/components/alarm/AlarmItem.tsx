@@ -1,4 +1,4 @@
-// src/components/alarm/AlarmItem.tsx
+// src/components/alarm/AlarmItem.tsx 수정
 import React from 'react';
 import { Alarm } from '../../hooks/useAlarms';
 
@@ -50,8 +50,13 @@ const AlarmItem: React.FC<AlarmItemProps> = ({ alarm, onMarkAsRead }) => {
 
   return (
     <div
-      className={`px-4 py-3 border-b border-gray-700 flex items-start ${!isRead ? 'bg-opacity-10 bg-blue-900' : ''}`}
+      className={`px-4 py-3 border-b border-gray-700 flex items-start`}
       onClick={handleClick}
+      style={{ 
+        backgroundColor: '#2E2E37', 
+        borderBottom: '1px solid #444',
+        ...(isRead ? {} : { backgroundColor: 'rgba(30, 64, 175, 0.05)' })
+      }}
     >
       {!isRead && (
         <div className={`w-2 h-2 rounded-full ${getDotColor()} mt-1.5 mr-2 flex-shrink-0`} />
