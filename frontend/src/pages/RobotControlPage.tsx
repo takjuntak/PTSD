@@ -21,7 +21,7 @@ const RobotControlPage = () => {
         <span className="text-xl font-bold">수동 조작</span>
       </header>
 
-      <main className="flex-1 overflow-y-auto p-4 pb-20 flex flex-col items-center">
+      <main className="flex-1 overflow-y-auto p-4 flex flex-col items-center" style={{ paddingBottom: '150px' }}>
         <div className="w-full h-[200px] bg-app-card rounded-xl mt-4 mb-3 relative">
           <div className="w-full h-full overflow-auto p-2 box-border">
             <img src={mapImage} alt="헬스장 맵" className="w-full max-h-full object-contain block" />
@@ -32,26 +32,26 @@ const RobotControlPage = () => {
           </div>
         </div>
 
-        <div className="grid grid-rows-3 grid-cols-3 gap-1.5 mt-3 place-items-center">
+        <div className="grid grid-rows-3 grid-cols-3 gap-1 mt-3 place-items-center">
           <div className="col-start-2">
-            <ControlBtn onClick={log('Up')} icon={<ArrowUp size={20} />} />
+            <ControlBtn onClick={log('Up')} icon={<ArrowUp size={40} />} />
           </div>
           <div className="row-start-2 col-start-1">
-            <ControlBtn onClick={log('Left')} icon={<ArrowLeft size={20} />} />
+            <ControlBtn onClick={log('Left')} icon={<ArrowLeft size={40} />} />
           </div>
           <div className="row-start-2 col-start-2">
             <button
               onClick={log('Power')}
-              className="bg-[#1A1A1A] border-2 border-cyan-400 rounded-full w-[52px] h-[52px] flex items-center justify-center shadow-[0_0_10px_rgba(0,207,253,0.6)]"
+              className="bg-[#1A1A1A] border-2 border-cyan-400 rounded-full w-[104px] h-[104px] flex items-center justify-center shadow-[0_0_10px_rgba(0,207,253,0.6)]"
             >
-              <Power size={26} color="#00CFFD" />
+              <Power size={52} color="#00CFFD" />
             </button>
           </div>
           <div className="row-start-2 col-start-3">
-            <ControlBtn onClick={log('Right')} icon={<ArrowRight size={20} />} />
+            <ControlBtn onClick={log('Right')} icon={<ArrowRight size={40} />} />
           </div>
           <div className="row-start-3 col-start-2">
-            <ControlBtn onClick={log('Down')} icon={<ArrowDown size={20} />} />
+            <ControlBtn onClick={log('Down')} icon={<ArrowDown size={40} />} />
           </div>
         </div>
       </main>
@@ -62,7 +62,7 @@ const RobotControlPage = () => {
 const ControlBtn = ({ onClick, icon }: { onClick: () => void; icon: React.ReactNode }) => (
   <button
     onClick={onClick}
-    className="bg-[#1A1A1A] border-2 border-cyan-400 rounded-md w-[38px] h-[38px] flex items-center justify-center text-cyan-400"
+    className="bg-[#1A1A1A] border-2 border-cyan-400 rounded-md w-[76px] h-[76px] flex items-center justify-center text-cyan-400"
   >
     {icon}
   </button>
