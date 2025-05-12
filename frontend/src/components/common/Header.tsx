@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import plusImage from '../../assets/header/header-plus.svg';
 import bellImage from '../../assets/header/header-bell.svg';
-import unreadbellImage from '../../assets/header/header-bell-unread.svg';
 import menuImage from '../../assets/header/header-more.svg';
 import LocationDropdown from './LocationDropdown';
 
@@ -48,20 +47,33 @@ const AppHeader: React.FC = () => {
           PTSD ▼
         </button>
 
-        {/* 아이콘 */}
+        {/* 아이콘 영역 */}
         <div style={{ display: 'flex', gap: 20 }}>
           <img src={plusImage} alt="추가" width={24} height={24} />
 
-          {/* 알림 아이콘 (이미지에 파란 점 포함) */}
-          <div style={{ position: 'relative' }}>
+          {/* 알림 아이콘 + 파란 점 */}
+          <div style={{ position: 'relative', width: 24, height: 24 }}>
             <img
-              src={hasUnread ? unreadbellImage : bellImage}
+              src={bellImage}
               alt="알림"
               width={24}
               height={24}
               onClick={() => setHasUnread(false)}
               style={{ cursor: 'pointer' }}
             />
+            {hasUnread && (
+              <div
+                style={{
+                  position: 'absolute',
+                  top: -4,
+                  right: -2,
+                  width: 6,
+                  height: 6,
+                  backgroundColor: '#0098FF',
+                  borderRadius: '50%',
+                }}
+              />
+            )}
           </div>
 
           <img src={menuImage} alt="더보기" width={24} height={24} />
