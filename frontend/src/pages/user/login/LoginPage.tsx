@@ -4,7 +4,7 @@ import styles from './LoginPage.module.css';
 import logoImage from '../../../assets/PTSD-logo-neon.png';
 import eyeImage from '../../../assets/user/eye-outline.svg';
 import hideImage from '../../../assets/user/hide-outline.svg';
-import apiClient from '../../../api/axios'; // ✅ axios 인스턴스 가져오기
+import apiClient from '../../../api/axios';
 import { useAuth } from "../../../hooks/useAuth";
 
 export default function LoginPage() {

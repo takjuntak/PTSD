@@ -8,8 +8,9 @@ import checkOn from '../../../assets/user/check-on.svg';
 import checkOff from '../../../assets/user/check-off.svg';
 import arrow from '../../../assets/user/arrow.svg';
 import SignupModal from './SignupModal';
-import axios from 'axios';
+// import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import apiClient from '../../../api/axios'
 
 export default function SignupPage() {
   const navigate = useNavigate();
@@ -52,7 +53,7 @@ export default function SignupPage() {
   const handleSignup = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     try {
-      const res = await axios.post('http://127.0.0.1:8000/api/auth/signup', {
+      const res = await apiClient.post('/api/auth/signup', {
         email, password, password_confirm, name
       });
       const token = res.data?.accessToken;
