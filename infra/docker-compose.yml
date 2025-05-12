@@ -1,8 +1,9 @@
+
 services:
   backend:
     build:
       context: ../backend
-      dockerfile: Dockerfile        
+      dockerfile: Dockerfile
     image: ptsd-app
     container_name: ptsd-app
     ports:
@@ -16,27 +17,26 @@ services:
     networks:
       - app-network
 
-  mosquitto:  
-    image: eclipse-mosquitto:2
-    container_name: mosquitto
-    ports:
-      - "1883:1883"
-      - "9001:9001"
-    volumes:
-      - /home/ubuntu/S12P31D101/backend/PTSD/core/mosquitto/mosquitto.conf:/mosquitto/mosquitto.conf
-      - mosquitto-data:/mosquitto/data
-      - mosquitto-log:/mosquitto/log
-    command: mosquitto -c /mosquitto/mosquitto.conf
-    restart: always
+    mosquitto:
+      image: eclipse-mosquitto:2
+      container_name: mosquitto
+      ports:
+        - "1883:1883"
+        - "9001:9001"
+      volumes:
+        - /home/ubuntu/S12P31D101/backend/PTSD/core/mosquitto/mosquitto.conf:/mosquitto/mosquitto.conf
+        - mosquitto-data:/mosquitto/data
+        - mosquitto-log:/mosquitto/log
+      command: mosquitto -c /mosquitto/mosquitto.conf
+      restart: always
+      networks:
+        - app-network
     networks:
-      - app-network
-
-networks:
-  app-network:
-    external: true
+      app-network:
+        external: true
 
 volumes:
   jenkins-data:
   mosquitto-data:
   mosquitto-log:
-#ss
+
