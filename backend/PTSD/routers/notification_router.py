@@ -8,7 +8,6 @@ from PTSD.utils.dependency import get_current_user  # 사용자 인증
 import logging
 from datetime import datetime
 from pydantic import BaseModel
-from PTSD.routers.websocket_router import manager  # 웹소켓 매니저
 from PTSD.models.notifications import Notification, NotificationType
 
 router = APIRouter(

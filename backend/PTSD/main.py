@@ -12,6 +12,7 @@ from PTSD.models import notifications, user, routines,devices
 from fastapi.openapi.utils import get_openapi
 from fastapi.openapi.models import OAuthFlows, OAuthFlowPassword
 from PTSD.utils.mqtt_battery_listener import start_mqtt_loop
+from PTSD.utils.notification_deletion_scheduler import start_notification_deletion_scheduler
 import threading
 
 app = FastAPI(
@@ -56,6 +57,8 @@ async def startup_event():
     thread = threading.Thread(target=start_mqtt_loop)
     thread.daemon = True
     thread.start()
+    # 앱 시작 시 알림 삭제 스케줄러 시작
+    start_notification_deletion_scheduler()
 
 # ✅ Swagger에 Bearer Token 인증 정보 추가
 from fastapi.openapi.models import APIKey, APIKeyIn, SecuritySchemeType
