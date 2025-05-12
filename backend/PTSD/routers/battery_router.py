@@ -58,20 +58,20 @@ async def send_battery_notification(
         db.commit()
         db.refresh(notification_data)
 
-        # message = {
-        #     "category": "battery_alert",
-        #     "notification": {
-        #         "notification_id": notification_data.notification_id,
-        #         "title": "경고",
-        #         "message": "배터리가 부족합니다.",
-        #         "type": "battery",
-        #         "timestamp": notification_data.timestamp.isoformat(),
-        #         "is_read": False
-        #     }
-        # }
+        message = {
+            "category": "battery_alert",
+            "notification": {
+                "notification_id": notification_data.notification_id,
+                "title": "경고",
+                "message": "배터리가 부족합니다.",
+                "type": "battery",
+                "timestamp": notification_data.timestamp.isoformat(),
+                "is_read": False
+            }
+        }
 
         # 웹소켓 postman 테스트용
-        message = f"배터리 부족! 잔량: {percentage_int}%"
+        # message = f"배터리 부족! 잔량: {percentage_int}%"
 
         # 웹소켓을 통해 실시간 알림 전송
         await manager.send_to_user(payload.user_id, message)

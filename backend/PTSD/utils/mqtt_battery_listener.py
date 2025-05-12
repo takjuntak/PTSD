@@ -41,7 +41,8 @@ def smooth_battery_percentage(serial_number, new_value, smoothing_factor=0.1, ma
             battery_readings[serial_number] += (new_value - battery_readings[serial_number]) * smoothing_factor
         else:
             print(f"급격한 배터리 변화 ({battery_readings[serial_number]} -> {new_value})가 감지되어 무시됨.")
-    return round(battery_readings[serial_number])
+    # 배터리 값이 100을 초과하지 않도록 제한
+    return min(round(battery_readings[serial_number]), 100)
 
 def calculate_average_percentage(serial_number, new_value, window_size=10):
     """배터리 값의 평균을 계산하여 부드럽게 만듦"""
@@ -63,7 +64,8 @@ def process_battery_percentage(serial_number, percentage):
     averaged_percentage = calculate_average_percentage(serial_number, percentage)
     # 두 가지 방법을 모두 적용하여 평균값과 스무딩값을 조합
     final_percentage = round((smoothed_percentage + averaged_percentage) / 2)
-    return final_percentage
+    # 배터리 값이 100을 초과하지 않도록 제한
+    return min(final_percentage, 100)
 
 
 def on_message(client, userdata, msg):
