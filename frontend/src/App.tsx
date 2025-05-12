@@ -32,7 +32,7 @@ function AppContent() {
           <Header />
         </div>
       )}
-      <div className="flex-1 w-full overflow-y-auto" style={{ paddingTop: !shouldHideHeader ? 36 : 0 }}>
+      <div className="flex-1 w-full overflow-y-auto" style={{ paddingTop: !shouldHideHeader ? 10 : 0 }}>
         <Routes>
           {/* 공개 라우트 */}
           <Route path="/login" element={<LoginPage />} />
