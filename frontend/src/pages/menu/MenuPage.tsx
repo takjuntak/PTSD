@@ -25,10 +25,6 @@ const MenuPage: React.FC = () => {
   const handleGoBack = () => navigate(-1);
   const handleDeviceConnect = () => navigate('/device-connect');
   const handleLogout = () => setLogoutOpen(true);
-  const confirmLogout = () => {
-    localStorage.removeItem('accessToken');
-    navigate('/login');
-  };
 
   const menuItems = [
     { label: '기기 연결', image: connectImage, onClick: handleDeviceConnect },
