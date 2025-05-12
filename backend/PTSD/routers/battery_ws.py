@@ -12,14 +12,18 @@ class BatteryData(BaseModel):
     user_id: int
     percentage: float
 
-
 # HTTP POST endpoint
 @router.post("/api/battery-state")
 async def receive_battery_state(data: BatteryData):
     percentage_int = math.floor(data.percentage)  # 소수점 아래 내림 처리
-    # message = {"battery": percentage_int}
-
-    # 문자열로 변환->postman에서 테스트용
+    # message ={
+    #     "category": "battery_status",
+    #     "battery": {
+    #         "percentage": percentage_int,
+    #         "charging_status": "charging"
+    #     }
+    # }
+    # postman에서 테스트용
     message =f"배터리: {percentage_int}"
 
     try:

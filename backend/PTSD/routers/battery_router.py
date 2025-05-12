@@ -33,23 +33,23 @@ class BatteryStatus(BaseModel):
 
 @router.post(
     "/api/battery-notification",
-    tags=["배터리 상태"],
-    summary="배터리 상태 알림 전송"
+    tags=["배터리 알림"],
+    summary="배터리 부족 알림 전송"
 )
 async def send_battery_notification(
     payload: BatteryStatus,
     db: Session = Depends(get_db)
 ):
     try:
-        percentage_int = math.floor(payload.percentage)  # 소수점 아래 내림 처리
+        percentage_int = math.floor(payload.percentage)
         logging.info(f"배터리 부족 알림! 배터리 잔량: {percentage_int}%")
-        message = f"배터리 부족! 잔량: {percentage_int}%"
+        battery_message = f"배터리가 부족합니다."
         
         # NotificationRequest로 변환
         notification_data = Notification(
             user_id=payload.user_id,
-            title="배터리 부족 알림",
-            message=message,
+            title="경고",
+            message=battery_message,
             type="battery",
             timestamp=datetime.utcnow(),
             is_read=False
@@ -59,12 +59,15 @@ async def send_battery_notification(
         db.refresh(notification_data)
 
         # message = {
-        #     "notification_id": notification_data.notification_id,
-        #     "title": "배터리 부족 알림",
-        #     "message": message,
-        #     "type": "battery",
-        #     "timestamp": notification_data.timestamp.isoformat(),
-        #     "is_read": False
+        #     "category": "battery_alert",
+        #     "notification": {
+        #         "notification_id": notification_data.notification_id,
+        #         "title": "경고",
+        #         "message": "배터리가 부족합니다.",
+        #         "type": "battery",
+        #         "timestamp": notification_data.timestamp.isoformat(),
+        #         "is_read": False
+        #     }
         # }
 
         # 웹소켓 postman 테스트용
