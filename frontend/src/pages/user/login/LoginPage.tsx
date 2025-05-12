@@ -1,11 +1,10 @@
-// src/pages/auth/LoginPage.tsx
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from './LoginPage.module.css';
 import logoImage from '../../../assets/PTSD-logo-neon.png';
 import eyeImage from '../../../assets/user/eye-outline.svg';
 import hideImage from '../../../assets/user/hide-outline.svg';
-import axios from 'axios';
+import apiClient from '../../../api/axios'; // ✅ axios 인스턴스 가져오기
 import { useAuth } from "../../../hooks/useAuth";
 
 export default function LoginPage() {
@@ -18,12 +17,11 @@ export default function LoginPage() {
 
   const handleLogin = async () => {
     try {
-      const response = await axios.post('http://127.0.0.1:8000/api/auth/login', {
+      const response = await apiClient.post('/api/auth/login', {
         email,
         password,
       });
-      
-      // API 응답에서 받은 사용자 정보로 로그인 처리
+
       if (response.data) {
         login(response.data);
         navigate('/');
