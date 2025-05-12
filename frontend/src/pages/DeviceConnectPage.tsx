@@ -60,11 +60,15 @@ const DeviceConnectPage = () => {
   };
 
   return (
-    <div className="w-full h-full flex flex-col bg-app-dark text-white">
-      <header className="p-3 px-4 bg-app-dark flex items-center gap-2 border-b border-neutral-700 sticky top-0 z-10">
-        <button onClick={() => currentView === 'list' ? navigate(-1) : setCurrentView('list')} className="p-1 text-white hover:opacity-80">
+    <div className="w-full h-full flex flex-col text-white">
+      <header className="p-3 px-4 flex items-center gap-2 border-b border-neutral-700 sticky top-0 z-10">
+        <button 
+          onClick={() => currentView === 'list' ? navigate(-1) : setCurrentView('list')}
+          className="p-1 text-white hover:opacity-80 bg-transparent border-none outline-none focus:outline-none"
+        >
           <ChevronLeft size={20} />
         </button>
+
         <span className="text-lg font-bold">
           {currentView === 'list' ? '기기 연결' : currentView === 'register' ? '기기 등록하기' : '시리얼 번호 입력'}
         </span>
