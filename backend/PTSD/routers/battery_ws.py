@@ -16,15 +16,13 @@ class BatteryData(BaseModel):
 @router.post("/api/battery-state")
 async def receive_battery_state(data: BatteryData):
     percentage_int = math.floor(data.percentage)  # 소수점 아래 내림 처리
-    # message ={
-    #     "category": "battery_status",
-    #     "battery": {
-    #         "percentage": percentage_int,
-    #         "charging_status": "charging"
-    #     }
-    # }
+    message ={
+        "category": "battery_status",
+        "percentage": percentage_int
+    }
+    
     # postman에서 테스트용
-    message =f"배터리: {percentage_int}"
+    # message =f"배터리: {percentage_int}"
 
     try:
         # 특정 사용자에게 메시지 전송
