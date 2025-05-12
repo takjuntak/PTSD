@@ -16,6 +16,7 @@ import personalInfoImage from '../../assets/menu/personal-info.svg';
 import logoutImage from '../../assets/menu/logout.svg';
 import deleteImage from '../../assets/menu/delete.svg';
 
+
 const MenuPage: React.FC = () => {
   const navigate = useNavigate();
   const [isLogoutOpen, setLogoutOpen] = useState(false);
@@ -88,7 +89,7 @@ const MenuPage: React.FC = () => {
         </section>
       </div>
 
-      <LogoutModal open={isLogoutOpen} onClose={() => setLogoutOpen(false)} onConfirm={confirmLogout} />
+      <LogoutModal open={isLogoutOpen} onClose={() => setLogoutOpen(false)} />
     </div>
   );
 };
