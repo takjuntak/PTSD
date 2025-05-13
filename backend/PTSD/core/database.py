@@ -14,7 +14,9 @@ else:
 # .env에서 DB 연결 URL 로드
 DATABASE_URL = os.getenv("DATABASE_URL").replace("\\x3a", ":")
 print(os.getenv("DATABASE_URL"))
+
 print(DATABASE_URL)
+
 # SQLAlchemy 엔진 생성
 engine = create_engine(DATABASE_URL)
 

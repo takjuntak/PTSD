@@ -96,7 +96,7 @@ def on_message(client, userdata, msg):
             # ⚠️ 알림 조건: 25% 이하 & 아직 알림 안 보냈을 때
             if final_percentage <= 25 and (serial_number not in notification_sent or not notification_sent[serial_number]):
                 response = requests.post(
-                    "http://192.168.100.165:8000/api/battery-notification",  # 배터리 부족 알림 API
+                    "https://k12d101.p.ssafy.io/api/battery-notification",  # 배터리 부족 알림 API
                     json={"user_id": user_id, "percentage": final_percentage}
                 )
                 if response.status_code == 200:
@@ -107,7 +107,7 @@ def on_message(client, userdata, msg):
 
             # 배터리 상태와 user_id를 FastAPI로 전송
             response = requests.post(
-                "http://192.168.100.165:8000/api/battery-state",
+                "https://k12d101.p.ssafy.io/api/battery-state",
                 json={"percentage": final_percentage, "user_id": user_id}
             )
             if response.status_code == 200:
@@ -123,10 +123,10 @@ def on_connect(client, userdata, flags, rc):
     global websocket_connected
     if rc == 0:
         websocket_connected = True
-        print("WebSocket 연결됨.")
+        print("배터리 연결됨.")
     else:
         websocket_connected = False
-        print(f"WebSocket 연결 실패, 코드: {rc}")
+        print(f"배터리 연결 실패, 코드: {rc}")
 
 def start_mqtt_loop():
     client = mqtt.Client()

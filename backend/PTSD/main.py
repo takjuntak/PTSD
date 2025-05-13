@@ -3,7 +3,7 @@ from fastapi import FastAPI
 from fastapi.security import OAuth2PasswordBearer
 from PTSD.exceptions import register_exception_handlers
 from PTSD.routers import notification_router, user_router, routine_router , devices_router
-from PTSD.routers import battery_status, battery_alert
+from PTSD.routers import battery_status, battery_alert, manual_control
 from PTSD.utils import websocket_manager 
 from fastapi.openapi.utils import get_openapi
 from fastapi.middleware.cors import CORSMiddleware
@@ -48,6 +48,8 @@ app.include_router(battery_status.router)
 app.include_router(battery_alert.router)
 app.include_router(websocket_manager.router)
 
+# ✅ 터틀봇 수동 조작 웹소켓 라우터 등록
+app.include_router(manual_control.router)
 
 # ✅ 서버 시작 시 테이블 생성
 @app.on_event("startup")
