@@ -1,5 +1,3 @@
-# routers/websocket_control.py
-
 from fastapi import APIRouter, WebSocket, WebSocketDisconnect
 import json
 import paho.mqtt.publish as publish
@@ -26,7 +24,7 @@ def get_serial_by_device_id(device_id: int) -> str | None:
     finally:
         db.close()
 
-@router.websocket("/ws/control")
+@router.websocket("/ws/manual-control")
 async def websocket_control(websocket: WebSocket):
     await websocket.accept()
     try:
@@ -44,7 +42,7 @@ async def websocket_control(websocket: WebSocket):
 
             serial_number = get_serial_by_device_id(device_id)
             if serial_number:
-                topic = f"robot/control/{serial_number}"
+                topic = f"robot/control"
                 publish.single(topic, payload=command, hostname=MQTT_BROKER, port=MQTT_PORT)
                 print(f"[전송 완료] {topic} ← {command}")
             else:
