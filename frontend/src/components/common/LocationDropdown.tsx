@@ -2,12 +2,16 @@
 import React from 'react';
 import settingIcon from '../../assets/header/setting.svg';
 import checkIcon from '../../assets/header/check.svg';
+import { useNavigate } from 'react-router-dom';
 
 interface Props {
   onClose: () => void;
 }
 
 const LocationDropdown: React.FC<Props> = ({ onClose }) => {
+
+    const navigate = useNavigate();
+
   return (
     // 바깥 오버레이
     <div
@@ -51,7 +55,16 @@ const LocationDropdown: React.FC<Props> = ({ onClose }) => {
 
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           <img src={settingIcon} alt="설정" width={24} height={24} />
-          <span style={{ fontWeight: 800, fontSize: 15 }}>기기 관리</span>
+          <span
+            style={{ fontWeight: 800, fontSize: 15, cursor: 'pointer' }}
+            onClick={() => {
+              navigate('/device-connect');
+              onClose(); 
+            }}
+          >
+            기기 관리
+          </span>
+
         </div>
       </div>
     </div>

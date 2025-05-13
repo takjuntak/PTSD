@@ -33,7 +33,7 @@ const NavigationBar: React.FC = () => {
         left: 0,
         right: 0,
         backgroundColor: '#32333B',
-        height: 74,
+        height: 60,
         zIndex: 100,
       }}
     >
@@ -62,11 +62,11 @@ const NavigationBar: React.FC = () => {
         <div
           style={{
             position: 'absolute',
-            bottom: 17,
+            bottom: 12,
             left: '50%',
             transform: 'translateX(-50%)',
-            width: 80,
-            height: 80,
+            width: 60,
+            height: 60,
             zIndex: 10,
           }}
         >
