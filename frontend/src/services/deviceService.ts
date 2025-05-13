@@ -22,7 +22,7 @@ export const deviceService = {
       serial_number: data.serial_number,
       name: data.name
     };
-    const response = await apiClient.post('/devices', requestData);
+    const response = await apiClient.post('/devices/', requestData);
     return response.data;
   },
 
@@ -39,7 +39,7 @@ export const deviceService = {
 
   // 모든 기기 조회
   async getAllDevices(): Promise<DeviceResponse[]> {
-    const response = await apiClient.get('/devices');
+    const response = await apiClient.get('/devices/');
     return response.data;
   }
 };
