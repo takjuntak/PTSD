@@ -62,7 +62,7 @@ const ControlPage = () => {
         <button onClick={() => navigate(-1)} className="border-none bg-transparent p-0">
           <ChevronLeft size={24} color="#FFFFFF" />
         </button>
-        <span className="text-xl font-bold" style={{ color: '#767676' }}>
+        <span className="text-xl font-bold" style={{ color: '#767676', fontFamily: 'inter' }}>
           제어
         </span>
       </header>
