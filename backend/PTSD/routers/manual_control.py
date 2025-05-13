@@ -37,16 +37,28 @@ async def websocket_control(websocket: WebSocket):
             print(f"[수신] device_id: {device_id}, command: {command}")
 
             if device_id is None or command is None:
-                print("device_id 또는 command 누락됨")
+                # device_id 또는 command 누락 시 응답 보내기
+                await websocket.send_text(json.dumps({"status": "error", "message": "device_id 또는 command 누락됨"}))
                 continue
 
             serial_number = get_serial_by_device_id(device_id)
             if serial_number:
-                topic = f"robot/control"
-                publish.single(topic, payload=command, hostname=MQTT_BROKER, port=MQTT_PORT)
-                print(f"[전송 완료] {topic} ← {command}")
+                topic = "robot/control"
+                try:
+                    # MQTT 메시지 발행
+                    publish.single(topic, payload=command, hostname=MQTT_BROKER, port=MQTT_PORT)
+                    print(f"[전송 완료] {topic} ← {command}")
+                    
+                    # 성공 응답 보내기
+                    await websocket.send_text(json.dumps({"status": "success", "message": f"{command} 전송 완료"}))
+                except Exception as e:
+                    print(f"[오류] MQTT 전송 실패: {e}")
+                    # 오류 발생 시 응답 보내기
+                    await websocket.send_text(json.dumps({"status": "error", "message": "MQTT 전송 실패"}))
             else:
                 print(f"[경고] device_id {device_id}에 해당하는 serial_number를 찾을 수 없음")
+                # serial_number가 없을 때 오류 응답 보내기
+                await websocket.send_text(json.dumps({"status": "error", "message": f"device_id {device_id}에 해당하는 serial_number를 찾을 수 없음"}))
 
     except WebSocketDisconnect:
         print("[연결 종료] WebSocket 연결 끊김")
