@@ -53,7 +53,7 @@ export default function SignupPage() {
   const handleSignup = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     try {
-      const res = await apiClient.post('/api/auth/signup', {
+      const res = await apiClient.post('/auth/signup', {
         email, password, password_confirm, name
       });
       const token = res.data?.accessToken;
