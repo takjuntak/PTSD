@@ -5,7 +5,7 @@ from typing import Optional
 
 # 등록
 class DeviceCreate(BaseModel):
-    user_id: int
+    # user_id: int
     serial_number: str = Field(..., max_length=50)
     name: str = Field(..., max_length=50, description="기기 이름")
 

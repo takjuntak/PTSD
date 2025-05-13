@@ -50,6 +50,8 @@ def create_device(
     db.refresh(db_device)
     return db_device
 
+
+
 # 기기 단일 조회
 @router.get(
     "/api/devices/{device_id}",
