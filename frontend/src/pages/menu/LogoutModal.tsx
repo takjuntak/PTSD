@@ -1,16 +1,30 @@
 // components/common/LogoutModal.tsx
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import apiClient from '../../api/axios';
 import styles from './LogoutModal.module.css';
 import logoutImage from '../../assets/menu/logout.svg';
 
 interface LogoutModalProps {
   open: boolean;
   onClose: () => void;
-  onConfirm: () => void;
 }
 
-const LogoutModal: React.FC<LogoutModalProps> = ({ open, onClose, onConfirm }) => {
+const LogoutModal: React.FC<LogoutModalProps> = ({ open, onClose }) => {
+  const navigate = useNavigate();
+
   if (!open) return null;
+
+  const handleLogout = async () => {
+    try {
+      await apiClient.post('/api/auth/logout'); // ✅ API 호출
+    } catch (error) {
+      console.error('로그아웃 실패:', error); // 실패해도 계속 진행
+    } finally {
+      localStorage.removeItem('accessToken'); // ✅ 토큰 제거
+      navigate('/login', { replace: true }); // ✅ 로그인 페이지로 이동
+    }
+  };
 
   return (
     <div className={styles.overlay}>
@@ -22,7 +36,7 @@ const LogoutModal: React.FC<LogoutModalProps> = ({ open, onClose, onConfirm }) =
         </p>
         <div className={styles.buttonWrapper}>
           <button className={styles.cancelButton} onClick={onClose}>취소</button>
-          <button className={styles.logoutButton} onClick={onConfirm}>로그아웃</button>
+          <button className={styles.logoutButton} onClick={handleLogout}>로그아웃</button>
         </div>
       </div>
     </div>

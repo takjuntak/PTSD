@@ -16,6 +16,7 @@ import personalInfoImage from '../../assets/menu/personal-info.svg';
 import logoutImage from '../../assets/menu/logout.svg';
 import deleteImage from '../../assets/menu/delete.svg';
 
+
 const MenuPage: React.FC = () => {
   const navigate = useNavigate();
   const [isLogoutOpen, setLogoutOpen] = useState(false);
@@ -24,10 +25,6 @@ const MenuPage: React.FC = () => {
   const handleGoBack = () => navigate(-1);
   const handleDeviceConnect = () => navigate('/device-connect');
   const handleLogout = () => setLogoutOpen(true);
-  const confirmLogout = () => {
-    localStorage.removeItem('accessToken');
-    navigate('/login');
-  };
 
   const menuItems = [
     { label: '기기 연결', image: connectImage, onClick: handleDeviceConnect },
@@ -88,7 +85,7 @@ const MenuPage: React.FC = () => {
         </section>
       </div>
 
-      <LogoutModal open={isLogoutOpen} onClose={() => setLogoutOpen(false)} onConfirm={confirmLogout} />
+      <LogoutModal open={isLogoutOpen} onClose={() => setLogoutOpen(false)} />
     </div>
   );
 };
