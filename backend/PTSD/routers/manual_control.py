@@ -7,10 +7,18 @@ import paho.mqtt.publish as publish
 from sqlalchemy.orm import Session
 from PTSD.core.database import get_db
 from PTSD.models.devices import Device
+from dotenv import load_dotenv
+import os
+
+# .env 파일을 로드합니다.
+load_dotenv()
 
 router = APIRouter()
 
-MQTT_BROKER = "k12d101.p.ssafy.io"
+# 환경 변수에서 MQTT_BROKER 값을 불러옵니다.
+MQTT_BROKER = os.getenv("MQTT_BROKER")
+# MQTT_BROKER= "192.168.100.165" # 로컬 테스트용
+print(MQTT_BROKER)  # 출력: k12d101.p.ssafy.io
 MQTT_PORT = 1883
 
 # logging 설정
