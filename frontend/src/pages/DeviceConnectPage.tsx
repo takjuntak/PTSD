@@ -72,10 +72,10 @@ const DeviceConnectPage = () => {
   useEffect(() => { fetchDevices(); }, []);
 
   return (
-    <div className="w-full h-full flex flex-col text-white relative">
+    <div className="w-full h-full flex flex-col text-white relative overflow-x-hidden">
       {showDeleteModal && (
         <div className="fixed inset-0 bg-[rgba(46,46,55,0.86)] z-[1000] flex items-center justify-center">
-          <div className="bg-[#373738] w-[320px] rounded-[10px] shadow-lg text-center flex flex-col items-center justify-center py-4 px-2">
+          <div className="bg-[#373738] w-[320px] max-w-full rounded-[10px] shadow-lg text-center flex flex-col items-center justify-center py-4 px-2">
             <img src={warningImage} alt="경고" className="w-[60px] h-[60px] mb-4" />
             <h2 className="text-white text-[18px] font-medium mb-2">기기를 정말 삭제하시겠어요?</h2>
             <p className="text-white text-[14px] leading-relaxed font-[300] mb-6">
@@ -118,23 +118,23 @@ const DeviceConnectPage = () => {
           <>
             {error && <div className="bg-red-900 border border-red-700 text-red-300 px-4 py-2 rounded-lg mb-4">{error}</div>}
             {isLoading ? (
-              <div className="w-[330px] h-[530px] bg-[#373738] rounded-[10px] shadow-md p-6 mx-auto flex flex-col items-center mt-2">
+              <div className="w-[330px] max-w-full h-[530px] bg-[#373738] rounded-[10px] shadow-md p-6 mx-auto flex flex-col items-center mt-2">
                 <Loader2 size={24} className="animate-spin text-gray-400 mb-2" />
                 <p className="text-gray-400 text-sm">기기 목록을 불러오는 중...</p>
               </div>
             ) : devices.length === 0 ? (
-              <div className="w-[330px] h-[298px] bg-[#373738] rounded-[10px] shadow-md flex flex-col items-center justify-center mx-auto relative">
+              <div className="w-[330px] max-w-full h-[298px] bg-[#373738] rounded-[10px] shadow-md flex flex-col items-center justify-center mx-auto relative">
                 <p className="absolute top-5 left-5 text-[15px] font-bold font-montserrat text-white">기기 관리</p>
                 <p className="text-[12px] text-white">현재 등록된 기기가 없습니다.</p>
               </div>
             ) : (
-              <div className="w-[330px] bg-[#373738] rounded-[10px] shadow-md mx-auto mt-2 p-6">
+              <div className="w-[330px] max-w-full bg-[#373738] rounded-[10px] shadow-md mx-auto mt-2 p-6">
                 <p className="text-left text-white font-bold text-[15px] font-montserrat mb-4 ml-1">기기 관리</p>
                 <div className="flex flex-col gap-4 items-center">
                   {devices.map((device) => (
                     <div
                       key={device.device_id}
-                      className="relative w-[288px] h-[111px] border border-[#7A7A7A] rounded-[10px] flex justify-between items-center px-4"
+                      className="relative w-[288px] max-w-full h-[111px] border border-[#7A7A7A] rounded-[10px] flex justify-between items-center px-4"
                       onClick={() => setActiveMenu(null)}
                     >
                       <div className="flex flex-col justify-center">
@@ -171,28 +171,28 @@ const DeviceConnectPage = () => {
                 </div>
               </div>
             )}
-            <button onClick={() => setCurrentView('register')} className="w-[330px] h-[40px] bg-blue-500 text-white rounded-[10px] font-montserrat font-bold text-[15px] mt-8 mx-auto">
+            <button onClick={() => setCurrentView('register')} className="w-[330px] max-w-full h-[40px] bg-blue-500 text-white rounded-[10px] font-montserrat font-bold text-[15px] mt-8 mx-auto">
               기기 추가 등록
             </button>
           </>
         ) : (
-          <div className="w-[330px] h-[530px] bg-[#373738] rounded-[10px] shadow-md p-5 mx-auto flex flex-col items-center mt-2">
+          <div className="w-[330px] max-w-full h-[530px] bg-[#373738] rounded-[10px] shadow-md p-5 mx-auto flex flex-col items-center mt-2">
             <p className="text-[15px] font-bold text-white mb-2 self-start">기기 등록하기</p>
             <p className="text-[12px] text-white text-left mt-4">
               기기의 시리얼 넘버를 촬영하거나 직접 입력하고,<br />기기에 이름을 설정해주세요.
             </p>
-            <div onClick={() => console.log('촬영하기')} className="w-[290px] h-[84px] border border-dashed border-[#767676] rounded-[10px] mt-6 mb-6 flex items-center justify-center gap-2 cursor-pointer">
+            <div onClick={() => console.log('촬영하기')} className="w-[290px] max-w-full h-[84px] border border-dashed border-[#767676] rounded-[10px] mt-6 mb-6 flex items-center justify-center gap-2 cursor-pointer">
               <Camera size={24} color="#FFFFFF" />
               <p className="text-[15px] font-semibold mt-[8px]">시리얼 넘버 인식하기</p>
             </div>
             <label className="text-[12px] font-semibold text-white self-start mt-5">시리얼 넘버 직접 입력</label>
-            <input type="text" placeholder="EX : SN20240423ABC123" value={serialNumber} onChange={(e) => setSerialNumber(e.target.value)} className="w-[290px] h-[40px] bg-[#212228] border border-[#767676] rounded-[10px] mt-2 mb-6 px-3 text-white text-[12px]" />
+            <input type="text" placeholder="EX : SN20240423ABC123" value={serialNumber} onChange={(e) => setSerialNumber(e.target.value)} className="w-[290px] max-w-full h-[40px] bg-[#212228] border border-[#767676] rounded-[10px] mt-2 mb-6 px-3 text-white text-[12px]" />
             <label className="text-[12px] font-semibold text-white self-start mt-2">로봇 이름</label>
-            <input type="text" placeholder="싸피짐 봇1 / 청소마루" value={deviceName} onChange={(e) => setDeviceName(e.target.value)} className="w-[290px] h-[40px] bg-[#212228] border border-[#767676] rounded-[10px] mt-2 mb-6 px-3 text-white text-[12px]" />
+            <input type="text" placeholder="싸피짐 봇1 / 청소마루" value={deviceName} onChange={(e) => setDeviceName(e.target.value)} className="w-[290px] max-w-full h-[40px] bg-[#212228] border border-[#767676] rounded-[10px] mt-2 mb-6 px-3 text-white text-[12px]" />
             <button
               onClick={handleRegisterDevice}
               disabled={!serialNumber || !deviceName || isRegistering}
-              className={`w-[290px] h-[40px] rounded-[10px] text-white font-montserrat font-bold text-[15px] shadow-md mt-6 ${serialNumber && deviceName ? 'bg-[#617BEE] cursor-pointer' : 'bg-[#555] cursor-not-allowed'} flex items-center justify-center`}
+              className={`w-[290px] max-w-full h-[40px] rounded-[10px] text-white font-montserrat font-bold text-[15px] shadow-md mt-6 ${serialNumber && deviceName ? 'bg-[#617BEE] cursor-pointer' : 'bg-[#555] cursor-not-allowed'} flex items-center justify-center`}
             >
               {isRegistering ? <><Loader2 size={16} className="animate-spin mr-2" />등록 중...</> : '기기 등록하기'}
             </button>
