@@ -143,5 +143,6 @@ def start_mqtt_loop():
     client.on_message = on_message
     client.on_connect = on_connect
     client.connect(MQTT_BROKER, MQTT_PORT, 60)  # broker_ip에 맞게 수정
+    # client.connect("192.168.100.165", MQTT_PORT, 60)  # broker_ip에 맞게 수정
     client.subscribe("mqtt/battery")
     client.loop_forever()

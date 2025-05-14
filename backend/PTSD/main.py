@@ -25,11 +25,15 @@ app = FastAPI(
     openapi_url="/openapi.json",
 )
 
-
+origins = [
+    "https://k12d101.p.ssafy.io",     # 배포 서버 도메인
+    "http://localhost:3000",          # React 개발용 (http)
+    "http://127.0.0.1:3000",          # React 개발용 (localhost IP)
+]
 # CORS 미들웨어 추가
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://k12d101.p.ssafy.io"],  # 정확히 지정
+    allow_origins=origins,  # 정확히 지정
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -62,7 +66,7 @@ async def startup_event():
     thread.start()
     # 앱 시작 시 알림 삭제 스케줄러 시작
     start_notification_deletion_scheduler()
-    start_auto_control_scheduler()
+    # start_auto_control_scheduler()
 
 # ✅ Swagger에 Bearer Token 인증 정보 추가
 from fastapi.openapi.models import APIKey, APIKeyIn, SecuritySchemeType
