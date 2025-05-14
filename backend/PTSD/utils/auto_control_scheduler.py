@@ -8,9 +8,15 @@ from PTSD.core.database import get_db
 from PTSD.models.routines import Routine
 from PTSD.models.devices import Device  # 디바이스 모델 추가
 import paho.mqtt.publish as publish
+from dotenv import load_dotenv
+import os
 
-MQTT_BROKER = "k12d101.p.ssafy.io"
-MQTT_PORT = 1883
+# .env 파일을 로드합니다.
+load_dotenv()
+
+# 환경 변수에서 MQTT_BROKER 값을 불러옵니다.
+MQTT_BROKER = os.getenv("MQTT_BROKER", "localhost")  # 기본값 설정
+MQTT_PORT = int(os.getenv("MQTT_PORT", "1883"))      # 문자열 -> 정수 변환 + 기본값
 
 # logging 설정
 logging.basicConfig(level=logging.INFO)

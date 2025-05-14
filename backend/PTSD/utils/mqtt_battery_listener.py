@@ -6,6 +6,16 @@ from collections import deque
 from PTSD.core.database import get_db
 from sqlalchemy.orm import Session
 from PTSD.models.devices import Device  # Device 모델 임포트
+from dotenv import load_dotenv
+import os
+
+# .env 파일을 로드합니다.
+load_dotenv()
+
+# 환경 변수에서 MQTT_BROKER 값을 불러옵니다.
+MQTT_BROKER = os.getenv("MQTT_BROKER", "localhost")  # 기본값 설정
+MQTT_PORT = int(os.getenv("MQTT_PORT", "1883"))      # 문자열 -> 정수 변환 + 기본값
+
 
 websocket_connected = False  # WebSocket 연결 상태를 추적하는 변수
 notification_sent = {}  # 알림 전송 여부 추적 (serial_number 별로)
@@ -132,7 +142,6 @@ def start_mqtt_loop():
     client = mqtt.Client()
     client.on_message = on_message
     client.on_connect = on_connect
-    MQTT_BROKER = "k12d101.p.ssafy.io"
-    client.connect(MQTT_BROKER, 1883, 60)  # broker_ip에 맞게 수정
+    client.connect(MQTT_BROKER, MQTT_PORT, 60)  # broker_ip에 맞게 수정
     client.subscribe("mqtt/battery")
     client.loop_forever()
