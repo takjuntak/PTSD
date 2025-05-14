@@ -14,7 +14,7 @@ load_dotenv()
 
 # 환경 변수에서 MQTT_BROKER 값을 불러옵니다.
 MQTT_BROKER = os.getenv("MQTT_BROKER")
-print(MQTT_BROKER)  # 출력: k12d101.p.ssafy.io
+MQTT_PORT = os.getenv("MQTT_PORT")
 
 websocket_connected = False  # WebSocket 연결 상태를 추적하는 변수
 notification_sent = {}  # 알림 전송 여부 추적 (serial_number 별로)
@@ -141,6 +141,6 @@ def start_mqtt_loop():
     client = mqtt.Client()
     client.on_message = on_message
     client.on_connect = on_connect
-    client.connect(MQTT_BROKER, 1883, 60)  # broker_ip에 맞게 수정
+    client.connect(MQTT_BROKER, MQTT_PORT, 60)  # broker_ip에 맞게 수정
     client.subscribe("mqtt/battery")
     client.loop_forever()

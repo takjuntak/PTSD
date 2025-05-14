@@ -17,9 +17,7 @@ router = APIRouter()
 
 # 환경 변수에서 MQTT_BROKER 값을 불러옵니다.
 MQTT_BROKER = os.getenv("MQTT_BROKER")
-# MQTT_BROKER= "192.168.100.165" # 로컬 테스트용
-print(MQTT_BROKER)  # 출력: k12d101.p.ssafy.io
-MQTT_PORT = 1883
+MQTT_PORT = os.getenv("MQTT_PORT")
 
 # logging 설정
 logging.basicConfig(level=logging.INFO)
