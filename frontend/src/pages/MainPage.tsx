@@ -1,4 +1,3 @@
-// src/pages/MainPage.tsx 수정
 import { useState } from 'react';
 import robotImage from '../assets/robot.png'; 
 import ChargeIndicator from '../components/charge';
@@ -7,6 +6,7 @@ import LocationMap from '../components/location/LocationMap';
 import useScroll from '../hooks/useScroll';
 import { useAuth } from '../hooks/useAuth';
 import { useDevices } from '../hooks/useDevices';
+import useBatteryStatus from '../hooks/useBatteryStatus';
 
 const MainPage = () => {
   // useScroll 훅 사용
@@ -19,7 +19,8 @@ const MainPage = () => {
   
   // 사용자 인증 정보
   const { user } = useAuth();
-  
+  const battery = user?.userId ? useBatteryStatus(user.userId).battery : null;
+
   // 기기 정보 가져오기
   const { devices, connectedDevices } = useDevices();
   
@@ -46,12 +47,13 @@ const MainPage = () => {
           <img src={robotImage} alt="IoT 로봇" className="w-48 h-48" />
         </div>
         
-        {/* 배터리 인디케이터 - 75%로 설정 */}
+        {/* 배터리 인디케이터 */}
         <div className="flex justify-center mb-4">
-          <ChargeIndicator 
-            percentage={75} 
-            isCharging={isCharging} 
-          />
+          {battery === null ? (
+            <p className="text-sm text-gray-400">배터리 정보를 불러오는 중...</p>
+          ) : (
+            <ChargeIndicator percentage={battery} isCharging={isCharging} />
+          )}
         </div>
         
         {/* 위치 지도 추가 */}
