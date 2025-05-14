@@ -228,13 +228,23 @@ export default function TimeSelectPage() {
       </div>
 
       <style>{`
+        html, body {
+          height: 100%;
+          margin: 0;
+          padding: 0;
+          overflow: hidden;
+          touch-action: none;
+        }
+
         .schedule-content {
           max-width: 600px;
           margin: 0 auto;
           padding-bottom: 150px;
+          height: 800px;
         }
         .time-box, .option-box {
           background: #373738;
+          flex: 1;
           padding: 26px;
           border-radius: 10px;
           margin-bottom: 16px;
@@ -249,10 +259,8 @@ export default function TimeSelectPage() {
           justify-content: center;
         }
         .option-box {
-          height: 52vh;
-          padding: 26px 26px 26px 26px; /* 아래 패딩 없앰 */
-          min-height: 315px;
-          max-height: 510px;
+          height: 430px;
+          padding: 26px 26px 26px 26px;
           display: flex;
           flex-direction: column;
         }
@@ -392,27 +400,41 @@ export default function TimeSelectPage() {
         }
         .button-row {
           display: flex;
-          gap: 8px;
-          margin-top: auto;
-          padding-top: 36px; /* 버튼과 위 내용 사이 여백 */
+          justify-content: center;
+          gap: 12px;
+          margin-top: 30px;
+          padding-top: 16px; /* ← 기존 36px → 16px 으로 줄임 */
         }
+
         .cancel-btn, .save-btn {
-          flex: 1;
-          padding: 12px 0;
-          border: none;
-          font-size: 16px;
-          border-radius: 8px;
+          width: 156px;
+          height: 46px;
+          border-radius: 10px;
+          font-size: 18px;
+          font-weight: 700;
+          font-family: 'Montserrat';
+          line-height: 22px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.25);
           cursor: pointer;
+          border: none;
         }
+
+        /* 취소 버튼 스타일 */
         .cancel-btn {
-          background: transparent;
-          color: white;
-          border: 1px solid #888;
+          background: #FFFFFF;
+          color: #617BEE;
+          border: 0.5px solid #617BEE;
         }
+
+        /* 저장 버튼 스타일 */
         .save-btn {
-          background: #0098FF;
-          color: white;
+          background: #617BEE;
+          color: #FFFFFF;
         }
+
       `}</style>
     </div>
   );

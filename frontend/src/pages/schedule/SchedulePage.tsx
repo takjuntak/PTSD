@@ -313,14 +313,14 @@ const SchedulePage = () => {
           }
           .bottom-button {
             position: fixed;
-            bottom: 80px;
+            bottom: 120px;
             left: 50%;
             transform: translateX(-50%);
             display: flex;
-            gap: 16px;
+            gap: 10px;
             max-width: 412px;
             width: 100%;
-            padding: 0 16px;
+            padding: 0 20px;
           }
           .cancel-button, .delete-button {
             flex: 1;
@@ -331,11 +331,11 @@ const SchedulePage = () => {
           }
           .cancel-button {
             background: white;
-            color: #617BEE;
-            border: 2px solid #617BEE;
+            color: #EE6163;
+            border: 0.5px solid #EE6163;
           }
           .delete-button {
-            background: #617BEE;
+            background: #EE6163;
             color: white;
             border: none;
           }
