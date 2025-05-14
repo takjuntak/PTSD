@@ -9,11 +9,10 @@ interface Message {
 export const useRobotWebSocket = (deviceId: number | null) => {
   const [isConnected, setIsConnected] = useState(false);
   const [lastResponse, setLastResponse] = useState<any>(null);
-  const [status, setStatus] = useState<string>('대기 중');
+  const [status, setStatus] = useState<string>('연결 시도 중...');
   const wsRef = useRef<WebSocket | null>(null);
   const reconnectTimeoutRef = useRef<number | null>(null);
   const reconnectCountRef = useRef(0);
-  // 의도적인 종료 플래그 추가
   const isIntentionalCloseRef = useRef(false);
   
   const MAX_RECONNECT_ATTEMPTS = 5;
@@ -24,8 +23,17 @@ export const useRobotWebSocket = (deviceId: number | null) => {
 
   // 웹소켓 연결 설정
   useEffect(() => {
+    if (!deviceId) {
+      setStatus('디바이스 연결 필요');
+      return;
+    }
+    
+    let isComponentMounted = true;
+
     // 웹소켓 연결 함수
     const connectWebSocket = () => {
+      if (!isComponentMounted) return;
+      
       // 재연결 타이머가 남아있으면 정리
       if (reconnectTimeoutRef.current !== null) {
         window.clearTimeout(reconnectTimeoutRef.current);
@@ -34,106 +42,102 @@ export const useRobotWebSocket = (deviceId: number | null) => {
       
       // 이전 웹소켓 연결이 있으면 정리
       if (wsRef.current) {
-        isIntentionalCloseRef.current = true; // 의도적인 종료 표시
+        isIntentionalCloseRef.current = true; 
         wsRef.current.close();
         wsRef.current = null;
       }
       
-      // 의도적인 종료 플래그 초기화
       isIntentionalCloseRef.current = false;
+      setStatus('연결 시도 중...');
       
       try {
-        // 웹소켓 객체 생성
+        console.log('웹소켓 연결 시도');
         const ws = new WebSocket(wsUrl);
         
-        // 연결 이벤트 핸들러
         ws.onopen = () => {
-          console.log('웹소켓 연결됨');
+          if (!isComponentMounted) return;
+          console.log('웹소켓 연결 성공');
           setIsConnected(true);
           setStatus('연결됨');
-          reconnectCountRef.current = 0; // 재연결 카운터 초기화
+          reconnectCountRef.current = 0;
         };
         
-        // 메시지 수신 핸들러
         ws.onmessage = (event) => {
+          if (!isComponentMounted) return;
           try {
             const data = JSON.parse(event.data);
-            console.log('웹소켓 메시지 수신:', data);
+            console.log('수신된 메시지:', data);
             setLastResponse(data);
           } catch (error) {
             console.error('메시지 파싱 오류:', error);
           }
         };
         
-        // 연결 종료 핸들러
         ws.onclose = () => {
+          if (!isComponentMounted) return;
           console.log('웹소켓 연결 종료');
           setIsConnected(false);
           
-          // 의도적인 종료가 아닌 경우에만 재연결 시도
           if (!isIntentionalCloseRef.current) {
-            setStatus('연결 끊김');
-            
-            // 자동 재연결 시도
             if (reconnectCountRef.current < MAX_RECONNECT_ATTEMPTS) {
               setStatus(`재연결 중... (${reconnectCountRef.current + 1}/${MAX_RECONNECT_ATTEMPTS})`);
               
-              // 재연결 타이머 설정
               reconnectTimeoutRef.current = window.setTimeout(() => {
-                reconnectCountRef.current += 1;
-                connectWebSocket();
+                if (isComponentMounted) {
+                  reconnectCountRef.current += 1;
+                  connectWebSocket();
+                }
               }, RECONNECT_INTERVAL);
             } else {
-              setStatus('재연결 실패');
+              setStatus('재연결 실패. 페이지를 새로고침해 주세요.');
             }
           } else {
-            // 의도적인 종료인 경우
             setStatus('연결 종료됨');
-            console.log('의도적인 웹소켓 종료');
           }
         };
         
-        // 오류 핸들러
         ws.onerror = (error) => {
+          if (!isComponentMounted) return;
           console.error('웹소켓 오류:', error);
-          setStatus('오류 발생');
+          setStatus('연결 오류');
         };
         
-        // 참조 저장
         wsRef.current = ws;
       } catch (error) {
-        console.error('웹소켓 생성 오류:', error);
+        if (!isComponentMounted) return;
+        console.error('웹소켓 초기화 오류:', error);
         setStatus('연결 실패');
       }
     };
 
-    // 초기 연결 시도
     connectWebSocket();
     
-    // 컴포넌트 언마운트 시 정리
     return () => {
+      isComponentMounted = false;
       if (reconnectTimeoutRef.current !== null) {
         window.clearTimeout(reconnectTimeoutRef.current);
         reconnectTimeoutRef.current = null;
       }
       
       if (wsRef.current) {
-        isIntentionalCloseRef.current = true; // 의도적인 종료 표시
+        isIntentionalCloseRef.current = true;
         wsRef.current.close();
         wsRef.current = null;
       }
     };
-  }, [wsUrl, deviceId]); // deviceId가 변경되면 재연결
+  }, [wsUrl, deviceId]);
 
   // 명령 전송 함수
   const sendCommand = (command: string) => {
     if (!wsRef.current || wsRef.current.readyState !== WebSocket.OPEN) {
       console.error('웹소켓이 연결되지 않았습니다');
+      setStatus('명령 전송 실패: 연결 안됨');
       return false;
     }
 
     if (!deviceId) {
       console.error('디바이스 ID가 없습니다');
+      setStatus('명령 전송 실패: 디바이스 ID 없음');
       return false;
     }
 
@@ -148,6 +152,7 @@ export const useRobotWebSocket = (deviceId: number | null) => {
       return true;
     } catch (error) {
       console.error('메시지 전송 오류:', error);
+      setStatus('명령 전송 실패');
       return false;
     }
   };
