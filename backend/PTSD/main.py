@@ -13,6 +13,7 @@ from fastapi.openapi.utils import get_openapi
 from fastapi.openapi.models import OAuthFlows, OAuthFlowPassword
 from PTSD.utils.mqtt_battery_listener import start_mqtt_loop
 from PTSD.utils.notification_deletion_scheduler import start_notification_deletion_scheduler
+from PTSD.utils.auto_control_scheduler import start_auto_control_scheduler
 import threading
 
 app = FastAPI(
@@ -28,7 +29,7 @@ app = FastAPI(
 # CORS 미들웨어 추가
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # 개발용. 운영에서는 특정 도메인만 지정
+    allow_origins=["https://k12d101.p.ssafy.io"],  # 정확히 지정
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -61,6 +62,7 @@ async def startup_event():
     thread.start()
     # 앱 시작 시 알림 삭제 스케줄러 시작
     start_notification_deletion_scheduler()
+    start_auto_control_scheduler()
 
 # ✅ Swagger에 Bearer Token 인증 정보 추가
 from fastapi.openapi.models import APIKey, APIKeyIn, SecuritySchemeType
