@@ -117,15 +117,15 @@ const NavItem: React.FC<NavItemProps> = ({ path, label, activeIcon, inactiveIcon
       <img
         src={isActive ? activeIcon : inactiveIcon}
         alt={label}
-        style={{ width: 24, height: 24 }}
+        style={{ width: 20, height: 20 }}
       />
       <span
         style={{
-          fontSize: 14,
+          fontSize: 12,
           fontWeight: 800,
           color: isActive ? '#66A1F7' : '#767676',
           fontFamily: 'Inter',
-          lineHeight: '17px',
+          lineHeight: '12px',
           whiteSpace: 'nowrap',
         }}
       >

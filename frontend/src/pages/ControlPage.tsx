@@ -68,7 +68,7 @@ const ControlPage = () => {
       </header>
 
       <main className="flex-1 px-4 pb-32 overflow-y-auto flex flex-col items-center">
-        <img src={robotImage} alt="IoT 로봇" className="w-[280px] h-[280px] my-5" />
+        <img src={robotImage} alt="IoT 로봇" className="w-[200px] h-[200px] my-5" />
 
         <div className="grid grid-cols-2 gap-4" style={{ maxWidth: 412 }}>
           {/* 동작 제어 */}
@@ -77,7 +77,7 @@ const ControlPage = () => {
             <img
               src={isPlaying ? stopImage : playImage}
               alt="동작 제어"
-              style={imageStyle}
+              style={{ ...imageStyle, bottom: 32 }}
             />
             <span
               style={{
@@ -97,7 +97,8 @@ const ControlPage = () => {
           {/* 로봇 복귀 */}
           <button onClick={triggerReturn} style={cardStyle}>
             <span style={textStyle}>로봇 복귀</span>
-            <img src={homeImage} alt="로봇 복귀" style={imageStyle} />
+            <img src={homeImage} alt="로봇 복귀" style={{ ...imageStyle, bottom:30 }}
+ />
             {isReturning && (
               <span
                 style={{
