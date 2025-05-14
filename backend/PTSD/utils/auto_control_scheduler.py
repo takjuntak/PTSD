@@ -15,8 +15,8 @@ import os
 load_dotenv()
 
 # 환경 변수에서 MQTT_BROKER 값을 불러옵니다.
-MQTT_BROKER = os.getenv("MQTT_BROKER")
-MQTT_PORT = os.getenv("MQTT_PORT")
+MQTT_BROKER = os.getenv("MQTT_BROKER", "localhost")  # 기본값 설정
+MQTT_PORT = int(os.getenv("MQTT_PORT", "1883"))      # 문자열 -> 정수 변환 + 기본값
 
 # logging 설정
 logging.basicConfig(level=logging.INFO)
