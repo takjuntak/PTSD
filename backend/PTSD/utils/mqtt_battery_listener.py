@@ -12,10 +12,10 @@ import os
 # .env 파일을 로드합니다.
 load_dotenv()
 
-# 환경 변수에서 MQTT_BROKER 값을 불러옵니다.
+# 환경 변수에서 값을 불러옵니다.
 MQTT_BROKER = os.getenv("MQTT_BROKER", "localhost")  # 기본값 설정
 MQTT_PORT = int(os.getenv("MQTT_PORT", "1883"))      # 문자열 -> 정수 변환 + 기본값
-
+SERVER_URL = os.getenv("SERVER_URL")
 
 websocket_connected = False  # WebSocket 연결 상태를 추적하는 변수
 notification_sent = {}  # 알림 전송 여부 추적 (serial_number 별로)
@@ -103,10 +103,12 @@ def on_message(client, userdata, msg):
                 notification_sent[serial_number] = False
                 print(f"[초기화] 배터리 충전됨 ({final_percentage}%), 알림 상태 초기화")
 
+        
             # ⚠️ 알림 조건: 25% 이하 & 아직 알림 안 보냈을 때
             if final_percentage <= 25 and (serial_number not in notification_sent or not notification_sent[serial_number]):
                 response = requests.post(
-                    "https://k12d101.p.ssafy.io/api/battery-notification",  # 배터리 부족 알림 API
+                    #  f"{SERVER_URL}/api/battery-notification",  # 배터리 부족 알림 API
+                    "http://localhost:8000/api/battery-notification", 
                     json={"user_id": user_id, "percentage": final_percentage}
                 )
                 if response.status_code == 200:
@@ -117,7 +119,8 @@ def on_message(client, userdata, msg):
 
             # 배터리 상태와 user_id를 FastAPI로 전송
             response = requests.post(
-                "https://k12d101.p.ssafy.io/api/battery-state",
+                # f"{SERVER_URL}/api/battery-state",
+                "http://localhost:8000/api/battery-state",
                 json={"percentage": final_percentage, "user_id": user_id}
             )
             if response.status_code == 200:
