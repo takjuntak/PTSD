@@ -1,3 +1,4 @@
+
 services:
   backend:
     build:
@@ -16,7 +17,7 @@ services:
     networks:
       - app-network
 
-  mosquitto:  
+  mosquitto:
     image: eclipse-mosquitto:2
     container_name: mosquitto
     ports:
@@ -39,3 +40,4 @@ volumes:
   jenkins-data:
   mosquitto-data:
   mosquitto-log:
+
