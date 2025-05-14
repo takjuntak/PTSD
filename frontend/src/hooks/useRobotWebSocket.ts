@@ -1,4 +1,4 @@
-// src/hooks/useRobotWebSocket.ts
+// src/hooks/useRobotWebSocket.ts 수정
 import { useState, useEffect, useRef } from 'react';
 
 interface Message {
@@ -11,12 +11,26 @@ export const useRobotWebSocket = (deviceId: number | null) => {
   const [lastResponse, setLastResponse] = useState<any>(null);
   const [status, setStatus] = useState<string>('대기 중');
   const wsRef = useRef<WebSocket | null>(null);
+  const reconnectTimeoutRef = useRef<number | null>(null);
+  const reconnectCountRef = useRef(0);
+  const MAX_RECONNECT_ATTEMPTS = 5;
+  const RECONNECT_INTERVAL = 3000; // 3초마다 재연결 시도
 
-  // 웹소켓 URL 결정 (개발/배포 환경에 따라)
+  // 웹소켓 URL 결정 (환경 변수에서 가져옴)
   const wsUrl = import.meta.env.VITE_WS_URL;
 
-  // 웹소켓 연결 설정
-  useEffect(() => {
+  // 웹소켓 연결 함수
+  const connectWebSocket = () => {
+    // 이미 연결되어 있으면 재연결하지 않음
+    if (wsRef.current?.readyState === WebSocket.OPEN) {
+      return;
+    }
+
+    // 이전 웹소켓 연결 정리
+    if (wsRef.current) {
+      wsRef.current.close();
+    }
+
     // 웹소켓 객체 생성
     const ws = new WebSocket(wsUrl);
     
@@ -25,6 +39,7 @@ export const useRobotWebSocket = (deviceId: number | null) => {
       console.log('웹소켓 연결됨');
       setIsConnected(true);
       setStatus('연결됨');
+      reconnectCountRef.current = 0; // 재연결 카운터 초기화
     };
     
     // 메시지 수신 핸들러
@@ -43,6 +58,24 @@ export const useRobotWebSocket = (deviceId: number | null) => {
       console.log('웹소켓 연결 종료');
       setIsConnected(false);
       setStatus('연결 끊김');
+      
+      // 자동 재연결 시도
+      if (reconnectCountRef.current < MAX_RECONNECT_ATTEMPTS) {
+        setStatus(`재연결 시도 중 (${reconnectCountRef.current + 1}/${MAX_RECONNECT_ATTEMPTS})...`);
+        
+        // 이전 타이머 정리
+        if (reconnectTimeoutRef.current !== null) {
+          window.clearTimeout(reconnectTimeoutRef.current);
+        }
+        
+        // 재연결 시도 예약
+        reconnectTimeoutRef.current = window.setTimeout(() => {
+          reconnectCountRef.current += 1;
+          connectWebSocket();
+        }, RECONNECT_INTERVAL);
+      } else {
+        setStatus('재연결 실패. 수동으로 다시 시도하세요.');
+      }
     };
     
     // 오류 핸들러
@@ -53,12 +86,23 @@ export const useRobotWebSocket = (deviceId: number | null) => {
     
     // 참조 저장
     wsRef.current = ws;
+  };
+
+  // 컴포넌트 마운트/deviceId 변경 시 웹소켓 연결
+  useEffect(() => {
+    connectWebSocket();
     
     // 컴포넌트 언마운트 시 정리
     return () => {
-      ws.close();
+      if (reconnectTimeoutRef.current !== null) {
+        window.clearTimeout(reconnectTimeoutRef.current);
+      }
+      
+      if (wsRef.current) {
+        wsRef.current.close();
+      }
     };
-  }, [wsUrl]);
+  }, [wsUrl, deviceId]); // deviceId가 변경되면 재연결
 
   // 명령 전송 함수
   const sendCommand = (command: string) => {
@@ -87,10 +131,17 @@ export const useRobotWebSocket = (deviceId: number | null) => {
     }
   };
 
+  // 수동 재연결 함수 추가
+  const reconnect = () => {
+    reconnectCountRef.current = 0; // 재연결 카운터 초기화
+    connectWebSocket();
+  };
+
   return {
     isConnected,
     status,
     lastResponse,
-    sendCommand
+    sendCommand,
+    reconnect // 수동 재연결 함수 노출
   };
 };
