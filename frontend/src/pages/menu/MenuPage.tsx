@@ -36,10 +36,10 @@ const MenuPage: React.FC = () => {
   ];
 
   const supportItems = [
-    { label: 'FAQ 문의하기', image: questionImage },
-    { label: '약관 및 개인정보 처리방침', image: personalInfoImage },
     { label: '로그아웃', image: logoutImage, onClick: handleLogout },
     { label: '계정 삭제', image: deleteImage },
+    { label: 'FAQ 문의하기', image: questionImage },
+    { label: '약관 및 개인정보 처리방침', image: personalInfoImage },
   ];
 
   const renderItem = ({ label, image, onClick }: any, idx: number) => (
