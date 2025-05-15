@@ -66,7 +66,7 @@ def create_routine(
         # Routine 모델 인스턴스 생성
         new_routine = Routine(
             user_id=current_user["user_id"],  # JWT에서 추출한 user_id
-            start_time=routine_data.start_time,
+            start_time=start_time_kst,  # KST 기준으로 저장
             routine_type=routine_data.routine_type.value,  # Enum의 value 사용
             is_work=routine_data.is_work,
             repeat_days=routine_data.repeat_days or []  # None인 경우 빈 리스트

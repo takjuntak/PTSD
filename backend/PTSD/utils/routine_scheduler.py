@@ -19,7 +19,6 @@ MQTT_PORT = int(os.getenv("MQTT_PORT", "1883"))      # 문자열 -> 정수 변�
 
 # APScheduler 초기화
 scheduler = BackgroundScheduler(timezone=timezone("Asia/Seoul"))
-scheduler.start()
 
 # is_work 상태를 저장하는 딕셔너리
 routine_status = {}
@@ -59,8 +58,11 @@ def execute_once(routine_id: int):
     finally:
         session.close()
 
+# daily 스케줄 실행 시 상태 확인 및 업데이트하는 래퍼
 def execute_daily_routine(routine_id: int):
     session = SessionLocal()
+    print("[스케줄러 실행] daily 루틴 실행")
+    print(f"[스케줄러 실행됨] routine_id={routine_id}, time={datetime.now()}")
     try:
         routine = session.query(Routine).filter(Routine.routine_id == routine_id).first()
         if routine and routine.is_work:
@@ -114,17 +116,15 @@ def schedule_routine(
             print(f"[오류] repeat_days가 비어 있습니다.")
             return
         try:
-            # 1=월요일 ... 7=일요일 → 0=일요일 ... 6=토요일 으로 변환
-            cron_days = [(int(day) % 7) for day in repeat_days]
-            cron_days_str = ",".join(str(day) for day in cron_days)
-            cron_days_str = cron_days_str.replace("0", "7")  # 0을 7로 변환
+            cron_days = [(day - 1) % 7 for day in repeat_days]
+            cron_days_str = ",".join(str(d) for d in cron_days)
             print(f"[루틴 요일] {repeat_days} → {cron_days_str}")
         except ValueError:
             print(f"[오류] repeat_days 값이 잘못되었습니다: {repeat_days}")
             return
         
          # daily 예약 시도
-        print(f'daily 루틴 예약: {start_time}, 요일: {repeat_days}')
+        print(f'daily 루틴 예약: {start_time}, {start_time.hour}, {start_time.minute},  요일: {repeat_days}')
         trigger = CronTrigger(day_of_week=cron_days_str, hour=start_time.hour, minute=start_time.minute)
         job_func = execute_daily_routine
 
@@ -140,6 +140,10 @@ def schedule_routine(
         id=job_id
     )
     print(f"[예약 완료] 루틴 ID {routine_id}, 타입: {routine_type}, 시간: {start_time}, 요일: {repeat_days}")
+
+    # 예약된 전체 작업 목록 출력
+for job in scheduler.get_jobs():
+    print(f"[예약 확인] Job ID: {job.id}, Next Run Time: {job.next_run_time}")
 
 # 예약 취소 함수
 def cancel_routine_schedule(routine_id: int):
