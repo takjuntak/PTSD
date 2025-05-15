@@ -1,5 +1,5 @@
 import { Battery, MapPin, Clock, AlertCircle, Settings } from 'lucide-react';
-import robot2Image from '../assets/robot2.png';
+import ThreeRobot from '../components/status/ThreeRobot'; 
 
 const PlayPage = () => {
   return (
@@ -18,7 +18,12 @@ const PlayPage = () => {
                 <span className="text-sm text-green-500">연결됨</span>
               </div>
             </div>
-            <img src={robot2Image} alt="PTSD 로봇" className="h-[100px] w-auto mt-2" />
+
+            {/* ✅ 3D 로봇 */}
+            <div className="h-[100px] w-[100px] mt-2">
+              <ThreeRobot scale={1} className="w-full h-full" />
+            </div>
+
           </div>
         </div>
 
@@ -78,10 +83,7 @@ const StatusCard = ({ icon, title, subtitle, content }: StatusCardProps) => (
     className="bg-app-card rounded-lg p-4 shadow-md flex items-center"
     style={{ backgroundColor: '#373738', height: 116 }}
   >
-    {/* 왼쪽 아이콘 */}
     <div className="mr-3 self-start mt-5">{icon}</div>
-
-    {/* 오른쪽 텍스트 */}
     <div className="flex flex-col justify-center text-left">
       <p className="text-xl font-bold text-white mb-[4px]">{title}</p>
       {subtitle && <p className="text-xs text-gray-400 mb-[4px]">{subtitle}</p>}
