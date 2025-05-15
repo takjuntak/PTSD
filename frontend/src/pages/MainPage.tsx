@@ -24,8 +24,8 @@ const MainPage = () => {
       ? devices[0]
       : null;
 
-  // 항상 호출: 내부에서 userId 없으면 자동 무시
-  const { battery } = useBatteryStatus(user?.userId);
+  // 🔒 user 존재 + 디바이스 연결 시에만 WebSocket 연결
+  const { battery } = useBatteryStatus(user && currentDevice ? 7 : undefined);
 
   return (
     <div className="flex flex-col w-full h-full">
