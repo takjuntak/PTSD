@@ -13,6 +13,8 @@ from fastapi.openapi.utils import get_openapi
 from fastapi.openapi.models import OAuthFlows, OAuthFlowPassword
 from PTSD.utils.mqtt_battery_listener import start_mqtt_loop
 from PTSD.utils.notification_deletion_scheduler import start_notification_deletion_scheduler
+from PTSD.utils.routine_loader import load_routines_from_db
+from PTSD.utils.routine_scheduler import scheduler
 import threading
 
 app = FastAPI(
@@ -66,7 +68,12 @@ async def startup_event():
     thread.start()
     # 앱 시작 시 알림 삭제 스케줄러 시작
     start_notification_deletion_scheduler()
-    
+    if not scheduler.running:
+        scheduler.start()
+        print("루틴 스케줄러 시작")
+    # DB에 저장된 활성 루틴을 불러와 APScheduler에 등록
+    load_routines_from_db()
+
 
 # ✅ Swagger에 Bearer Token 인증 정보 추가
 from fastapi.openapi.models import APIKey, APIKeyIn, SecuritySchemeType

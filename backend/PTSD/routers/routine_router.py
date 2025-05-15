@@ -13,8 +13,11 @@ from ..core.database import get_db
 from ..utils.dependency import get_current_user  
 from fastapi.security import OAuth2PasswordBearer
 from fastapi.responses import JSONResponse
-from datetime import datetime, timezone
+from datetime import datetime
+from pytz import timezone, UTC
 
+# APIScheduler 관련 함수 import
+from ..utils.routine_scheduler import schedule_routine, cancel_routine_schedule
 
 router = APIRouter()
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/auth/login")
@@ -34,14 +37,29 @@ def create_routine(
     """
     
     try:
-        # 현재 시간 확인
-        now = datetime.now(timezone.utc)
+        seoul_tz = timezone('Asia/Seoul')
+        now = datetime.now(seoul_tz)
+        
+        # routine_data.start_time이 timezone 없는 경우 강제로 서울 타임존 부여
+        if routine_data.start_time.tzinfo is None:
+            # naive datetime이라면, UTC 기준으로 간주하고 aware로 만들기
+            utc_time = UTC.localize(routine_data.start_time)
+            # 서울 시간으로 변환
+            start_time_kst = utc_time.astimezone(seoul_tz)
+        else:
+            # 이미 aware datetime이면 서울 시간으로 변환
+            start_time_kst = routine_data.start_time.astimezone(seoul_tz)
         
         # 'once' 타입인 경우 시작 시간이 현재 시간 이후인지 확인
-        if routine_data.routine_type.value == 'once' and routine_data.start_time < now:
+        print(f"[DEBUG] now (KST)          = {now.isoformat()}")
+        print(f"[DEBUG] start_time_kst     = {start_time_kst.isoformat()}")
+        if routine_data.routine_type.value == 'once' and start_time_kst < now:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail="과거 시간으로 일회성 스케줄을 생성할 수 없습니다."
+                detail=(
+                    f"과거 시간으로 일회성 스케줄을 생성할 수 없습니다. "
+                    f"(now={now.isoformat()}, start_time={start_time_kst.isoformat()})"
+                )
             )
 
         
@@ -59,6 +77,15 @@ def create_routine(
         db.commit()
         db.refresh(new_routine)
         
+        # 스케줄러에 등록 (is_work=True인 경우만)
+        if new_routine.is_work:
+            schedule_routine(
+                routine_id=new_routine.routine_id,
+                routine_type=new_routine.routine_type,
+                start_time=new_routine.start_time,
+                repeat_days=new_routine.repeat_days
+            )
+
         # 응답 데이터 구성
         response_data = {
             "routine_id": new_routine.routine_id,
@@ -165,6 +192,19 @@ def update_routine(
         db.commit()
         db.refresh(routine)
         
+        # 기존 스케줄 취소
+        cancel_routine_schedule(routine_id)
+
+        # is_work가 True면 스케줄 다시 등록
+        if routine.is_work:
+            schedule_routine(
+                routine_id=routine.routine_id,
+                routine_type=routine.routine_type,
+                start_time=routine.start_time,
+                repeat_days=routine.repeat_days
+            )
+
+
         # 응답 데이터 구성
         response_data = {
             "routine_id": routine.routine_id,
@@ -220,6 +260,9 @@ def delete_routine(
         db.delete(routine)
         db.commit()
         
+        # 스케줄러에서 취소
+        cancel_routine_schedule(routine_id)
+
         # ResponseModel 형식으로 응답
         return ResponseModel(
             isSuccess=True,
