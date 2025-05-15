@@ -1,4 +1,3 @@
-// useBatteryStatus.ts
 import { useEffect, useState, useRef } from 'react';
 
 export default function useBatteryStatus(userId?: number) {
@@ -6,17 +5,16 @@ export default function useBatteryStatus(userId?: number) {
   const socketRef = useRef<WebSocket | null>(null);
 
   useEffect(() => {
-    // ✅ userId 없으면 연결하지 않음
     if (!userId) {
       console.warn('userId가 없어 WebSocket 연결 생략됨');
       return;
     }
 
-    const ws = new WebSocket(`wss://k12d101.p.ssafy.io/ws/notifications/7`);
+    const ws = new WebSocket(`wss://k12d101.p.ssafy.io/ws/notifications/${userId}`);
     socketRef.current = ws;
 
     ws.onopen = () => {
-      console.log('🔌 WebSocket 연결됨 (userId 7로 고정)');
+      console.log(`🔌 WebSocket 연결됨 (userId: ${userId})`);
     };
 
     ws.onmessage = (event) => {
@@ -33,7 +31,7 @@ export default function useBatteryStatus(userId?: number) {
     return () => {
       ws.close();
     };
-  }, [userId]); // 의존성 유지
+  }, [userId]);
 
   return { battery };
 }
