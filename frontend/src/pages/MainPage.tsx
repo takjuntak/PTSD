@@ -19,13 +19,21 @@ const MainPage = () => {
   
   // 사용자 인증 정보
   const { user } = useAuth();
-  const battery = user?.userId ? useBatteryStatus(user.userId).battery : null;
 
   // 기기 정보 가져오기
   const { devices, connectedDevices } = useDevices();
   
   // 현재 선택된/연결된 기기
-  const currentDevice = connectedDevices.length > 0 ? connectedDevices[0] : (devices.length > 0 ? devices[0] : null);
+   const currentDevice = connectedDevices.length > 0
+    ? connectedDevices[0]
+    : devices.length > 0
+      ? devices[0]
+      : null;
+
+  // ✅ currentDevice가 있을 때만 userId로 WebSocket 연결 시도
+  const battery = user && currentDevice
+    ? useBatteryStatus(user.userId).battery
+    : null;
 
   return (
     <div className="flex flex-col w-full h-full">
