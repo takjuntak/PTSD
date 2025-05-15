@@ -25,7 +25,7 @@ const MainPage = () => {
       : null;
 
   // 🔒 user 존재 + 디바이스 연결 시에만 WebSocket 연결
-  const { battery } = useBatteryStatus(user && currentDevice ? 7 : undefined);
+  const { battery } = useBatteryStatus(user?.userId && currentDevice ? user.userId : undefined);
 
   return (
     <div className="flex flex-col w-full h-full">

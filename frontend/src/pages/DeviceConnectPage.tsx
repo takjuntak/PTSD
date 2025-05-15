@@ -69,6 +69,10 @@ const DeviceConnectPage = () => {
     }
   };
 
+  useEffect(() => {
+    console.log("✅ API BASE URL:", import.meta.env.VITE_API_BASE_URL);
+  }, []);
+
   useEffect(() => { fetchDevices(); }, []);
 
   return (
