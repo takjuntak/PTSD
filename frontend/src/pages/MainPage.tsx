@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import robotImage from '../assets/robot.png'; 
+// import robotImage from '../assets/robot.png'; 
 import ChargeIndicator from '../components/charge';
 // import Header from '../components/common/Header';
 import LocationMap from '../components/location/LocationMap'; 
@@ -7,6 +7,7 @@ import useScroll from '../hooks/useScroll';
 import { useAuth } from '../hooks/useAuth';
 import { useDevices } from '../hooks/useDevices';
 import useBatteryStatus from '../hooks/useBatteryStatus';
+import ThreeRobot from '../components/status/ThreeRobot'
 
 const MainPage = () => {
   // useScroll 훅 사용
@@ -51,8 +52,11 @@ const MainPage = () => {
         </div>
         
         {/* 로봇 이미지 */}
-        <div className="flex justify-center items-center mb-6">
+        {/* <div className="flex justify-center items-center mb-6">
           <img src={robotImage} alt="IoT 로봇" className="w-48 h-48" />
+        </div> */}
+        <div className="flex justify-center items-center mb-6">
+          <ThreeRobot />
         </div>
         
         {/* 배터리 인디케이터 */}

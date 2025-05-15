@@ -1,12 +1,13 @@
 import { ChevronLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
-import robotImage from '../assets/robot.png';
+
 import playImage from '../assets/control/play.svg';
 import stopImage from '../assets/control/stop.svg';
 import homeImage from '../assets/control/comback.svg';
 import currentLocationImage from '../assets/control/currentlocation.svg';
 import manualOperationImage from '../assets/control/manualoperation.svg';
+import ThreeRobot from '../components/status/ThreeRobot'
 
 const ControlPage = () => {
   const navigate = useNavigate();
@@ -56,9 +57,7 @@ const ControlPage = () => {
 
   return (
     <div className="w-full h-full flex flex-col">
-      <header
-        className="p-4 px-3 flex items-center gap-3 sticky top-0 z-10"
-      >
+      <header className="p-4 px-3 flex items-center gap-3 sticky top-0 z-10">
         <button onClick={() => navigate(-1)} className="border-none bg-transparent p-0">
           <ChevronLeft size={24} color="#FFFFFF" />
         </button>
@@ -68,7 +67,10 @@ const ControlPage = () => {
       </header>
 
       <main className="flex-1 px-4 pb-32 overflow-y-auto flex flex-col items-center">
-        <img src={robotImage} alt="IoT 로봇" className="w-[200px] h-[200px] my-5" />
+        {/* ✅ 로봇 3D 모델 표시 */}
+        <div className="my-5">
+          <ThreeRobot />
+        </div>
 
         <div className="grid grid-cols-2 gap-4" style={{ maxWidth: 412 }}>
           {/* 동작 제어 */}
@@ -97,8 +99,7 @@ const ControlPage = () => {
           {/* 로봇 복귀 */}
           <button onClick={triggerReturn} style={cardStyle}>
             <span style={textStyle}>로봇 복귀</span>
-            <img src={homeImage} alt="로봇 복귀" style={{ ...imageStyle, bottom:30 }}
- />
+            <img src={homeImage} alt="로봇 복귀" style={{ ...imageStyle, bottom: 30 }} />
             {isReturning && (
               <span
                 style={{
