@@ -27,7 +27,7 @@ def create_routine(
     db: Session = Depends(get_db)
 ):
     """
-        - **start_time**: 스케줄 시작 시간 (DateTime)
+    - **start_time**: 스케줄 시작 시간 (DateTime)
     - **routine_type**: 스케줄 유형 ('once', 'daily')
     - **isWork**: 작업 활성화 여부
     - **repeat_days**: 반복 요일 (1=월요일, 7=일요일)
@@ -188,7 +188,7 @@ def update_routine(
         # ResponseModel 객체 생성
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"루틴 삭제 중 오류가 발생했습니다: {str(e)}"
+            detail=f"루틴 수정 중 오류가 발생했습니다: {str(e)}"
         )
 
 
