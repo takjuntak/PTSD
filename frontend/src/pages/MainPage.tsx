@@ -1,7 +1,7 @@
 // MainPage.tsx
 import { useState } from 'react';
 // import robotImage from '../assets/robot.png'; 
-import ChargeIndicator from '../components/charge';
+// import ChargeIndicator from '../components/charge';
 // import Header from '../components/common/Header';
 import LocationMap from '../components/location/LocationMap'; 
 import useScroll from '../hooks/useScroll';
@@ -9,6 +9,9 @@ import { useAuth } from '../hooks/useAuth';
 import { useDevices } from '../hooks/useDevices';
 import useBatteryStatus from '../hooks/useBatteryStatus';
 import ThreeRobot from '../components/status/ThreeRobot'
+import ChargeInfo from '../components/charge/ChargeInfo';
+import ChargeStatus from '../components/charge/ChargeStatus';
+
 
 const MainPage = () => {
   const { containerRef } = useScroll();
@@ -25,7 +28,7 @@ const MainPage = () => {
       : null;
 
   // 🔒 user 존재 + 디바이스 연결 시에만 WebSocket 연결
-  const { battery } = useBatteryStatus(user && currentDevice ? 7 : undefined);
+  const { battery } = useBatteryStatus(user?.userId && currentDevice ? user.userId : undefined);
 
   return (
     <div className="flex flex-col w-full h-full">
@@ -46,7 +49,10 @@ const MainPage = () => {
           {battery === null ? (
             <p className="text-sm text-gray-400">배터리 정보를 불러오는 중...</p>
           ) : (
-            <ChargeIndicator percentage={battery} isCharging={isCharging} />
+            <div className="flex flex-col items-center">
+              <ChargeStatus percentage={battery} remainingTime="1시간 25분 남았습니다" />
+              <ChargeInfo percentage={battery} isCharging={isCharging} />
+            </div>
           )}
         </div>
 
