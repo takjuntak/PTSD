@@ -16,6 +16,7 @@ import DeviceConnectPage from './pages/DeviceConnectPage'
 import LoginPage from './pages/user/login/LoginPage'
 import SignupPage from './pages/user/signup/SignupPage'
 import AlarmPage from './pages/AlarmPage' // 알람 페이지 추가
+import TimerSelectPage from './pages/schedule/TimerSelectPage'
 
 function AppContent() {
   const location = useLocation()
@@ -43,6 +44,7 @@ function AppContent() {
             <Route path="/" element={<MainPage />} />
             <Route path="/schedule" element={<SchedulePage />} />
             <Route path="/schedule/time-select" element={<TimeSelectPage />} />
+            <Route path="/schedule/timer-select" element={<TimerSelectPage />} /> 
             <Route path="/control" element={<ControlPage />} />
             <Route path="/play" element={<PlayPage />} />
             <Route path="/robot-control" element={<RobotControlPage />} />
