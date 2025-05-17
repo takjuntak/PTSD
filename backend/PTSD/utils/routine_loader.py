@@ -6,6 +6,11 @@ from .routine_scheduler import schedule_routine
 from ..core.database import SessionLocal
 from ..models.routines import Routine
 from pytz import timezone
+import logging
+
+# 로깅 설정
+logger = logging.getLogger(__name__)
+logging.basicConfig(level=logging.INFO)
 
 def load_routines_from_db() -> None:
     """
@@ -23,7 +28,7 @@ def load_routines_from_db() -> None:
                 .all()
             )
         except Exception as e:
-            print(f"[DB 조회 오류] 루틴 목록 조회 실패: {e}")
+            logger.error(f"[DB 조회 오류] 루틴 목록 조회 실패: {e}")
             return
 
         seoul_tz = timezone('Asia/Seoul')
@@ -32,18 +37,17 @@ def load_routines_from_db() -> None:
         for routine in routines:
             try:
                 if not routine.start_time:
-                    print(f"[오류] 루틴 ID {routine.routine_id}의 start_time이 None입니다. 건너뜁니다.")
+                    logger.warning(f"[오류] 루틴 ID {routine.routine_id}의 start_time이 None입니다. 건너뜁니다.")
                     continue
 
                 start_time = routine.start_time
                 if start_time.tzinfo is None:
                     start_time = seoul_tz.localize(start_time)  # awareness 적용
-
-                print(f"[루틴 시작 시간] {start_time}")
+                
+                logger.info(f"[루틴 시작 시간] {start_time}")
 
                 if routine.routine_type == "once" and start_time <= now:
-                    print(f"[건너뜀] 루틴 ID {routine.routine_id}는 일회성 루틴이며 이미 지난 시간입니다.")
-                    print(start_time, now)
+                    logger.info(f"[건너뜀] 루틴 ID {routine.routine_id}는 일회성 루틴이며 이미 지난 시간입니다. ({start_time} <= {now})")
                     continue
 
                 repeat_days = []
@@ -53,16 +57,16 @@ def load_routines_from_db() -> None:
                         try:
                             repeat_days = json.loads(routine.repeat_days)
                         except Exception as e:
-                            print(f"[JSON 오류] 루틴 ID {routine.routine_id}의 repeat_days 파싱 실패: {e}")
+                            logger.error(f"[JSON 오류] 루틴 ID {routine.routine_id}의 repeat_days 파싱 실패: {e}")
                             continue
                     elif isinstance(routine.repeat_days, list):
                         repeat_days = routine.repeat_days
                     else:
-                        print(f"[오류] 루틴 ID {routine.routine_id}의 repeat_days 타입이 잘못되었습니다: {type(routine.repeat_days)}")
+                        logger.warning(f"[오류] 루틴 ID {routine.routine_id}의 repeat_days 타입이 잘못되었습니다: {type(routine.repeat_days)}")
                         continue
 
                     if not repeat_days:
-                        print(f"[오류] repeat_days가 비어 있습니다. 루틴 ID {routine.routine_id} 건너뜁니다.")
+                        logger.warning(f"[오류] repeat_days가 비어 있습니다. 루틴 ID {routine.routine_id} 건너뜁니다.")
                         continue
 
                 try:
@@ -72,16 +76,15 @@ def load_routines_from_db() -> None:
                         start_time=start_time,
                         repeat_days=repeat_days
                     )
-                    print(f"[등록 완료] 루틴 ID {routine.routine_id} 등록 성공.")
+                    logger.info(f"[등록 완료] 루틴 ID {routine.routine_id} 등록 성공.")
                 except Exception as e:
-                    print(f"[스케줄링 오류] 루틴 ID {routine.routine_id} 등록 실패: {e}")
+                    logger.error(f"[스케줄링 오류] 루틴 ID {routine.routine_id} 등록 실패: {e}")
 
             except Exception as e:
-                print(f"[루틴 처리 오류] 루틴 ID {getattr(routine, 'routine_id', '알 수 없음')} 처리 중 오류 발생: {e}")
+                logger.error(f"[루틴 처리 오류] 루틴 ID {getattr(routine, 'routine_id', '알 수 없음')} 처리 중 오류 발생: {e}")
 
-        print(f"[초기화 완료] 총 {len(routines)}개의 루틴을 로드하여 스케줄에 등록 시도 완료.")
-
+        logger.info(f"[초기화 완료] 총 {len(routines)}개의 루틴을 로드하여 스케줄에 등록 시도 완료.")
     except Exception as e:
-        print(f"[오류] 루틴 로드 실패: {e}")
+        logger.error(f"[오류] 루틴 로드 실패: {e}")
     finally:
         db.close()
