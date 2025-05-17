@@ -32,7 +32,7 @@ routine_status = {}
 def send_mqtt_command(routine_id: int = None):
     topic = "robot/auto-control"
     payload = "start"
-    print(f"[스케줄 실행] MQTT Publish: topic={topic}, payload={payload}")
+    logger.info(f"[스케줄 실행] MQTT Publish: topic={topic}, payload={payload}")
 
     publish.single(
         topic=topic,
@@ -59,7 +59,7 @@ def execute_once(routine_id: int):
             logger.info(f"[스케줄 스킵] Routine {routine_id} is_work=False, 실행되지 않습니다.")
     except Exception as e:
         session.rollback()
-        print(f"[스케줄러 에러] {e}")
+        logger.error(f"[스케줄러 에러] {e}")
     finally:
         session.close()
 
@@ -147,11 +147,6 @@ def schedule_routine(
         id=job_id
     )
     logger.info(f"[예약 완료] 루틴 ID {routine_id}, 타입: {routine_type}, 시간: {start_time}, 요일: {repeat_days}")
-
-# 예약된 전체 작업 목록 출력
-for job in scheduler.get_jobs():
-    logger.info(f"[예약 확인] Job ID: {job.id}, Next Run Time: {job.next_run_time}")
-
 
 # 예약 취소 함수
 def cancel_routine_schedule(routine_id: int):
