@@ -141,7 +141,7 @@ def on_connect(client, userdata, flags, rc):
         websocket_connected = False
         print(f"배터리 연결 실패, 코드: {rc}")
 
-def start_mqtt_loop():
+def start_battery_mqtt_loop():
     client = mqtt.Client()
     client.on_message = on_message
     client.on_connect = on_connect

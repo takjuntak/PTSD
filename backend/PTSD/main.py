@@ -3,7 +3,7 @@ from fastapi import FastAPI
 from fastapi.security import OAuth2PasswordBearer
 from PTSD.exceptions import register_exception_handlers
 from PTSD.routers import notification_router, user_router, routine_router , devices_router
-from PTSD.routers import battery_status, battery_alert, manual_control
+from PTSD.routers import battery_status, battery_alert, robot_status, manual_control
 from PTSD.utils import websocket_manager 
 from fastapi.openapi.utils import get_openapi
 from fastapi.middleware.cors import CORSMiddleware
@@ -11,7 +11,8 @@ from PTSD.core.database import Base, engine
 from PTSD.models import notifications, user, routines,devices
 from fastapi.openapi.utils import get_openapi
 from fastapi.openapi.models import OAuthFlows, OAuthFlowPassword
-from PTSD.utils.mqtt_battery_listener import start_mqtt_loop
+from PTSD.utils.mqtt_battery_listener import start_battery_mqtt_loop
+from PTSD.utils.mqtt_robot_listener import start_robot_mqtt_loop
 from PTSD.utils.notification_deletion_scheduler import start_notification_deletion_scheduler
 from PTSD.utils.routine_loader import load_routines_from_db
 from PTSD.utils.routine_scheduler import scheduler
@@ -58,14 +59,21 @@ app.include_router(websocket_manager.router)
 # ✅ 터틀봇 수동 조작 웹소켓 라우터 등록
 app.include_router(manual_control.router)
 
+# ✅ 로봇 상태 웹소켓 라우터 등록
+app.include_router(robot_status.router)
+
 # ✅ 서버 시작 시 테이블 생성
 @app.on_event("startup")
 async def startup_event():
     Base.metadata.create_all(bind=engine)
     print("테이블 생성 완료!")
-    thread = threading.Thread(target=start_mqtt_loop)
-    thread.daemon = True
-    thread.start()
+    thread_battery = threading.Thread(target=start_battery_mqtt_loop)
+    thread_battery.daemon = True
+    thread_robot = threading.Thread(target=start_robot_mqtt_loop)
+    thread_robot.daemon = True
+    thread_battery.start()
+    thread_robot.start()
+
     # 앱 시작 시 알림 삭제 스케줄러 시작
     start_notification_deletion_scheduler()
     if not scheduler.running:
