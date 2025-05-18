@@ -20,6 +20,15 @@ export default {
         sans: ['"Pretendard"', 'ui-sans-serif', 'system-ui'],
         mono: ['"Fira Code"', 'monospace'],
       },
+      keyframes: {
+        breath: {
+          '0%, 100%': { transform: 'scale(1)' },
+          '50%': { transform: 'scale(1.04)' },
+        },
+      },
+      animation: {
+        breath: 'breath 2.4s ease-in-out infinite',
+      },
     },
   },
   plugins: [],

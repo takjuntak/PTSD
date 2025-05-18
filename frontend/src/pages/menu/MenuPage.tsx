@@ -7,39 +7,41 @@ import { useAuth } from '../../hooks/useAuth';
 
 import connectImage from '../../assets/menu/connect.svg';
 import explainImage from '../../assets/menu/explain.svg';
-import subscribeImage from '../../assets/menu/subscribe.svg';
 import bellImage from '../../assets/menu/bell.svg';
-import languageImage from '../../assets/menu/language.svg';
-import themeImage from '../../assets/menu/theme.svg';
 import questionImage from '../../assets/menu/question.svg';
 import personalInfoImage from '../../assets/menu/personal-info.svg';
 import logoutImage from '../../assets/menu/logout.svg';
 import deleteImage from '../../assets/menu/delete.svg';
 
+import DeleteAccountModal from './DeleteAccountModal';
+
 
 const MenuPage: React.FC = () => {
   const navigate = useNavigate();
   const [isLogoutOpen, setLogoutOpen] = useState(false);
+  const [isDeleteOpen, setDeleteOpen] = useState(false);
   const { user } = useAuth();
 
   const handleGoBack = () => navigate(-1);
   const handleDeviceConnect = () => navigate('/device-connect');
   const handleLogout = () => setLogoutOpen(true);
 
+  const handleGuideClick = () => navigate('/menu/product-guide');
+  const handleFAQClick = () => navigate('/menu/faq')
+  const handlePrivacyClick = () => navigate('/menu/privacy')
+  const handleAlarmClick = () => navigate('/alarm')
+
   const menuItems = [
     { label: '기기 연결', image: connectImage, onClick: handleDeviceConnect },
-    { label: '제품 사용 설명서', image: explainImage },
-    { label: '구독 / 이용 플랜', image: subscribeImage },
-    { label: '알림 설정', image: bellImage },
-    { label: '언어 설정', image: languageImage },
-    { label: '테마 설정 (다크모드 / 라이트모드 전환)', image: themeImage },
+    { label: '제품 사용 설명서', image: explainImage, onClick: handleGuideClick },
+    { label: '알림', image: bellImage, onClick: handleAlarmClick },
   ];
 
   const supportItems = [
     { label: '로그아웃', image: logoutImage, onClick: handleLogout },
-    { label: '계정 삭제', image: deleteImage },
-    { label: 'FAQ 문의하기', image: questionImage },
-    { label: '약관 및 개인정보 처리방침', image: personalInfoImage },
+    { label: '계정 삭제', image: deleteImage, onClick: () => setDeleteOpen(true) },
+    { label: '자주 묻는 질문', image: questionImage, onClick: handleFAQClick },
+    { label: '약관 및 개인정보 처리방침', image: personalInfoImage, onClick: handlePrivacyClick },
   ];
 
   const renderItem = ({ label, image, onClick }: any, idx: number) => (
@@ -86,6 +88,15 @@ const MenuPage: React.FC = () => {
       </div>
 
       <LogoutModal open={isLogoutOpen} onClose={() => setLogoutOpen(false)} />
+      <DeleteAccountModal
+        open={isDeleteOpen}
+        onClose={() => setDeleteOpen(false)}
+        onDelete={() => {
+          // 실제 계정 삭제 로직 추가
+          setDeleteOpen(false);
+          navigate('/login');
+        }}
+      />
     </div>
   );
 };
