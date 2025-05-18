@@ -1,5 +1,6 @@
 // MainPage.tsx
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 // import robotImage from '../assets/robot.png'; 
 // import ChargeIndicator from '../components/charge';
 // import Header from '../components/common/Header';
@@ -20,6 +21,7 @@ const MainPage = () => {
 
   const { user } = useAuth();
   const { devices, connectedDevices } = useDevices();
+  const navigate = useNavigate();
 
   const currentDevice = connectedDevices.length > 0
     ? connectedDevices[0]
@@ -29,6 +31,10 @@ const MainPage = () => {
 
   // 🔒 user 존재 + 디바이스 연결 시에만 WebSocket 연결
   const { battery } = useBatteryStatus(user?.userId && currentDevice ? user.userId : undefined);
+
+  const handleMapClick = () => {
+    navigate('/location');
+  }
 
   return (
     <div className="flex flex-col w-full h-full">
@@ -55,8 +61,10 @@ const MainPage = () => {
             </div>
           )}
         </div>
-
-        <LocationMap currentLocation={currentLocation} />
+        
+        <div className='cursor-pointer w-full max-w-md' onClick={handleMapClick}>
+          <LocationMap currentLocation={currentLocation} />
+        </div>
       </main>
     </div>
   );

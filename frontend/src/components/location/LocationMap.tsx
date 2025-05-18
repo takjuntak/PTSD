@@ -1,6 +1,6 @@
 // src/components/location/LocationMap.tsx
 import React from 'react';
-import mapImage from '../../assets/map.png';
+import mapImage from '../../assets/location/map2.svg';
 
 interface LocationMapProps {
   currentLocation?: string;

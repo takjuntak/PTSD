@@ -24,6 +24,10 @@ const ControlPage = () => {
     }
   };
 
+  const handleMapClick = () => {
+    navigate('/location');
+  }
+
   const cardStyle = {
     width: 138,
     height: 146,
@@ -118,7 +122,7 @@ const ControlPage = () => {
           </button>
 
           {/* 현재 위치 */}
-          <div style={cardStyle}>
+          <div style={cardStyle} onClick={handleMapClick}>
             <span style={textStyle}>현재 위치</span>
             <img src={currentLocationImage} alt="현재 위치" style={imageStyle} />
           </div>

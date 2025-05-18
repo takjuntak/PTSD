@@ -17,6 +17,7 @@ import LoginPage from './pages/user/login/LoginPage'
 import SignupPage from './pages/user/signup/SignupPage'
 import AlarmPage from './pages/AlarmPage' // 알람 페이지 추가
 import TimerSelectPage from './pages/schedule/TimerSelectPage'
+import LocationPage from './pages/LocationPage'
 
 function AppContent() {
   const location = useLocation()
@@ -51,6 +52,7 @@ function AppContent() {
             <Route path='/menu' element={<MenuPage />} /> {/* MenuPage 라우트 추가 */}
             <Route path='/device-connect' element={<DeviceConnectPage />} />
             <Route path='/alarm' element={<AlarmPage />} /> {/* 알람 페이지 라우트 추가 */}
+            <Route path='/location' element={<LocationPage />} />
           </Route>
         </Routes>
       </div>
