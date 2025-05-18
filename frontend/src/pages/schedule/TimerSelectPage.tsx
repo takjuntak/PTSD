@@ -58,7 +58,8 @@ const TimerSelectPage = () => {
   };
 
   const handlePointerMove = (e: React.PointerEvent) => {
-    if (!isDragging.current || !centerRef.current) return;
+    // ✅ 예약이 완료되었으면 시간 변경 막기
+    if (confirmed || !isDragging.current || !centerRef.current) return;
 
     const rect = centerRef.current.getBoundingClientRect();
     const cx = rect.left + rect.width / 2;
@@ -86,7 +87,7 @@ const TimerSelectPage = () => {
         </header>
 
         {/* 설명 */}
-        <div className="mt-6 text-[20px] font-extrabold text-center text-white">
+        <div className="mt-6 text-[20px] font-extrabold text-center text-white whitespace-nowrap">
           원하는 청소 종료 시간을 설정해 주세요.
         </div>
         <div className="mt-1 text-[14px] text-white text-center">
