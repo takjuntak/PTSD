@@ -28,8 +28,6 @@ class NotificationRequest(BaseModel):
 class RobotData(BaseModel):
     user_id: int 
     status: str  # "start" or "complete"
-    mode: str  # "auto", "manual" 
-
 
 @router.post(
     "/api/robot-notification",
@@ -43,7 +41,6 @@ class RobotData(BaseModel):
 ### ✅ [요청 필드]
 - `user_id` : 사용자 고유 ID (integer)
 - `status`: 로봇 상태 (string)
-- `mode`: 로봇 모드 (string)
 
 ### ✅ [처리 흐름]
 1. 요청으로 받은 `status`·`mode`를 기반으로 알림 메시지 생성  
@@ -62,10 +59,10 @@ async def send_robot_state(
     db: Session = Depends(get_db)
 ):
     try:
-        logging.info(f"로봇 상태: {payload.status}, 모드: {payload.mode}")
+        logging.info(f"로봇 상태: {payload.status}")
         # 예: "자동 모드에서 작업이 시작되었습니다."
         title = f"{payload.status}"
-        message_text = f"{payload.mode} 모드에서 작업이 {payload.status}되었습니다."
+        message_text = f"작업이 {payload.status}되었습니다."
         
         # NotificationRequest로 변환
         notification_data = Notification(
@@ -93,7 +90,7 @@ async def send_robot_state(
         # }
 
         # 웹소켓 postman 테스트용
-        message = f"로봇 알림! 상태: {payload.status}, 모드: {payload.mode}"
+        message = f"로봇 알림! 상태: {payload.status}"
 
         # 웹소켓을 통해 실시간 알림 전송
         await manager.send_to_user(payload.user_id, message)

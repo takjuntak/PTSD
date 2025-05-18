@@ -11,8 +11,8 @@ from PTSD.core.database import Base, engine
 from PTSD.models import notifications, user, routines,devices
 from fastapi.openapi.utils import get_openapi
 from fastapi.openapi.models import OAuthFlows, OAuthFlowPassword
-from PTSD.utils.mqtt_battery_listener import start_battery_mqtt_loop
-from PTSD.utils.mqtt_robot_listener import start_robot_mqtt_loop
+from PTSD.mqtt.mqtt_battery_listener import start_battery_mqtt_loop
+from PTSD.mqtt.mqtt_robot_listener import start_robot_mqtt_loop
 from PTSD.utils.notification_deletion_scheduler import start_notification_deletion_scheduler
 from PTSD.utils.routine_loader import load_routines_from_db
 from PTSD.utils.routine_scheduler import scheduler
