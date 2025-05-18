@@ -1,7 +1,7 @@
 // src/pages/RobotControlPage.tsx
 import { ChevronLeft, ArrowUp, ArrowDown, ArrowLeft, ArrowRight, Power } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import mapImage from '../assets/map.png';
+import mapImage from '../assets/map.svg';
 import React, { useEffect } from 'react';
 import { useRobotWebSocket } from '../hooks/useRobotWebSocket';
 import { useDevices } from '../hooks/useDevices';
