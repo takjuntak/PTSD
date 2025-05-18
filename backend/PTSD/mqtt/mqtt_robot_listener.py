@@ -54,9 +54,8 @@ def on_message(client, userdata, msg):
     payload = json.loads(msg.payload.decode())
     serial_number = payload.get("serial", "")
     status = payload.get("status")
-    mode = payload.get("mode")
 
-    logger.info(f"Received MQTT msg on {msg.topic}: serial={serial_number}, status={status}, mode={mode}")
+    logger.info(f"Received MQTT msg on {msg.topic}: serial={serial_number}, status={status}")
 
     # serial_number로 user_id 조회
     user_id = get_user_id_by_serial(serial_number)
@@ -67,10 +66,10 @@ def on_message(client, userdata, msg):
             response = requests.post(
                 # f"{SERVER_URL}/api/robot-notification",
                 "http://localhost:8000/api/robot-notification",
-                json={"user_id": user_id, "status": status, "mode": mode}
+                json={"user_id": user_id, "status": status}
             )
             if response.status_code == 200:
-                logger.info(f"[전송 완료] 로봇 상태: {status}, 모드: {mode} 전송됨")
+                logger.info(f"[전송 완료] 로봇 상태: {status} 전송됨")
             else:
                 logger.error(f"FastAPI 전송 실패: {response.status_code}")
         except Exception as e:
