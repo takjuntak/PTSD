@@ -111,7 +111,8 @@ def schedule_routine(
 
     if routine_type == "once":
         # start_time이 naive datetime이면 Asia/Seoul timezone 지정
-        start_time = start_time.astimezone(seoul)
+        if start_time.tzinfo is None:
+            start_time = seoul.localize(start_time)
 
         # 현재 시간보다 이전이면 예약 안함
         if start_time <= now:
