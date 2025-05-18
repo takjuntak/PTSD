@@ -11,7 +11,7 @@ const TimerSelectPage = () => {
 
   const [selectedHour, setSelectedHour] = useState(3);
   const hours = Array.from({ length: 12 }, (_, i) => i + 1);
-  const radius = 160;
+  const radius = 140;
 
   const [currentTime, setCurrentTime] = useState('');
   const [selectedTime, setSelectedTime] = useState('');
@@ -87,16 +87,16 @@ const TimerSelectPage = () => {
         </header>
 
         {/* 설명 */}
-        <div className="mt-6 text-[20px] font-extrabold text-center text-white whitespace-nowrap">
+        <div className="mt-2 text-[20px] font-bold text-center text-white whitespace-nowrap">
           원하는 청소 종료 시간을 설정해 주세요.
         </div>
-        <div className="mt-1 text-[14px] text-white text-center">
+        <div className="mt-2 text-[14px] text-white text-center">
           설정 가능 시간 : 1시간 ~ 12시간
         </div>
 
         {/* 타이머 */}
         <div
-          className="mt-12 flex justify-center relative w-[282px] h-[282px] mx-auto touch-none"
+          className="mt-14 flex justify-center relative w-[250px] h-[250px] mx-auto touch-none"
           ref={centerRef}
           onPointerDown={handlePointerDown}
           onPointerUp={handlePointerUp}
@@ -141,21 +141,21 @@ const TimerSelectPage = () => {
           })()}
 
           {/* 중앙 시간 표시 */}
-          <div className="absolute top-[82px] left-1/2 -translate-x-1/2 text-white text-center leading-tight z-20 w-full">
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-white text-center leading-tight z-20">
             <div className="text-[14px] font-semibold">종료 시각</div>
             <div className="flex justify-center items-baseline gap-1 mt-1">
-              <span className="text-[14px]">{selectedDateText}</span>
-              <span className="text-[40px] font-extrabold">{selectedTime.split(' ')[1]}</span>
-              <span className="text-[14px] font-bold">{selectedTime.split(' ')[0]}</span>
+              <span className="text-[14px] whitespace-nowrap">{selectedDateText}</span>
+              <span className="text-[40px] font-extrabold whitespace-nowrap">{selectedTime.split(' ')[1]}</span>
+              <span className="text-[14px] font-bold whitespace-nowrap">{selectedTime.split(' ')[0]}</span>
             </div>
             <div className="text-[14px] mt-2">현재 시각</div>
-            <div className="text-[14px]">{currentTime}</div>
+            <div className="text-[14px] whitespace-nowrap">{currentTime}</div>
           </div>
         </div>
 
         {/* 확인 / 예약취소 버튼 */}
         {!confirmed ? (
-          <div className="mt-14 flex justify-center">
+          <div className="mt-16 flex justify-center">
             <button
               onClick={() => setConfirmed(true)}
               className="w-[316px] h-[46px] rounded-[10px] bg-[#617BEE] shadow-md text-white text-[18px] font-bold flex justify-center items-center"
