@@ -11,8 +11,8 @@ const ProductGuide = () => {
   const handleFAQClick = () => navigate('/menu/faq')
 
   return (
-    <div className="w-full h-full bg-gradient-to-b from-[#2E2E37] to-[#1D1E23] relative overflow-x-hidden">
-      {/* 상단 헤더 */}
+    <div className="w-full min-h-screen bg-gradient-to-b from-[#2E2E37] to-[#1D1E23] relative overflow-x-hidden">
+    {/* 상단 헤더 */}
       <header className="p-3 px-4 flex items-center gap-2 sticky top-0 z-10">
         <button
           onClick={() => navigate(-1)}

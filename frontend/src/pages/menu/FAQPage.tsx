@@ -99,7 +99,7 @@ export default function FAQPage() {
   };
 
   return (
-    <div className="relative w-full h-full bg-gradient-to-b from-[#2E2E37] to-[#1D1E23]">
+    <div className="relative w-full h-full bg-transparent">
       {/* 상단 헤더 */}
       <header className="p-3 px-4 flex items-center gap-2 sticky top-0 z-10 bg-[#2E2E37]">
         <button

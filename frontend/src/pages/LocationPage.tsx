@@ -40,7 +40,7 @@ const LocationPage = () => {
   };
 
   return (
-    <div className="relative w-full h-full bg-gradient-to-b from-[#2E2E37] to-[#1D1E23] text-white font-inter overflow-hidden">
+    <div className="relative w-full min-h-screen bg-gradient-to-b from-[#2E2E37] to-[#1D1E23] text-white font-inter overflow-hidden">
 
       {/* 사용자 이름 + 디바이스 명 */}
       <div className="absolute top-[30px] left-1/2 transform -translate-x-1/2 text-[18px] font-extrabold text-white text-center z-10 whitespace-nowrap">
