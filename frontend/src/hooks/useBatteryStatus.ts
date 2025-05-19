@@ -8,11 +8,6 @@ interface BatteryStatus {
   connectionStatus: 'connecting' | 'connected' | 'disconnected' | 'error';
 }
 
-interface BatteryMessage {
-  category: string;
-  percentage: number;
-}
-
 export default function useBatteryStatus(userId?: number) {
   const [status, setStatus] = useState<BatteryStatus>({
     battery: null,
@@ -74,33 +69,20 @@ export default function useBatteryStatus(userId?: number) {
         // 디버깅을 위해 전체 메시지를 저장
         setStatus(prev => ({ ...prev, lastMessage: message }));
         
-        try {
-          // JSON 파싱 시도
-          const data = JSON.parse(message) as BatteryMessage;
-          
-          // 배터리 카테고리 메시지인 경우
-          if (data.category === 'battery_status' && typeof data.percentage === 'number') {
-            console.log(`🔋 배터리 상태 업데이트: ${data.percentage}%`);
-            setStatus(prev => ({ ...prev, battery: data.percentage }));
-          }
-        } catch (error) {
-          console.error('JSON 파싱 오류:', error);
-          
-          // JSON 파싱이 실패할 경우 기존 정규식 패턴도 시도
-          const batteryPattern1 = /배터리:\s*(\d+)/;
-          const batteryPattern2 = /받은 배터리 퍼센트:\s*(\d+)/;
-          const match1 = message.match(batteryPattern1);
-          const match2 = message.match(batteryPattern2);
-          
-          if (match1) {
-            const batteryValue = Number(match1[1]);
-            console.log(`🔋 배터리 상태 업데이트(정규식1): ${batteryValue}%`);
-            setStatus(prev => ({ ...prev, battery: batteryValue }));
-          } else if (match2) {
-            const batteryValue = Number(match2[1]);
-            console.log(`🔋 배터리 상태 업데이트(정규식2): ${batteryValue}%`);
-            setStatus(prev => ({ ...prev, battery: batteryValue }));
-          }
+        // 배터리 정보 추출 - 패턴 추가
+        const batteryPattern1 = /배터리:\s*(\d+)/;
+        const batteryPattern2 = /받은 배터리 퍼센트:\s*(\d+)/;
+        const match1 = message.match(batteryPattern1);
+        const match2 = message.match(batteryPattern2);
+        
+        if (match1) {
+          const batteryValue = Number(match1[1]);
+          console.log(`🔋 배터리 상태 업데이트: ${batteryValue}%`);
+          setStatus(prev => ({ ...prev, battery: batteryValue }));
+        } else if (match2) {
+          const batteryValue = Number(match2[1]);
+          console.log(`🔋 배터리 상태 업데이트: ${batteryValue}%`);
+          setStatus(prev => ({ ...prev, battery: batteryValue }));
         }
       };
 
