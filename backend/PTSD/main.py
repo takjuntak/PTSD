@@ -3,7 +3,7 @@ from fastapi import FastAPI
 from fastapi.security import OAuth2PasswordBearer
 from PTSD.exceptions import register_exception_handlers
 from PTSD.routers import notification_router, user_router, routine_router , devices_router
-from PTSD.routers import battery_status, battery_alert, manual_control
+from PTSD.routers import battery_status, battery_alert, robot_status, manual_control, auto_control
 from PTSD.utils import websocket_manager 
 from fastapi.openapi.utils import get_openapi
 from fastapi.middleware.cors import CORSMiddleware
@@ -11,10 +11,13 @@ from PTSD.core.database import Base, engine
 from PTSD.models import notifications, user, routines,devices
 from fastapi.openapi.utils import get_openapi
 from fastapi.openapi.models import OAuthFlows, OAuthFlowPassword
-from PTSD.utils.mqtt_battery_listener import start_mqtt_loop
+from PTSD.mqtt.mqtt_battery_listener import start_battery_mqtt_loop
+from PTSD.mqtt.mqtt_robot_listener import start_robot_mqtt_loop
 from PTSD.utils.notification_deletion_scheduler import start_notification_deletion_scheduler
-from PTSD.utils.auto_control_scheduler import start_auto_control_scheduler
+from PTSD.utils.routine_loader import load_routines_from_db
+from PTSD.utils.routine_scheduler import scheduler
 import threading
+import asyncio
 
 app = FastAPI(
     title="PTSD API",
@@ -25,11 +28,16 @@ app = FastAPI(
     openapi_url="/openapi.json",
 )
 
-
+origins = [
+    "https://k12d101.p.ssafy.io",     # 배포 서버 도메인
+    "http://localhost:3000",          # React 개발용 (http)
+    "http://127.0.0.1:3000",          # React 개발용 (localhost IP)
+    "http://localhost:5173",
+]
 # CORS 미들웨어 추가
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://k12d101.p.ssafy.io"],  # 정확히 지정
+    allow_origins=origins,  # 정확히 지정
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -52,17 +60,32 @@ app.include_router(websocket_manager.router)
 # ✅ 터틀봇 수동 조작 웹소켓 라우터 등록
 app.include_router(manual_control.router)
 
+# ✅ 로봇 상태 웹소켓 라우터 등록
+app.include_router(robot_status.router)
+
+# ✅ 자동 조작 웹소켓 라우터 등록
+app.include_router(auto_control.router)
+
 # ✅ 서버 시작 시 테이블 생성
 @app.on_event("startup")
 async def startup_event():
     Base.metadata.create_all(bind=engine)
     print("테이블 생성 완료!")
-    thread = threading.Thread(target=start_mqtt_loop)
-    thread.daemon = True
-    thread.start()
+    thread_battery = threading.Thread(target=start_battery_mqtt_loop)
+    thread_battery.daemon = True
+    thread_robot = threading.Thread(target=start_robot_mqtt_loop)
+    thread_robot.daemon = True
+    thread_battery.start()
+    thread_robot.start()
+
     # 앱 시작 시 알림 삭제 스케줄러 시작
     start_notification_deletion_scheduler()
-    start_auto_control_scheduler()
+    if not scheduler.running:
+        scheduler.start()
+        print("루틴 스케줄러 시작")
+    # DB에 저장된 활성 루틴을 불러와 APScheduler에 등록
+    load_routines_from_db()
+
 
 # ✅ Swagger에 Bearer Token 인증 정보 추가
 from fastapi.openapi.models import APIKey, APIKeyIn, SecuritySchemeType
