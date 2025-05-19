@@ -54,7 +54,10 @@ export default function useBatteryStatus(userId?: number) {
     console.log(`🟡 WebSocket 연결 시도 중... (userId: ${userId}, 시도: ${reconnectAttemptsRef.current + 1}/${MAX_RECONNECT_ATTEMPTS})`);
 
     try {
-      const ws = new WebSocket(`wss://k12d101.p.ssafy.io/ws/notifications/${userId}`);
+      const wsUrl = `wss://k12d101.p.ssafy.io/ws/notifications/${userId}`;
+      console.log(`🔌 WebSocket URL: ${wsUrl}`);
+      
+      const ws = new WebSocket(wsUrl);
       socketRef.current = ws;
 
       ws.onopen = () => {
@@ -65,14 +68,27 @@ export default function useBatteryStatus(userId?: number) {
           connectionStatus: 'connected'
         }));
         reconnectAttemptsRef.current = 0; // 연결 성공 시 재시도 카운트 초기화
+        
+        // 연결 후 핑 메시지 전송 (선택적)
+        try {
+          ws.send(JSON.stringify({ type: "ping" }));
+          console.log("🏓 Ping 메시지 전송됨");
+        } catch (error) {
+          console.error("🏓 Ping 메시지 전송 실패:", error);
+        }
       };
 
       ws.onmessage = (event) => {
         try {
-          console.log(event.data); // 디버깅
+          // 원시 데이터 로깅
+          console.log(`📥 WebSocket 원시 데이터:`, event.data);
+          
           // JSON 형식으로 파싱
-          const data: BatteryStatusResponse = JSON.parse(event.data);
-          console.log(`📩 WebSocket 메시지 수신:`, data);
+          const data = JSON.parse(event.data);
+          console.log(`📩 WebSocket 파싱된 데이터:`, data);
+          
+          // 데이터 구조 로깅
+          console.log('📋 데이터 구조:', Object.keys(data));
           
           // 메시지 카테고리 확인
           if (data.category === 'battery_status' && typeof data.percentage === 'number') {
@@ -83,12 +99,28 @@ export default function useBatteryStatus(userId?: number) {
               battery: data.percentage,
               lastMessage: data 
             }));
+          } else if (data.percentage !== undefined && typeof data.percentage === 'number') {
+            // category가 없지만 percentage는 있는 경우 (백엔드가 형식을 다르게 보낼 수도 있음)
+            console.log(`🔋 배터리 상태 업데이트 (대체 형식): ${data.percentage}%`);
+            
+            setStatus(prev => ({ 
+              ...prev, 
+              battery: data.percentage,
+              lastMessage: { category: 'battery_status', percentage: data.percentage } 
+            }));
           } else {
+            // 다른 형식의 메시지
+            console.log(`📩 알 수 없는 메시지 형식:`, data);
             // 다른 카테고리의 메시지도 저장
-            setStatus(prev => ({ ...prev, lastMessage: data }));
+            setStatus(prev => ({ ...prev, lastMessage: data as any }));
           }
         } catch (error) {
           console.error('📛 메시지 파싱 오류:', error, event.data);
+          // 파싱 불가능한 메시지 원본 저장
+          setStatus(prev => ({ 
+            ...prev, 
+            lastMessage: { category: 'unknown', percentage: 0, raw: event.data } as any 
+          }));
         }
       };
 
@@ -121,9 +153,25 @@ export default function useBatteryStatus(userId?: number) {
     }
   }, [userId]);
 
+  // 디버깅용: 백엔드에서 오는 메시지 형식이 확인되면 
+  // 이 함수를 통해 상태를 수동으로 업데이트할 수 있음
+  const manuallyUpdateBattery = (percentage: number) => {
+    console.log(`🔋 수동 배터리 업데이트: ${percentage}%`);
+    setStatus(prev => ({ 
+      ...prev, 
+      battery: percentage,
+      lastMessage: { category: 'battery_status', percentage }
+    }));
+  };
+
   // 웹소켓 연결 설정
   useEffect(() => {
     connectWebSocket();
+
+    // 개발 중 테스트를 위한 window 객체에 디버깅 함수 노출
+    // @ts-ignore
+    window.updateBattery = manuallyUpdateBattery;
+    console.log('🔧 디버깅: window.updateBattery(백분율) 함수로 배터리 상태를 수동으로 업데이트할 수 있습니다.');
 
     // 컴포넌트 언마운트 시 정리
     return () => {
@@ -135,6 +183,9 @@ export default function useBatteryStatus(userId?: number) {
       if (reconnectTimeoutRef.current) {
         window.clearTimeout(reconnectTimeoutRef.current);
       }
+      
+      // @ts-ignore
+      delete window.updateBattery;
     };
   }, [connectWebSocket]);
 
@@ -149,6 +200,7 @@ export default function useBatteryStatus(userId?: number) {
     isConnected: status.isConnected,
     lastMessage: status.lastMessage,
     connectionStatus: status.connectionStatus,
-    reconnect // 수동 재연결 함수
+    reconnect, // 수동 재연결 함수
+    manuallyUpdateBattery // 배터리 상태 수동 업데이트 함수
   };
 }
