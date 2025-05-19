@@ -54,7 +54,7 @@ export default function useBatteryStatus(userId?: number) {
     console.log(`🟡 WebSocket 연결 시도 중... (userId: ${userId}, 시도: ${reconnectAttemptsRef.current + 1}/${MAX_RECONNECT_ATTEMPTS})`);
 
     try {
-      const wsUrl = `wss://k12d101.p.ssafy.io/ws/notifications/${userId}`;
+      const wsUrl = `ws://k12d101.p.ssafy.io/ws/notifications/${userId}`;
       console.log(`🔌 WebSocket URL: ${wsUrl}`);
       
       const ws = new WebSocket(wsUrl);
