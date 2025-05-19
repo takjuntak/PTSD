@@ -1,9 +1,6 @@
 // MainPage.tsx
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-// import robotImage from '../assets/robot.png'; 
-// import ChargeIndicator from '../components/charge';
-// import Header from '../components/common/Header';
 import LocationMap from '../components/location/LocationMap'; 
 import useScroll from '../hooks/useScroll';
 import { useAuth } from '../hooks/useAuth';
@@ -29,12 +26,47 @@ const MainPage = () => {
       ? devices[0]
       : null;
 
+  // 디버깅을 위한 로그 추가
+  useEffect(() => {
+    console.log("🔍 User 정보:", user);
+    console.log("🔍 Current Device:", currentDevice);
+    console.log("🔍 WebSocket 연결에 사용될 userId:", user?.userId);
+  }, [user, currentDevice]);
+
   // 🔒 user 존재 + 디바이스 연결 시에만 WebSocket 연결
-  const { battery } = useBatteryStatus(user?.userId && currentDevice ? user.userId : undefined);
+  const { battery, connectionStatus, lastMessage } = useBatteryStatus(
+    user?.userId ? user.userId : undefined
+  );
+  
+  // 디버깅을 위한 추가 로그
+  useEffect(() => {
+    console.log("🔋 Battery Status:", battery);
+    console.log("🔌 Connection Status:", connectionStatus);
+    console.log("📩 Last Message:", lastMessage);
+  }, [battery, connectionStatus, lastMessage]);
 
   const handleMapClick = () => {
     navigate('/location');
   }
+
+  // 배터리 상태를 표시하는 부분에 더 많은 정보 추가
+  const renderBatteryInfo = () => {
+    if (battery === null) {
+      return (
+        <div className="text-sm text-gray-400">
+          <p>배터리 정보를 불러오는 중...</p>
+          <p className="text-xs text-gray-500 mt-1">연결 상태: {connectionStatus}</p>
+        </div>
+      );
+    }
+
+    return (
+      <div className="flex flex-col items-center">
+        <ChargeStatus percentage={battery} remainingTime="1시간 25분 남았습니다" />
+        <ChargeInfo percentage={battery} isCharging={isCharging} />
+      </div>
+    );
+  };
 
   return (
     <div className="flex flex-col w-full h-full">
@@ -52,14 +84,7 @@ const MainPage = () => {
         </div>
 
         <div className="flex justify-center mb-4">
-          {battery === null ? (
-            <p className="text-sm text-gray-400">배터리 정보를 불러오는 중...</p>
-          ) : (
-            <div className="flex flex-col items-center">
-              <ChargeStatus percentage={battery} remainingTime="1시간 25분 남았습니다" />
-              <ChargeInfo percentage={battery} isCharging={isCharging} />
-            </div>
-          )}
+          {renderBatteryInfo()}
         </div>
         
         <div className='cursor-pointer w-full max-w-md' onClick={handleMapClick}>
