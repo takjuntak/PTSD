@@ -17,6 +17,7 @@ from PTSD.utils.notification_deletion_scheduler import start_notification_deleti
 from PTSD.utils.routine_loader import load_routines_from_db
 from PTSD.utils.routine_scheduler import scheduler
 import threading
+import asyncio
 
 app = FastAPI(
     title="PTSD API",
