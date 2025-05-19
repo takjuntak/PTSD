@@ -13,9 +13,8 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     environment:
       - ENV=production
-      - MQTT_BROKER=mosquitto
-      - MQTT_PORT=1883
-
+      - MQTT_BROKER=mosquitto     
+      - MQTT_PORT=1883            
     restart: always
     networks:
       - app-network
