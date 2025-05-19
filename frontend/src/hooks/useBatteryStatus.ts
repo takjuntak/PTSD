@@ -69,6 +69,7 @@ export default function useBatteryStatus(userId?: number) {
 
       ws.onmessage = (event) => {
         try {
+          console.log(event.data); // 디버깅 코드 추가가
           // JSON 형식으로 파싱
           const data: BatteryStatusResponse = JSON.parse(event.data);
           console.log(`📩 WebSocket 메시지 수신:`, data);
