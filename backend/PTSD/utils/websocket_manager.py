@@ -2,6 +2,7 @@ from fastapi import APIRouter, WebSocket, WebSocketDisconnect
 from typing import Dict
 import asyncio
 import logging
+import asyncio
 
 router = APIRouter()
 
@@ -27,14 +28,18 @@ class ConnectionManager:
         logger.info(f"User {user_id} disconnected.")
 
     async def send_to_user(self, user_id: int, message: str):
+        user_id = int(user_id)
         async with self.lock:
+            logger.info(f"[🔔 DEBUG] 현재 연결된 유저 목록: {list(self.active_connections.keys())}")
+            logger.info(f"[🔔 DEBUG] user_id: {user_id} 로 메시지 전송 시도: {message}")
+
             websocket = self.active_connections.get(user_id)
             if websocket:
                 try:
-                    await websocket.send_text(message)
+                    await websocket.send_json(message)
                     logger.info(f"Message sent to user {user_id}: {message}")
                 except Exception as e:
-                    logger.error(f"Failed to send message to user {user_id}: {e}")
+                    logger.error(f"❌ Failed to send message to user {user_id}: {e}")
                     del self.active_connections[user_id]
             else:
                 logger.warning(f"User {user_id} not connected, message not sent.")
@@ -43,12 +48,19 @@ manager = ConnectionManager()
 
 @router.websocket("/ws/notifications/{user_id}")
 async def websocket_endpoint(websocket: WebSocket, user_id: int):
+    user_id = int(user_id)
     logger.info(f"Attempting to connect user {user_id}...")
     await manager.connect(websocket, user_id)
+
     try:
         while True:
-            await websocket.receive_text()  # 연결 유지용 (ping 대체)
-    except WebSocketDisconnect as e:
-        logger.info(f"User {user_id} disconnected unexpectedly.")
-        print(f"❌ WebSocket disconnected. Code: {e.code}, Reason: {e.reason}")
+            message = await websocket.receive_text()
+            if message == "ping":
+                await websocket.send_text("pong")
+    except WebSocketDisconnect:
+        logger.info(f"User {user_id} disconnected (WebSocketDisconnect).")
+    except Exception as e:
+        logger.error(f"Error in ping_listener for user {user_id}: {e}")
+    finally:
         await manager.disconnect(user_id)
+    
