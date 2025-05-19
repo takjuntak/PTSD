@@ -46,7 +46,7 @@ async def receive_battery_state(data: BatteryData):
     
     try:
         # 특정 사용자에게 메시지 전송
-        await manager.send_to_user(data.user_id, message)
+        await send_battery_status(data.user_id, message)
         logger.info(f"Battery data sent to user {data.user_id}: {message}")
         
         return ResponseModel(
