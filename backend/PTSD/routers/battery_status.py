@@ -53,7 +53,7 @@ async def receive_battery_state(data: BatteryData):
             isSuccess=True,
             code=200,
             message="배터리 상태가 성공적으로 전송되었습니다.",
-            result=None  # 알림 ID 등 결과 데이터가 있으면 여기에 삽입
+            result=message
         )
     except Exception as e:
         logger.error(f"사용자 {data.user_id}에게 배터리 상태 전송 실패: {e}")
