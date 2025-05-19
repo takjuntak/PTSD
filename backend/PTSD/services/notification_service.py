@@ -24,19 +24,19 @@ async def create_battery_notification(user_id: int, percentage: int, db: Session
         db.commit()
         db.refresh(notification)
 
-        # ws_message = {
-        #     "category": "battery_alert",
-        #     "notification": {
-        #         "notification_id": notification.notification_id,
-        #         "title": notification.title,
-        #         "message": notification.message,
-        #         "type": notification.type,
-        #         "timestamp": notification.timestamp.isoformat(),
-        #         "is_read": False
-        #     }
-        # }
+        ws_message = {
+            "category": "battery_alert",
+            "notification": {
+                "notification_id": notification.notification_id,
+                "title": notification.title,
+                "message": notification.message,
+                "type": notification.type,
+                "timestamp": notification.timestamp.isoformat(),
+                "is_read": False
+            }
+        }
         # 웹소켓 테스트용
-        ws_message = f"배터리 부족! 상태: {percentage}%"
+        # ws_message = f"배터리 부족! 상태: {percentage}%"
         await manager.send_to_user(user_id, ws_message)
 
         return notification.notification_id
