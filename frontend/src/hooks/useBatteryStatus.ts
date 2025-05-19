@@ -54,7 +54,7 @@ export default function useBatteryStatus(userId?: number) {
     console.log(`🟡 WebSocket 연결 시도 중... (userId: ${userId}, 시도: ${reconnectAttemptsRef.current + 1}/${MAX_RECONNECT_ATTEMPTS})`);
 
     try {
-      const ws = new WebSocket(`ws://k12d101.p.ssafy.io:8081/ws/notifications/${userId}`);
+      const ws = new WebSocket(`wss://k12d101.p.ssafy.io/ws/notifications/${userId}`);
       socketRef.current = ws;
 
       ws.onopen = () => {
@@ -69,7 +69,7 @@ export default function useBatteryStatus(userId?: number) {
 
       ws.onmessage = (event) => {
         try {
-          console.log(event.data); // 디버깅 코드 추가가
+          console.log(event.data); // 디버깅
           // JSON 형식으로 파싱
           const data: BatteryStatusResponse = JSON.parse(event.data);
           console.log(`📩 WebSocket 메시지 수신:`, data);
