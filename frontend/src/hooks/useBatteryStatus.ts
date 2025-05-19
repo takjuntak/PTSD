@@ -69,10 +69,18 @@ export default function useBatteryStatus(userId?: number) {
         // 디버깅을 위해 전체 메시지를 저장
         setStatus(prev => ({ ...prev, lastMessage: message }));
         
-        // 배터리 정보 추출
-        const batteryMatch = message.match(/배터리:\s*(\d+)/);
-        if (batteryMatch) {
-          const batteryValue = Number(batteryMatch[1]);
+        // 배터리 정보 추출 - 패턴 추가
+        const batteryPattern1 = /배터리:\s*(\d+)/;
+        const batteryPattern2 = /받은 배터리 퍼센트:\s*(\d+)/;
+        const match1 = message.match(batteryPattern1);
+        const match2 = message.match(batteryPattern2);
+        
+        if (match1) {
+          const batteryValue = Number(match1[1]);
+          console.log(`🔋 배터리 상태 업데이트: ${batteryValue}%`);
+          setStatus(prev => ({ ...prev, battery: batteryValue }));
+        } else if (match2) {
+          const batteryValue = Number(match2[1]);
           console.log(`🔋 배터리 상태 업데이트: ${batteryValue}%`);
           setStatus(prev => ({ ...prev, battery: batteryValue }));
         }
