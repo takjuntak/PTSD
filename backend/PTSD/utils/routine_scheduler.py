@@ -32,9 +32,12 @@ routine_status = {}
 def send_mqtt_command(command: str = "start"):
     """
     robot/auto-control 토픽으로 payload=command를 전송.
-    기본값은 'start'이며, 필요시 'complete' 등 다른 문자열을 넣어 호출.
+    기본값은 'start'이며,'complete' 커맨드인 경우 robot/home_back 토픽으로 전송.
     """
     topic = "robot/auto_control"
+    if command.strip().lower() == "complete":
+        topic = "robot/home_back"
+
     payload = command
     logger.info(f"[MQTT Publish] topic={topic}, payload={payload}")
 
