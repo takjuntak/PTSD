@@ -1,30 +1,15 @@
-// src/hooks/useBatteryStatus.ts 수정
+// src/hooks/useBatteryStatus.ts
 import { useEffect, useState, useRef, useCallback } from 'react';
 
-// 두 가지 메시지 형식을 모두 처리하기 위한 타입 정의
-interface BatteryStatusMessage {
+interface BatteryStatusResponse {
   category: string;
   percentage: number;
 }
 
-interface BatteryAlertMessage {
-  category: string;
-  notification: {
-    notification_id: number;
-    title: string;
-    message: string;
-    type: string;
-    timestamp: string;
-    is_read: boolean;
-  }
-}
-
-type WebSocketMessage = BatteryStatusMessage | BatteryAlertMessage;
-
 interface BatteryStatus {
   battery: number | null;
   isConnected: boolean;
-  lastMessage: WebSocketMessage | null;
+  lastMessage: BatteryStatusResponse | null;
   connectionStatus: 'connecting' | 'connected' | 'disconnected' | 'error';
 }
 
@@ -69,7 +54,7 @@ export default function useBatteryStatus(userId?: number) {
     console.log(`🟡 WebSocket 연결 시도 중... (userId: ${userId}, 시도: ${reconnectAttemptsRef.current + 1}/${MAX_RECONNECT_ATTEMPTS})`);
 
     try {
-      const ws = new WebSocket(`ws://k12d101.p.ssafy.io:8081/ws/notifications/${userId}`);
+      const ws = new WebSocket(`wss://k12d101.p.ssafy.io/ws/notifications/${userId}`);
       socketRef.current = ws;
 
       ws.onopen = () => {
@@ -84,41 +69,22 @@ export default function useBatteryStatus(userId?: number) {
 
       ws.onmessage = (event) => {
         try {
-          // 원본 메시지 로그 (디버깅용)
-          console.log(`📨 원본 메시지: ${event.data}`);
-          
+          console.log(event.data); // 디버깅
           // JSON 형식으로 파싱
-          const data = JSON.parse(event.data);
+          const data: BatteryStatusResponse = JSON.parse(event.data);
           console.log(`📩 WebSocket 메시지 수신:`, data);
           
-          // 배터리 정보 추출
-          let batteryPercentage: number | null = null;
-          
-          // case 1: 배터리 상태 메시지 처리 (백엔드의 send_battery_status 함수)
+          // 메시지 카테고리 확인
           if (data.category === 'battery_status' && typeof data.percentage === 'number') {
-            batteryPercentage = data.percentage;
-            console.log(`🔋 배터리 상태 업데이트: ${batteryPercentage}%`);
-          }
-          // case 2: 배터리 알림 메시지 처리 (백엔드의 create_battery_notification 함수)
-          else if (data.category === 'battery_alert' && data.notification) {
-            // 배터리 메시지에서 퍼센트 추출 (예: "배터리가 부족합니다. (15%)")
-            const percentMatch = data.notification.message.match(/\((\d+)%\)/);
-            if (percentMatch && percentMatch[1]) {
-              batteryPercentage = parseInt(percentMatch[1], 10);
-              console.log(`🔋 배터리 알림에서 추출한 상태: ${batteryPercentage}%`);
-            }
-          }
-          
-          // 배터리 상태 업데이트
-          if (batteryPercentage !== null) {
+            console.log(`🔋 배터리 상태 업데이트: ${data.percentage}%`);
+            
             setStatus(prev => ({ 
               ...prev, 
-              battery: batteryPercentage,
+              battery: data.percentage,
               lastMessage: data 
             }));
           } else {
-            // 다른 카테고리의 메시지도 저장 (처리는 하지 않음)
-            console.log(`ℹ️ 지원되지 않는 메시지 카테고리: ${data.category}`);
+            // 다른 카테고리의 메시지도 저장
             setStatus(prev => ({ ...prev, lastMessage: data }));
           }
         } catch (error) {
