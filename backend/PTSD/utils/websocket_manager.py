@@ -48,6 +48,7 @@ async def websocket_endpoint(websocket: WebSocket, user_id: int):
     try:
         while True:
             await websocket.receive_text()  # 연결 유지용 (ping 대체)
-    except WebSocketDisconnect:
+    except WebSocketDisconnect as e:
         logger.info(f"User {user_id} disconnected unexpectedly.")
+        print(f"❌ WebSocket disconnected. Code: {e.code}, Reason: {e.reason}")
         await manager.disconnect(user_id)
