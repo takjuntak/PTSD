@@ -16,7 +16,7 @@ from PTSD.mqtt.mqtt_robot_listener import start_robot_mqtt_loop
 from PTSD.utils.notification_deletion_scheduler import start_notification_deletion_scheduler
 from PTSD.utils.routine_loader import load_routines_from_db
 from PTSD.utils.routine_scheduler import scheduler
-from PTSD.utils.mqtt_object_detector import start_object_detector, stop_object_detector
+from PTSD.mqtt.mqtt_object_detector import start_object_detector, stop_object_detector
 
 import threading
 
