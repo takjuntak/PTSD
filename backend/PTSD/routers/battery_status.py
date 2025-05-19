@@ -1,7 +1,10 @@
-from fastapi import APIRouter, WebSocket, WebSocketDisconnect, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
+from sqlalchemy.orm import Session
 from pydantic import BaseModel
 from PTSD.utils.websocket_manager import manager  # 웹소켓 매니저
 from PTSD.schemas.response import ResponseModel
+from PTSD.core.database import get_db
+from PTSD.services.notification_service import send_battery_status
 import logging
 import math
 
@@ -41,9 +44,6 @@ async def receive_battery_state(data: BatteryData):
         "percentage": percentage_int
     }
     
-    # postman에서 테스트용
-    # message =f"배터리: {percentage_int}"
-
     try:
         # 특정 사용자에게 메시지 전송
         await manager.send_to_user(data.user_id, message)
