@@ -28,7 +28,7 @@ const DeviceConnectPage = () => {
   const fetchDevices = async () => {
     try {
       setIsLoading(true);
-      const response = await apiClient.get('/devices');
+      const response = await apiClient.get('/devices/');
       setDevices(response.data);
     } catch {
       setError('기기 목록을 불러오지 못했습니다.');
