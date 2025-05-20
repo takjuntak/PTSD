@@ -33,7 +33,7 @@ const PlayPage = () => {
             icon={<Battery size={24} className="text-app-blue" />}
             title="82%"
             subtitle="예상 남은 시간"
-            content="1시간 40분"
+            content="1시간 25분"
           />
           <StatusCard
             icon={<MapPin size={24} className="text-app-blue" />}
