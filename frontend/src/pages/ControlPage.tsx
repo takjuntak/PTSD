@@ -1,5 +1,4 @@
 // src/pages/ControlPage.tsx
-import { ChevronLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { useDevices } from '../hooks/useDevices';
@@ -135,14 +134,6 @@ const ControlPage = () => {
 
   return (
     <div className="w-full h-full flex flex-col">
-      <header className="p-4 px-3 flex items-center gap-3 sticky top-0 z-10">
-        <button onClick={() => navigate(-1)} className="border-none bg-transparent p-0">
-          <ChevronLeft size={24} color="#FFFFFF" />
-        </button>
-        <span className="text-xl font-bold" style={{ color: '#767676', fontFamily: 'inter' }}>
-          제어
-        </span>
-      </header>
 
       {/* 상태 메시지 표시 영역 (조건부 렌더링) */}
       {statusMessage && (

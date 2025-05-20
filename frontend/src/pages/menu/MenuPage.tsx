@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ChevronLeft } from 'lucide-react';
 import styles from './MenuPage.module.css';
 import LogoutModal from './LogoutModal';
 import { useAuth } from '../../hooks/useAuth';
@@ -22,7 +21,6 @@ const MenuPage: React.FC = () => {
   const [isDeleteOpen, setDeleteOpen] = useState(false);
   const { user } = useAuth();
 
-  const handleGoBack = () => navigate(-1);
   const handleDeviceConnect = () => navigate('/device-connect');
   const handleLogout = () => setLogoutOpen(true);
 
@@ -57,17 +55,6 @@ const MenuPage: React.FC = () => {
 
   return (
     <div className={styles.wrapper}>
-      <header className={styles.header}>
-        <button
-          onClick={handleGoBack}
-          className="text-white border-none bg-transparent p-0"
-          style={{ background: 'transparent' }}
-        >
-          <ChevronLeft size={24} />
-        </button>
-        <span className="text-xl font-bold" style={{ color: '#767676' }}>홈</span>
-      </header>
-
       <div className={styles.content} style={{ paddingBottom: '120px' }}>
         <section className={styles.profileSection}>
           <div className={styles.avatar} />

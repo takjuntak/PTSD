@@ -76,11 +76,11 @@ const TimerSelectPage = () => {
   };
 
   return (
-    <div className="w-full min-h-screen flex justify-center bg-gradient-to-b from-[#2E2E37] to-[#1D1E23] relative">
+    <div className="w-full h-full flex justify-center bg-gradient-to-b from-[#2E2E37] to-[#1D1E23] relative">
       <div className="w-full max-w-[412px] h-full px-4 overflow-hidden">
         {/* 헤더 */}
-        <header className="p-4 px-0 flex items-center gap-3 sticky top-0 z-10">
-          <button onClick={() => navigate(-1)} className="border-none bg-transparent p-0">
+        <header className="p-4 px-0 flex items-center gap-3 sticky top-0 z-10" onClick={() => navigate(-1)}>
+          <button className="border-none bg-transparent p-0">
             <ChevronLeft size={24} color="#FFFFFF" />
           </button>
           <span className="text-xl font-bold text-[#767676] font-inter">예약</span>

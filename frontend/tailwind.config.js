@@ -23,11 +23,11 @@ export default {
       keyframes: {
         breath: {
           '0%, 100%': { transform: 'scale(1)' },
-          '50%': { transform: 'scale(1.04)' },
+          '50%': { transform: 'scale(1.06)' },
         },
       },
       animation: {
-        breath: 'breath 2.4s ease-in-out infinite',
+        breath: 'breath 1.2s ease-in-out infinite',
       },
     },
   },

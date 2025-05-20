@@ -30,15 +30,14 @@ const RobotControlPage = () => {
 
   return (
     <div className="w-full h-full flex flex-col bg-app-dark text-white" style={{ backgroundColor: '#2E2E37' }}>
-      <header className="p-4 px-3 bg-app-dark flex items-center gap-3 border-b border-neutral-700 sticky top-0 z-10" style={{ backgroundColor: '#2E2E37' }}>
+      <header className="p-4 px-3 bg-app-dark flex items-center gap-3 border-b border-neutral-700 top-0 z-10" style={{ backgroundColor: '#2E2E37' }} onClick={() => navigate(-1)} >
         <button 
-          onClick={() => navigate(-1)} 
           className="text-white border-none bg-transparent p-0"
           style={{ background: 'transparent' }}
         >
           <ChevronLeft size={24} />
         </button>
-        <span className="text-xl font-bold">수동 조작</span>
+        <span className="text-xl font-bold text-[#767676]">제어</span>
       </header>
 
       <main className="flex-1 overflow-y-auto p-4 pb-20 flex flex-col items-center">

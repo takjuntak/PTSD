@@ -13,9 +13,8 @@ const ProductGuide = () => {
   return (
     <div className="w-full min-h-screen bg-gradient-to-b from-[#2E2E37] to-[#1D1E23] relative overflow-x-hidden">
     {/* 상단 헤더 */}
-      <header className="p-3 px-4 flex items-center gap-2 sticky top-0 z-10">
+      <header className="p-3 px-4 flex items-center gap-2 sticky top-0 z-10" onClick={() => navigate(-1)}>
         <button
-          onClick={() => navigate(-1)}
           className="text-white bg-transparent border-none p-0"
         >
           <ChevronLeft size={20} />

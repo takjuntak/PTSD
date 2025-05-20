@@ -23,7 +23,7 @@ const AlarmPage: React.FC = () => {
   const [localAlarms, setLocalAlarms] = useState<Alarm[]>(initialAlarms);
   const [currentPage, setCurrentPage] = useState(1);
   const [sortOrder, setSortOrder] = useState<'latest' | 'oldest'>('latest');
-  const itemsPerPage = 8;
+  const itemsPerPage = 5;
 
   useEffect(() => {
     setLocalAlarms(initialAlarms);
@@ -153,16 +153,15 @@ const AlarmPage: React.FC = () => {
 
   return (
     <div className="w-full h-full flex flex-col bg-app-dark text-white" style={{ backgroundColor: '#2E2E37' }}>
-      <header className="p-4 px-3 flex items-center justify-between sticky top-0 z-10" style={{ backgroundColor: '#2E2E37' }}>
+      <header className="p-4 px-3 flex items-center justify-between top-0 z-10" style={{ backgroundColor: '#2E2E37' }} onClick={handleGoBack}>
         <div className="flex items-center gap-3">
           <button 
-            onClick={handleGoBack} 
             className="text-white border-none bg-transparent p-0"
             style={{ background: 'transparent' }}
           >
             <ChevronLeft size={24} />
           </button>
-          <span className="text-lg font-bold text-[#767676]">알림</span>
+          <span className="text-lg font-bold text-[#767676]">메뉴</span>
         </div>
       </header>
 
