@@ -15,7 +15,7 @@ interface DeviceStatus {
 export const useDeviceStatus = () => {
   const [status, setStatus] = useState<DeviceStatus>({
     batteryPercentage: 82,
-    remainingTime: '1시간 40분',
+    remainingTime: '1시간 25분',
     location: '웨이트 존',
     cleaningStatus: '청소 중',
     estimatedEndTime: '오전 11:00',
