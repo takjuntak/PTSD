@@ -174,3 +174,4 @@ def delete_device(device_id: int, db: Session = Depends(get_db)):
     db.delete(db_device)
     db.commit()
     return
+#sss
