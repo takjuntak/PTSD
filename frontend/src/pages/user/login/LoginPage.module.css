@@ -29,9 +29,22 @@
     filter: drop-shadow(0px 0px 50px #1346B8);
   }
   
+  @keyframes neonPulse {
+    0% {
+      filter: drop-shadow(0 0 10px #00f) drop-shadow(0 0 20px #00f);
+    }
+    50% {
+      filter: drop-shadow(0 0 20px #0077ff) drop-shadow(0 0 40px #0077ff);
+    }
+    100% {
+      filter: drop-shadow(0 0 10px #00f) drop-shadow(0 0 10px #00f);
+    }
+  }
+  
   .logoImage {
     width: 260px;
     height: auto;
+    animation: neonPulse 2.5s infinite ease-in-out;
   }
   
   .formSection {
