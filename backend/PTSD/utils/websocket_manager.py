@@ -54,13 +54,18 @@ async def websocket_endpoint(websocket: WebSocket, user_id: int):
 
     try:
         while True:
+            await asyncio.sleep(60)
             message = await websocket.receive_text()
             if message == "ping":
                 await websocket.send_text("pong")
-    except WebSocketDisconnect:
-        logger.info(f"User {user_id} disconnected (WebSocketDisconnect).")
-    except Exception as e:
-        logger.error(f"Error in ping_listener for user {user_id}: {e}")
-    finally:
+    except asyncio.CancelledError:
+        # 서버 종료나 연결 취소 시 호출됨
+        logger.info(f"WebSocket task for user {user_id} cancelled. Cleaning up.")
         await manager.disconnect(user_id)
-    
+        raise  # 예외 재발생 시켜서 상위에서 종료 처리 가능
+    except WebSocketDisconnect:
+        manager.disconnect(user_id, websocket)
+        logger.info(f"User {user_id} disconnected")
+    except Exception as e:
+        manager.disconnect(user_id, websocket)
+        logger.error(f"WebSocket error for user {user_id}: {e}")
