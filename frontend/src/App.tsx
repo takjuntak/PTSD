@@ -24,7 +24,11 @@ import ProductGuide from './pages/menu/ProductGuide';
 import FAQPage from './pages/menu/FAQPage';
 import PrivacyPage from './pages/menu/PrivacyPage';
 
+import useScrollToTop from './hooks/useScrollToTop';
+
 function AppContent() {
+  useScrollToTop();
+
   const location = useLocation();
   const hideNavPaths = ['/login', '/signup'];
   const hideHeaderPaths = ['/login', '/signup', '/schedule'];
@@ -39,7 +43,7 @@ function AppContent() {
         </div>
       )}
 
-      <div className="flex-1 w-full overflow-y-auto" style={{ paddingTop: !shouldHideHeader ? 10 : 0 }}>
+      <div className="flex-1 w-full overflow-y-auto main-scroll-container" style={{ paddingTop: !shouldHideHeader ? 10 : 0 }}>
         <AnimatePresence mode="wait">
           <motion.div
             key={location.pathname}

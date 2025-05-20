@@ -74,11 +74,7 @@ export default function TimeSelectPage() {
         : minuteTouchStartY.current - y;
 
     if (Math.abs(diff) > 10) {
-      if (diff > 0) {
-        handleWheel(type, 1);
-      } else {
-        handleWheel(type, -1);
-      }
+      handleWheel(type, diff > 0 ? 1 : -1);
       if (type === 'ampm') amPmTouchStartY.current = y;
       if (type === 'hour') hourTouchStartY.current = y;
       if (type === 'minute') minuteTouchStartY.current = y;
@@ -86,356 +82,134 @@ export default function TimeSelectPage() {
   };
 
   const handleSave = async () => {
-    // 현재 선택된 시간 계산
     const now = new Date();
-    const startTime = new Date(now);
-    
-    // 시간 설정
+    const tomorrow = new Date(now);
+    tomorrow.setDate(now.getDate() + 1);
+
     let actualHour = hour;
-    if (!isAM && hour !== 12) actualHour += 12;
     if (isAM && hour === 12) actualHour = 0;
-    
+    else if (!isAM && hour !== 12) actualHour += 12;
+
+    let startTime = new Date();
     startTime.setHours(actualHour, minute, 0, 0);
-    
-    // 선택된 요일이 있는지 확인
-    const hasSelectedDays = selectedDays.some(selected => selected);
-    
-    // 루틴 타입 결정
-    const routineType = hasSelectedDays ? 'daily' : 'once';
-    
-    // 선택된 요일 인덱스 배열 생성
-    const repeatDays = selectedDays
-      .map((selected, index) => selected ? index : -1)
-      .filter(index => index !== -1);
-    
+
+    if (!selectedDays.some(Boolean)) {
+      startTime.setDate(startTime.getDate() + 1);
+      if (startTime <= now) {
+        startTime.setDate(startTime.getDate() + 1);
+      }
+    }
+
+    const routineType = selectedDays.some(Boolean) ? 'daily' : 'once';
+    const repeatDays = selectedDays.map((selected, i) => selected ? i : -1).filter(i => i !== -1);
+
     try {
       const success = await addRoutine({
         start_time: startTime.toISOString(),
         routine_type: routineType,
-        iswork: enabled, 
-        repeat_days: repeatDays
+        iswork: enabled,
+        repeat_days: repeatDays,
       });
-      
-      if (success) {
-        navigate('/schedule');
-      } else {
-        alert('저장 중 오류가 발생했습니다.');
-      }
+      if (success) navigate('/schedule');
+      else alert('저장 중 오류가 발생했습니다.');
     } catch (error) {
-      console.error('Failed to save routine:', error);
       alert('저장 중 오류가 발생했습니다.');
     }
   };
 
   return (
-    <div className="schedule-content">
-      <div className="time-box">
-        <div className="scroll-container">
-          {/* 오전/오후 */}
+    <div className="w-full h-full mx-auto overflow-hidden">
+      <div className="bg-[#373738] p-6 rounded-[10px] mb-2 min-h-[160px] max-h-[280px] flex flex-col justify-center">
+        <div className="flex justify-center items-center gap-5">
+          {/* AM/PM */}
           <div
-            className="scroll-column"
+            className="flex flex-col items-center h-[90px] overflow-hidden mr-6"
             onWheel={e => handleWheel('ampm', e.deltaY)}
             onTouchStart={e => handleTouchStart('ampm', e)}
             onTouchMove={e => handleTouchMove('ampm', e)}
           >
-            <div className="scroll-list">
-              {isAM ? null : <div className="faded-text">오전</div>}
-              <div className="selected-text">{isAM ? '오전' : '오후'}</div>
-              {isAM ? <div className="faded-text">오후</div> : null}
-            </div>
+            <div className="text-[20px] text-[#888] leading-[30px]">{isAM ? null : '오전'}</div>
+            <div className="text-[32px] text-white font-bold leading-[30px]">{isAM ? '오전' : '오후'}</div>
+            <div className="text-[20px] text-[#888] leading-[30px]">{isAM ? '오후' : null}</div>
           </div>
-
-          <div className="gap" />
 
           {/* 시간 */}
-          <div
-            className="scroll-column"
-            onWheel={e => handleWheel('hour', e.deltaY)}
-            onTouchStart={e => handleTouchStart('hour', e)}
-            onTouchMove={e => handleTouchMove('hour', e)}
-          >
-            <div className="scroll-list">
-              <div className="faded-text">{hour === 1 ? 12 : hour - 1}</div>
-              <div className="selected-text">{hour}</div>
-              <div className="faded-text">{hour === 12 ? 1 : hour + 1}</div>
-            </div>
+           <div
+              className="flex flex-col items-center h-[90px] overflow-hidden"
+              onWheel={e => handleWheel('hour', e.deltaY)}
+              onTouchStart={e => handleTouchStart('hour', e)}
+              onTouchMove={e => handleTouchMove('hour', e)}
+            >
+            <div className="text-[20px] text-[#888] leading-[30px]">{hour === 1 ? 12 : hour - 1}</div>
+            <div className="text-[32px] text-white font-bold leading-[30px]">{hour}</div>
+            <div className="text-[20px] text-[#888] leading-[30px]">{hour === 12 ? 1 : hour + 1}</div>
           </div>
 
-          <div className="colon">:</div>
+          {/* ":" 기호를 시간과 분 사이에 위치 */}
+          <div className="text-[32px] text-white font-bold mx-2">:</div>
 
           {/* 분 */}
           <div
-            className="scroll-column"
+            className="flex flex-col items-center h-[90px] overflow-hidden"
             onWheel={e => handleWheel('minute', e.deltaY)}
             onTouchStart={e => handleTouchStart('minute', e)}
             onTouchMove={e => handleTouchMove('minute', e)}
           >
-            <div className="scroll-list">
-              <div className="faded-text">{minute === 0 ? '59' : (minute - 1).toString().padStart(2, '0')}</div>
-              <div className="selected-text">{minute.toString().padStart(2, '0')}</div>
-              <div className="faded-text">{minute === 59 ? '00' : (minute + 1).toString().padStart(2, '0')}</div>
-            </div>
+            <div className="text-[20px] text-[#888] leading-[30px]">{minute === 0 ? '59' : (minute - 1).toString().padStart(2, '0')}</div>
+            <div className="text-[32px] text-white font-bold leading-[30px]">{minute.toString().padStart(2, '0')}</div>
+            <div className="text-[20px] text-[#888] leading-[30px]">{minute === 59 ? '00' : (minute + 1).toString().padStart(2, '0')}</div>
           </div>
         </div>
+
       </div>
 
-      {/* 옵션 선택 */}
-      <div className="option-box">
-        <div className="date-display">내일 - {defaultDate}</div>
+      <div className="bg-[#373738] p-6 rounded-[10px] h-[420px] flex flex-col">
+        <div className="text-left mb-5">내일 - {defaultDate}</div>
 
-        <div className="day-select">
+        <div className="flex justify-between mb-6">
           {dayLabels.map((day, idx) => (
             <button
               key={idx}
-              className={`day-btn ${selectedDays[idx] ? 'active' : ''} ${day === '일' ? 'sun' : day === '토' ? 'sat' : ''}`}
               onClick={() => toggleDay(idx)}
+              className={`w-10 h-10 text-sm rounded-full flex items-center justify-center border-2 box-border bg-transparent
+                ${selectedDays[idx] ? 'border-[#0098FF]' : 'border-transparent'}
+                ${day === '일' ? 'text-[#FF0044]' : day === '토' ? 'text-[#0098FF]' : 'text-white'}`}
             >
               {day}
             </button>
           ))}
         </div>
 
-        <div className="separator" />
 
-        <div className="toggle-section">
-          <div className="toggle-item">
-            <div className="toggle-text">
-              <div className="toggle-title">예약 켜짐</div>
-              <div className="toggle-desc">설정된 청소 시간이 적용됩니다.</div>
-            </div>
-            <label className="switch">
-              <input type="checkbox" checked={enabled} onChange={e => setEnabled(e.target.checked)} />
-              <span className="slider" />
-            </label>
-          </div>
+        <div className="border-t border-dashed border-[#666]" />
 
-          <div className="toggle-item">
-            <div className="toggle-text">
-              <div className="toggle-title">공휴일에는 끄기</div>
-              <div className="toggle-desc">대체 및 임시 공휴일에는 끄기</div>
+        <div className="flex flex-col gap-10 mt-8">
+          {[{ title: '예약 켜짐', desc: '설정된 청소 시간이 적용됩니다.', val: enabled, set: setEnabled },
+            { title: '공휴일에는 끄기', desc: '대체 및 임시 공휴일에는 끄기', val: skipHolidays, set: setSkipHolidays }].map((item, i) => (
+            <div key={i} className="flex justify-between items-center">
+              <div className="text-left">
+                <div className="text-white font-bold text-base">{item.title}</div>
+                <div className="text-[#0098FF] text-xs mt-1">{item.desc}</div>
+              </div>
+              <label className="relative w-[50px] h-[24px]">
+                <input type="checkbox" checked={item.val} onChange={e => item.set(e.target.checked)} className="opacity-0 w-0 h-0" />
+                <span className="absolute inset-0 bg-[#555] rounded-full cursor-pointer transition-all duration-300 before:content-[''] before:absolute before:h-[18px] before:w-[18px] before:left-[3px] before:bottom-[3px] before:bg-white before:rounded-full before:transition-all before:duration-300 peer-checked:bg-[#0098FF] peer-checked:before:translate-x-[26px]" />
+              </label>
             </div>
-            <label className="switch">
-              <input type="checkbox" checked={skipHolidays} onChange={e => setSkipHolidays(e.target.checked)} />
-              <span className="slider" />
-            </label>
-          </div>
+          ))}
         </div>
 
-        <div className="button-row">
-          <button className="cancel-btn" onClick={() => navigate('/schedule')}>취소</button>
-          <button className="save-btn" onClick={handleSave}>저장</button>
+        <div className="flex justify-center gap-3 mt-8 pt-4">
+          <button
+            className="w-[156px] h-[46px] rounded-[10px] text-lg font-bold font-[Montserrat] leading-[22px] flex items-center justify-center shadow-md cursor-pointer border border-[#617BEE] bg-white text-[#617BEE]"
+            onClick={() => navigate('/schedule')}
+          >취소</button>
+          <button
+            className="w-[156px] h-[46px] rounded-[10px] text-lg font-bold font-[Montserrat] leading-[22px] flex items-center justify-center shadow-md cursor-pointer bg-[#617BEE] text-white"
+            onClick={handleSave}
+          >저장</button>
         </div>
       </div>
-
-      <style>{`
-        html, body {
-          height: 100%;
-          margin: 0;
-          padding: 0;
-          overflow: hidden;
-          touch-action: none;
-        }
-
-        .schedule-content {
-          max-width: 600px;
-          margin: 0 auto;
-          padding-bottom: 150px;
-          height: 800px;
-        }
-        .time-box, .option-box {
-          background: #373738;
-          flex: 1;
-          padding: 26px;
-          border-radius: 10px;
-          margin-bottom: 16px;
-        }
-        .time-box {
-          margin-bottom: 10px;
-          height: 25vh; /* 화면 높이의 25% */
-          min-height: 180px; /* 최소 180px 보장 */
-          max-height: 280px; /* 최대 280px 제한 */
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-        }
-        .option-box {
-          height: 430px;
-          padding: 26px 26px 26px 26px;
-          display: flex;
-          flex-direction: column;
-        }
-        .date-display {
-          text-align: left;
-          margin-bottom: 20px;
-        }
-        .scroll-container {
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          gap: 20px;
-        }
-        .scroll-column {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          height: 90px;
-          overflow: hidden;
-        }
-        .selected-text {
-          font-size: 32px;
-          color: white;
-          font-weight: bold;
-          line-height: 30px;
-        }
-        .faded-text {
-          font-size: 20px;
-          color: #888;
-          line-height: 30px;
-        }
-        .colon {
-          font-size: 32px;
-          color: white;
-          font-weight: bold;
-        }
-        .gap {
-          width: 20px;
-        }
-        .day-select {
-          display: flex;
-          flex-wrap: nowrap;
-          justify-content: center;
-          gap: 0px;
-          margin-bottom: 25px;
-        }
-        .day-btn {
-          width: 40px;
-          height: 40px;
-          border: 2px solid transparent; /* 항상 2px 테두리를 가지지만 기본은 투명 */
-          background: transparent;
-          color: white; /* 기본 글자색 */
-          font-size: 14px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          border-radius: 50%;
-          box-sizing: border-box; /* 테두리를 크기에 포함 */
-        }
-
-        .day-btn.active {
-          border-color: #0098FF; /* 활성화 상태에서 테두리 색상만 변경 */
-        }
-        .day-btn.sun {
-          color: #FF0044;
-        }
-        .day-btn.sat {
-          color: #0098FF;
-        }
-        .separator {
-          border-top: 1px dashed #666;
-          margin: 0;
-        }
-        .toggle-section {
-          display: flex;
-          flex-direction: column;
-          gap: 40px;
-          margin-bottom: 0; /* 기존 여백 제거 */
-          margin-top: 34px;
-
-        }
-        .toggle-item {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-        }
-        .toggle-text {
-          text-align: left;
-        }
-        .toggle-title {
-          font-weight: bold;
-          font-size: 16px;
-          color: white;
-        }
-        .toggle-desc {
-          font-size: 12px;
-          color: #0098FF;
-          margin-top: 4px;
-        }
-        .switch {
-          position: relative;
-          width: 50px;
-          height: 24px;
-        }
-        .switch input {
-          opacity: 0;
-          width: 0;
-          height: 0;
-        }
-        .slider {
-          position: absolute;
-          top: 0;
-          left: 0;
-          right: 0;
-          bottom: 0;
-          background-color: #555;
-          border-radius: 24px;
-          cursor: pointer;
-          transition: 0.4s;
-        }
-        .slider:before {
-          position: absolute;
-          content: "";
-          height: 18px;
-          width: 18px;
-          left: 3px;
-          bottom: 3px;
-          background-color: white;
-          border-radius: 50%;
-          transition: 0.4s;
-        }
-        input:checked + .slider {
-          background-color: #0098FF;
-        }
-        input:checked + .slider:before {
-          transform: translateX(26px);
-        }
-        .button-row {
-          display: flex;
-          justify-content: center;
-          gap: 12px;
-          margin-top: 30px;
-          padding-top: 16px; /* ← 기존 36px → 16px 으로 줄임 */
-        }
-
-        .cancel-btn, .save-btn {
-          width: 156px;
-          height: 46px;
-          border-radius: 10px;
-          font-size: 18px;
-          font-weight: 700;
-          font-family: 'Montserrat';
-          line-height: 22px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.25);
-          cursor: pointer;
-          border: none;
-        }
-
-        /* 취소 버튼 스타일 */
-        .cancel-btn {
-          background: #FFFFFF;
-          color: #617BEE;
-          border: 0.5px solid #617BEE;
-        }
-
-        /* 저장 버튼 스타일 */
-        .save-btn {
-          background: #617BEE;
-          color: #FFFFFF;
-        }
-
-      `}</style>
     </div>
   );
 }

@@ -105,9 +105,11 @@ const DeviceConnectPage = () => {
         </div>
       )}
 
-      <header className="p-3 px-4 flex items-center gap-2 sticky top-0 z-10">
+      <header 
+        className="p-3 px-4 flex items-center gap-2 sticky top-0 z-10"
+        onClick={() => (currentView === 'list' ? navigate(-1) : setCurrentView('list'))}
+      >
         <button
-          onClick={() => (currentView === 'list' ? navigate(-1) : setCurrentView('list'))}
           className="text-white bg-transparent border-none p-0 m-0 shadow-none outline-none active:bg-transparent focus:bg-transparent"
         >
           <ChevronLeft size={20} />

@@ -39,6 +39,10 @@ const LocationPage = () => {
     setIsTracking(true);
   };
 
+  const handlePlayClick = () => {
+    navigate('/robot-control')
+  }
+
   return (
     <div className="relative w-full min-h-screen bg-gradient-to-b from-[#2E2E37] to-[#1D1E23] text-white font-inter overflow-hidden">
 
@@ -54,7 +58,10 @@ const LocationPage = () => {
       {/* 버튼 3개 */}
       <div className="absolute top-[80px] w-full flex justify-center gap-2">
         {/* 동작 시작 */}
-        <div className="w-[110px] h-[46px] bg-[#373738] rounded-[10px] shadow-md flex flex-row items-center justify-center gap-2">
+        <div 
+          className="w-[110px] h-[46px] bg-[#373738] rounded-[10px] shadow-md flex flex-row items-center justify-center gap-2"
+          onClick={handlePlayClick}
+        >
           <img src={rocketIcon} alt="동작" className="w-5 h-5" />
           <span className="text-[12px]">동작 시작</span>
         </div>
