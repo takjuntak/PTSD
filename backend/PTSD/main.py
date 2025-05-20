@@ -16,6 +16,8 @@ from PTSD.mqtt.mqtt_robot_listener import start_robot_mqtt_loop
 from PTSD.utils.notification_deletion_scheduler import start_notification_deletion_scheduler
 from PTSD.utils.routine_loader import load_routines_from_db
 from PTSD.utils.routine_scheduler import scheduler
+from PTSD.mqtt.mqtt_object_detector import start_object_detector, stop_object_detector
+
 import threading
 import asyncio
 
@@ -88,6 +90,15 @@ async def startup_event():
         print("루틴 스케줄러 시작")
     # DB에 저장된 활성 루틴을 불러와 APScheduler에 등록
     load_routines_from_db()
+    
+    # 객체 감지기 시작 (이 한 줄만 추가)
+    start_object_detector()
+
+# 서버 종료 시 리소스 정리를 위한 shutdown 이벤트 핸들러 추가
+@app.on_event("shutdown")
+async def shutdown_event():
+    # 객체 감지기 중지
+    stop_object_detector()
 
 
 # ✅ Swagger에 Bearer Token 인증 정보 추가
