@@ -1,3 +1,4 @@
+
 services:
   backend:
     build:
@@ -12,11 +13,13 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     environment:
       - ENV=production
+      - MQTT_BROKER=mosquitto                   
+      - MQTT_PORT=1883            
     restart: always
     networks:
       - app-network
 
-  mosquitto:  
+  mosquitto:
     image: eclipse-mosquitto:2
     container_name: mosquitto
     ports:
@@ -39,3 +42,4 @@ volumes:
   jenkins-data:
   mosquitto-data:
   mosquitto-log:
+

@@ -1,7 +1,10 @@
-from fastapi import APIRouter, WebSocket, WebSocketDisconnect, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
+from sqlalchemy.orm import Session
 from pydantic import BaseModel
 from PTSD.utils.websocket_manager import manager  # 웹소켓 매니저
 from PTSD.schemas.response import ResponseModel
+from PTSD.core.database import get_db
+from PTSD.services.notification_service import send_battery_status
 import logging
 import math
 
@@ -36,24 +39,17 @@ class BatteryData(BaseModel):
 )
 async def receive_battery_state(data: BatteryData):
     percentage_int = math.floor(data.percentage)  # 소수점 아래 내림 처리
-    message ={
-        "category": "battery_status",
-        "percentage": percentage_int
-    }
-    
-    # postman에서 테스트용
-    # message =f"배터리: {percentage_int}"
 
     try:
         # 특정 사용자에게 메시지 전송
-        await manager.send_to_user(data.user_id, message)
-        logger.info(f"Battery data sent to user {data.user_id}: {message}")
+        await send_battery_status(data.user_id, percentage_int)
+        logger.info(f"Battery data sent to user {data.user_id}: {percentage_int}")
         
         return ResponseModel(
             isSuccess=True,
             code=200,
             message="배터리 상태가 성공적으로 전송되었습니다.",
-            result=None  # 알림 ID 등 결과 데이터가 있으면 여기에 삽입
+            result=None
         )
     except Exception as e:
         logger.error(f"사용자 {data.user_id}에게 배터리 상태 전송 실패: {e}")

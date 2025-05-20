@@ -29,10 +29,17 @@ logging.basicConfig(level=logging.INFO)
 routine_status = {}
 
 # MQTT 명령 전송 함수
-def send_mqtt_command(routine_id: int = None):
-    topic = "robot/auto-control"
-    payload = "start"
-    logger.info(f"[스케줄 실행] MQTT Publish: topic={topic}, payload={payload}")
+def send_mqtt_command(command: str = "start"):
+    """
+    robot/auto-control 토픽으로 payload=command를 전송.
+    기본값은 'start'이며,'complete' 커맨드인 경우 robot/home_back 토픽으로 전송.
+    """
+    topic = "robot/auto_control"
+    if command.strip().lower() == "complete":
+        topic = "robot/home_back"
+
+    payload = command
+    logger.info(f"[MQTT Publish] topic={topic}, payload={payload}")
 
     publish.single(
         topic=topic,
@@ -106,7 +113,7 @@ def schedule_routine(
     now = datetime.now(seoul)
 
     if routine_type == "once":
-        # start_time이 naive datetime이면 Asia/Seoul timezone 지정 (권장)
+        # start_time이 naive datetime이면 Asia/Seoul timezone 지정
         if start_time.tzinfo is None:
             start_time = seoul.localize(start_time)
 
@@ -123,7 +130,7 @@ def schedule_routine(
             logger.error(f"[오류] repeat_days가 비어 있습니다.")
             return
         try:
-            cron_days = [(day - 1) % 7 for day in repeat_days]
+            cron_days = [(int(day) - 1) % 7 for day in repeat_days]
             cron_days_str = ",".join(str(d) for d in cron_days)
             logger.info(f"[루틴 요일] {repeat_days} → {cron_days_str}")
         except ValueError:
