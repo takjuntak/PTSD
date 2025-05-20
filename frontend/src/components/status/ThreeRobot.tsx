@@ -23,7 +23,7 @@ const RobotModel = ({ scale = 1.0 }: { scale?: number }) => {
   return <primitive ref={group} object={scene} scale={scale} />;
 };
 
-const ThreeRobot = ({ scale = 1.0, className = 'w-64 h-64' }: ThreeRobotProps) => (
+const ThreeRobot = ({ scale = 1.0, className = 'w-56 h-56' }: ThreeRobotProps) => (
   <div className={className}>
     <Canvas camera={{ position: [0, 1, 5], fov: 30 }} style={{ width: '100%', height: '100%' }}>
       <ambientLight intensity={0.6} />

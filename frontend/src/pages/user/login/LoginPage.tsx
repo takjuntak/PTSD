@@ -53,22 +53,22 @@ export default function LoginPage() {
         </div>
 
         <div className={styles.formSection}>
-          <label className={styles.label}>이메일</label>
           <div className={styles.inputWrapper}>
             <input
               type="email"
               className={styles.inputBox}
               value={email}
+              placeholder='E-mail'
               onChange={(e) => setEmail(e.target.value)}
             />
           </div>
 
-          <label className={styles.label}>비밀번호</label>
           <div className={`${styles.inputWrapper} ${styles.passwordWrapper}`}>
             <input
               type={showPassword ? 'text' : 'password'}
               className={styles.inputBox}
               value={password}
+              placeholder='Password'
               onChange={(e) => setPassword(e.target.value)}
             />
             <img
