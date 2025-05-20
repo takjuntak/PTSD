@@ -17,7 +17,13 @@ import { useAuth } from '../hooks/useAuth';
 const AlarmPage: React.FC = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { alarms: initialAlarms, loading, error, markAllAsRead } = useAlarms();
+  const {
+    alarms: initialAlarms,
+    loading,
+    error,
+    markAsRead,
+    markAllAsRead
+  } = useAlarms();
   const { notification } = useNotificationSocket(user?.userId);
 
   const [localAlarms, setLocalAlarms] = useState<Alarm[]>(initialAlarms);
@@ -70,6 +76,15 @@ const AlarmPage: React.FC = () => {
 
   const handleGoBack = () => {
     navigate(-1);
+  };
+
+  const handleAlarmClick = async (id: number) => {
+    await markAsRead(id);
+    setLocalAlarms((prev) =>
+      prev.map((alarm) =>
+        alarm.id === id ? { ...alarm, isRead: false } : alarm
+      )
+    );
   };
 
   const getIconByType = (type: Alarm['type']) => {
@@ -196,7 +211,11 @@ const AlarmPage: React.FC = () => {
           ) : (
             <div>
               {paginatedAlarms.map((alarm) => (
-                <div key={alarm.id} className={`flex items-start gap-3 p-4 border-b border-gray-600 ${alarm.isRead ? 'opacity-60' : ''}`}>
+                <div
+                  key={alarm.id}
+                  className={`flex items-start gap-3 p-4 border-b border-gray-600 ${alarm.isRead ? 'opacity-60' : ''}`}
+                  onClick={() => handleAlarmClick(alarm.id)}
+                >
                   {getIconByType(alarm.type)}
                   <div className="flex-1">
                     <div className="flex justify-between items-center">
