@@ -6,6 +6,7 @@ import menuImage from '../../assets/header/header-more.svg';
 import { ChevronDown, Check, Settings } from 'lucide-react';
 import apiClient from '../../api/axios';
 import useAlarms from '../../hooks/useAlarms';
+import useNotificationSocket from '../../hooks/useNotificationSocket';
 
 interface Device {
   device_id: number;
@@ -17,9 +18,15 @@ const AppHeader: React.FC = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [devices, setDevices] = useState<Device[]>([]);
   const [selectedDevice, setSelectedDevice] = useState<Device | null>(null);
-  const { hasUnread } = useAlarms();
 
-  const fetchDevices = async () => {
+  const { alarms } = useAlarms(); // alarms 배열 직접 사용
+  const { notification } = useNotificationSocket(); // 실시간 알림도 감지
+
+  const hasUnread =
+    alarms.some(alarm => !alarm.isRead) ||
+    (!!notification && !notification.notification.is_read && !alarms.some(a => a.id === notification.notification.notification_id));
+  
+    const fetchDevices = async () => {
     try {
       const response = await apiClient.get('/devices');
       const deviceList: Device[] = response.data;
@@ -53,7 +60,7 @@ const AppHeader: React.FC = () => {
         left: 0,
         right: 0,
         backgroundColor: '#2E2E37',
-        height: 64,
+        height: 58,
         display: 'flex',
         justifyContent: 'center',
         zIndex: 999,
@@ -90,8 +97,8 @@ const AppHeader: React.FC = () => {
 
         {/* 아이콘 영역 */}
         <div style={{ display: 'flex', gap: 20 }}>
-          <img src={plusImage} alt="추가" width={24} height={24} />
-          <div style={{ position: 'relative', width: 24, height: 24 }}>
+          <img src={plusImage} alt="추가" width={20} height={20} />
+          <div style={{ position: 'relative', width: 20, height: 20 }}>
             <img
               src={bellImage}
               alt="알림"
@@ -114,7 +121,7 @@ const AppHeader: React.FC = () => {
               />
             )}
           </div>
-          <img src={menuImage} alt="더보기" width={24} height={24} />
+          <img src={menuImage} alt="더보기" width={20} height={20} />
         </div>
 
         {/* 드롭다운 메뉴 */}
