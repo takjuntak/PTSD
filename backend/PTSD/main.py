@@ -92,8 +92,12 @@ async def startup_event():
     # DB에 저장된 활성 루틴을 불러와 APScheduler에 등록
     load_routines_from_db()
     
-    # 객체 감지기 시작 (이 한 줄만 추가)
-    start_object_detector()
+    # 🚀 객체 감지기도 스레드로 동작하도록 수정
+    thread_objdet = threading.Thread(target=start_object_detector, daemon=True)
+    thread_objdet.start()
+    
+    # # 객체 감지기 시작 (이 한 줄만 추가)
+    # start_object_detector()
 
 # 서버 종료 시 리소스 정리를 위한 shutdown 이벤트 핸들러 추가
 @app.on_event("shutdown")
