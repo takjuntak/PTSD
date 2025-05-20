@@ -35,6 +35,7 @@ const AlarmPage: React.FC = () => {
     setLocalAlarms(initialAlarms);
   }, [initialAlarms]);
 
+  // notification이 도착하면 알림 목록에 추가
   useEffect(() => {
     if (notification) {
       const newAlarm: Alarm = {
@@ -46,14 +47,18 @@ const AlarmPage: React.FC = () => {
       };
 
       setLocalAlarms((prev) => {
+        // 중복 방지 확인
         const exists = prev.some((alarm) => alarm.id === newAlarm.id);
         return exists ? prev : [newAlarm, ...prev];
       });
 
+      // 새 알림이 도착하면 첫 페이지로 이동하고 스크롤을 맨 위로 올림
+      setCurrentPage(1);
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   }, [notification]);
 
+  // 브라우저가 포커스를 잃었을 때도 알림 표시
   useEffect(() => {
     if (notification && document.visibilityState !== 'visible') {
       if (Notification.permission === 'granted') {
