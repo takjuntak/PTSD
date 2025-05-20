@@ -6,6 +6,11 @@ import React, { useEffect } from 'react';
 import { useRobotWebSocket } from '../hooks/useRobotWebSocket';
 import { useDevices } from '../hooks/useDevices';
 
+import pickUpImage from '../assets/control/pickup.svg'
+import dropImage from '../assets/control/drop.svg'
+import upImage from '../assets/control/up.svg'
+import downImage from '../assets/control/down.svg'
+
 const RobotControlPage = () => {
   const navigate = useNavigate();
   const { connectedDevices } = useDevices();
@@ -61,6 +66,28 @@ const RobotControlPage = () => {
             <span>로봇 위치</span>
           </div>
         </div>
+
+        {/* PICK/DROP/UP/DOWN 버튼 */}
+        <div className="w-[345px] mx-auto mt-4 mb-4 flex justify-between">
+          {[
+            { label: 'PICK-UP', img: pickUpImage, command: 'PICK' },
+            { label: 'DROP', img: dropImage, command: 'DROP' },
+            { label: 'UP', img: upImage, command: 'UP' },
+            { label: 'DOWN', img: downImage, command: 'DOWN' },
+          ].map(({ label, img, command }) => (
+            <div
+              key={command}
+              onClick={() => handleCommand(command)}
+              className="w-[82px] h-[97px] bg-[#272934] border border-[#31333D] rounded-[10px] flex flex-col items-center justify-center cursor-pointer"
+            >
+              <img src={img} alt={label} className="w-[60px] h-[56px]" />
+              <span className="mt-0 text-white text-[14px] font-semibold leading-[19px] text-center">
+                {label}
+              </span>
+            </div>
+          ))}
+        </div>
+
 
         {/* 컨트롤 버튼 */}
         <div className="grid grid-rows-3 grid-cols-3 gap-1.5 mt-3 place-items-center">
