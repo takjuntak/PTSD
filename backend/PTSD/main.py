@@ -49,7 +49,7 @@ app.add_middleware(
 register_exception_handlers(app)
 
 # ✅ 회원 API 라우터 등록
-app.include_router(user_router.router, tags=["회원관리"])
+app.include_router(user_router.router)
 app.include_router(routine_router.router)
 app.include_router(notification_router.router)
 # app.include_router(devices_router.router)
