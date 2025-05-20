@@ -6,14 +6,16 @@ from PTSD.schemas.devices import DeviceCreate, DeviceRead, DeviceUpdate
 from typing import List
 from PTSD.utils.dependency import get_current_user 
 
+
 router = APIRouter(
+    prefix="/devices",    
     tags=["기기"],
     dependencies=[Depends(get_current_user)] 
 )
 
 # 기기 등록
 @router.post(
-    "/api/devices/",
+    "/",
     response_model=DeviceRead,
     tags=["기기"],
     summary="기기 등록",
@@ -54,7 +56,7 @@ def create_device(
 
 # 기기 단일 조회
 @router.get(
-    "/api/devices/{device_id}",
+    "/{device_id}",
     response_model=DeviceRead,
     tags=["기기"],
     summary="기기 단일 조회",
@@ -83,7 +85,7 @@ def read_device(device_id: int, db: Session = Depends(get_db)):
 
 # 기기 전체 조회
 @router.get(
-    "/api/devices/",
+    "/",
     response_model=List[DeviceRead],
     tags=["기기"],
     summary="기기 전체 조회",
@@ -108,7 +110,7 @@ def read_all_devices(db: Session = Depends(get_db), user=Depends(get_current_use
 
 # 기기 수정 (부분 수정용 PATCH)
 @router.patch(
-    "/api/devices/{device_id}",
+    "/{device_id}",
     response_model=DeviceRead,
     tags=["기기"],
     summary="기기 수정",
@@ -148,7 +150,7 @@ def update_device(device_id: int, device: DeviceUpdate, db: Session = Depends(ge
 
 # 기기 삭제
 @router.delete(
-    "/api/devices/{device_id}",
+    "/{device_id}",
     status_code=204,
     tags=["기기"],
     summary="기기 삭제",
