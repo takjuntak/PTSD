@@ -15,7 +15,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 # OAuth2 설정
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/auth/login")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
 
 router = APIRouter()
 
@@ -29,7 +29,7 @@ def get_db():
         
 # 회원가입 API
 @router.post(
-    "/api/auth/signup",
+    "/auth/signup",
     summary="회원가입",
     description="""  
 📌 **회원가입을 진행합니다.**
@@ -79,7 +79,7 @@ def signup(payload: SignupRequest, db: Session = Depends(get_db)):
 
 # 로그인 API
 @router.post(
-    "/api/auth/login",
+    "/auth/login",
     summary="로그인",
     description="""
 📌 **로그인을 진행합니다.**
@@ -115,7 +115,7 @@ def login(payload: LoginRequest, db: Session = Depends(get_db)):
     return LoginResult(user_id=user.user_id,email=user.email, access_token=access_token, name=user.name).model_dump(by_alias=True)
 
 @router.post(
-    "/api/auth/logout",
+    "/auth/logout",
     summary="로그아웃",
     description="클라이언트가 저장된 Access Token을 삭제하도록 유도합니다.",
 )
