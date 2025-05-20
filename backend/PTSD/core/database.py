@@ -7,23 +7,15 @@ import os
 ENV = os.getenv("ENV", "local")  # 기본은 'local'
 
 if ENV == "production":
-    load_dotenv(".env.prod", override=True)  # 배포 환경용 .env
+    load_dotenv(".env.prod")  # 배포 환경용 .env
 else:
-    load_dotenv(".env", override=True)       # 기본 로컬용 .env
+    load_dotenv(".env")       # 기본 로컬용 .env
 
 # .env에서 DB 연결 URL 로드
 DATABASE_URL = os.getenv("DATABASE_URL")
 
-print("DB URL:", DATABASE_URL)
-
 # SQLAlchemy 엔진 생성
 engine = create_engine(DATABASE_URL)
-0
-try:
-    with engine.connect() as conn:
-        print("✅ DB 연결 성공!")
-except Exception as e:
-    print("❌ DB 연결 실패:", e)
 
 # 세션 생성기
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
