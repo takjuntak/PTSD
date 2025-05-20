@@ -35,8 +35,6 @@ async def create_battery_notification(user_id: int, percentage: int, db: Session
                 "is_read": False
             }
         }
-        # 웹소켓 테스트용
-        # ws_message = f"배터리 부족! 상태: {percentage}%"
         await manager.send_to_user(user_id, ws_message)
 
         return notification.notification_id
@@ -55,8 +53,6 @@ async def send_battery_status(user_id: int, percentage: int):
         "percentage": percentage
     }
 
-    # 웹소켓 테스트용
-    # ws_message = f"배터리 상태: {percentage}%"
     await manager.send_to_user(user_id, ws_message)
 
 async def create_robot_notification(user_id: int, status: str, db: Session):
@@ -91,8 +87,6 @@ async def create_robot_notification(user_id: int, status: str, db: Session):
             }
         }
 
-        # 웹소켓 테스트용
-        # ws_message = f"로봇 알림! 상태: {status}"
         await manager.send_to_user(user_id, ws_message)
 
         return notification.notification_id

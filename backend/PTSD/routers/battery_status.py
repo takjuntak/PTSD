@@ -39,15 +39,11 @@ class BatteryData(BaseModel):
 )
 async def receive_battery_state(data: BatteryData):
     percentage_int = math.floor(data.percentage)  # 소수점 아래 내림 처리
-    message ={
-        "category": "battery_status",
-        "percentage": percentage_int
-    }
-    
+
     try:
         # 특정 사용자에게 메시지 전송
-        await send_battery_status(data.user_id, message)
-        logger.info(f"Battery data sent to user {data.user_id}: {message}")
+        await send_battery_status(data.user_id, percentage_int)
+        logger.info(f"Battery data sent to user {data.user_id}: {percentage_int}")
         
         return ResponseModel(
             isSuccess=True,
