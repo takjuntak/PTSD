@@ -2,7 +2,7 @@ from fastapi import APIRouter, WebSocket, WebSocketDisconnect
 from typing import Dict
 import asyncio
 import logging
-import asyncio
+from pydantic import BaseModel
 
 router = APIRouter()
 
@@ -27,7 +27,7 @@ class ConnectionManager:
                 del self.active_connections[user_id]
         logger.info(f"User {user_id} disconnected.")
 
-    async def send_to_user(self, user_id: int, message: str):
+    async def send_to_user(self, user_id: int, message: dict):
         user_id = int(user_id)
         async with self.lock:
             logger.info(f"[🔔 DEBUG] 현재 연결된 유저 목록: {list(self.active_connections.keys())}")
