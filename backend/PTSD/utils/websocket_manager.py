@@ -64,8 +64,8 @@ async def websocket_endpoint(websocket: WebSocket, user_id: int):
         await manager.disconnect(user_id)
         raise  # 예외 재발생 시켜서 상위에서 종료 처리 가능
     except WebSocketDisconnect:
-        manager.disconnect(user_id, websocket)
+        manager.disconnect(user_id)
         logger.info(f"User {user_id} disconnected")
     except Exception as e:
-        manager.disconnect(user_id, websocket)
+        manager.disconnect(user_id)
         logger.error(f"WebSocket error for user {user_id}: {e}")
