@@ -15,9 +15,9 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 # OAuth2 설정
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/auth/login")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
 
-router = APIRouter(prefix="/api/auth", tags=["인증"])
+router = APIRouter(prefix="/auth", tags=["인증"])
 
 # DB 연결
 def get_db():
