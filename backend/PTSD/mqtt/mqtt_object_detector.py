@@ -26,7 +26,7 @@ logger = logging.getLogger(__name__)
 class MQTTObjectDetector:
     def __init__(self, model_path, mqtt_broker=MQTT_BROKER, mqtt_port=MQTT_PORT,
                  image_topic="mqtt/image", detection_topic="plate_detection",
-                 conf_threshold=0.55, iou_threshold=0.45):
+                 conf_threshold=0.6, iou_threshold=0.45):
         # 설정 저장
         self.model_path = model_path
         self.mqtt_broker = mqtt_broker
@@ -65,11 +65,14 @@ class MQTTObjectDetector:
                 cx, cy = (x1 + x2) / 2, (y1 + y2) / 2
                 width, height = x2 - x1, y2 - y1
                 
-                detections.append({
-                    "center_x": round(cx, 1),
-                    "center_y": round(cy, 1),
-                    "timestamp": time.time()
-                })
+                if cls_name != "red_plate":
+                    detections.append({
+                        "center_x": round(cx, 1),
+                        "center_y": round(cy, 1),
+                        "timestamp": time.time()
+                    })
+                
+                
                 
             # 결과 시각화 - 객체 박스 표시
         if len(results) > 0:
@@ -190,11 +193,11 @@ def start_object_detector():
     
     # 객체 감지기 인스턴스 생성 및 시작
     detector = MQTTObjectDetector(
-        model_path="PTSD/mqtt/best_model/best_36.pt",
+        model_path="PTSD/mqtt/best_model/best_37.pt",
         mqtt_broker=MQTT_BROKER,
         mqtt_port=MQTT_PORT,
         image_topic="mqtt/image",
-        detection_topic="plate_detection"
+        detection_topic="mqtt/detection"
     )
     
     return detector.start()
