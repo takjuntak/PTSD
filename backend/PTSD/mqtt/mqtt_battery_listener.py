@@ -31,12 +31,19 @@ battery_readings = {}  # 각 serial_number에 대해 최근 배터리 값을 저
 battery_queue = {}  # 배터리 값들의 큐 (평균 계산을 위해)
 last_avg_sent = {}    
 
+# --- serial -> user_id 캐시 ---
+serial_user_cache = {}
+
 def get_user_id_by_serial(serial_number: str) -> int | None:
+    if serial_number in serial_user_cache:
+        return serial_user_cache[serial_number]
+
     db: Session = SessionLocal()
     try:
         device = db.query(Device).filter(Device.serial_number == serial_number).first()
         if device:
-            logger.info(f"Found user_id={device.user_id} for serial={serial_number}")
+            serial_user_cache[serial_number] = device.user_id
+            logger.info(f"Found user_id={device.user_id} for serial={serial_number} (cached)")
             return device.user_id
         logger.warning(f"No device for serial={serial_number}")
         return None
@@ -46,7 +53,7 @@ def get_user_id_by_serial(serial_number: str) -> int | None:
     finally:
         db.close()
 
-def smooth_battery_percentage(serial, new_val, factor=0.1, max_change=5):
+def smooth_battery_percentage(serial, new_val, factor=0.2, max_change=5):
     prev = battery_readings.get(serial, new_val)
     if abs(new_val - prev) <= max_change:
         val = prev + (new_val - prev) * factor
@@ -56,7 +63,7 @@ def smooth_battery_percentage(serial, new_val, factor=0.1, max_change=5):
     # 0~100으로 clamp
     return max(0, min(round(val), 100))
 
-def avg_battery_percentage(serial, new_val, window=5):
+def avg_battery_percentage(serial, new_val, window=3):
     q = battery_queue.setdefault(serial, deque(maxlen=window))
     q.append(new_val)
     avg =  round(sum(q)/len(q)) if len(q)==window else new_val
@@ -98,13 +105,13 @@ def on_message(client, userdata, msg):
             )
             last_avg_sent[serial] = now
             logger.debug(f"[즉시전송] {serial}: {final_pct}%")
-        # 2) 그 이후로는 10초 간격으로만 전송
-        elif (now - last_avg_sent[serial]).total_seconds() >= 10:
+        # 2) 그 이후로는 3초 간격으로만 전송
+        elif (now - last_avg_sent[serial]).total_seconds() >= 3:
             main_loop.call_soon_threadsafe(
                 lambda: asyncio.create_task(send_battery_status(user_id, final_pct))
             )
             last_avg_sent[serial] = now
-            logger.debug(f"[10초전송] {serial}: {final_pct}%")
+            logger.debug(f"[3초전송] {serial}: {final_pct}%")
         
        # ⚠️ 임계치 이하일 때만 create_battery_notification 호출
         if final_pct <= 25 and not notification_sent.get(serial, False):
@@ -139,4 +146,4 @@ def start_battery_mqtt_loop():
     client.on_connect = on_connect
     client.connect(MQTT_BROKER, MQTT_PORT, 60)  # broker_ip에 맞게 수정
     client.subscribe("mqtt/battery")
-    client.loop_forever()
+    client.loop_start()  # 비동기 루프 백그라운드 실행
