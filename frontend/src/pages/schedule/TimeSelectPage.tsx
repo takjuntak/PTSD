@@ -124,7 +124,7 @@ export default function TimeSelectPage() {
 
   return (
     <div className="w-full h-full mx-auto overflow-hidden">
-      <div className="bg-[#373738] p-6 rounded-[10px] mb-2 min-h-[160px] max-h-[280px] flex flex-col justify-center">
+      <div className="bg-[#373738] p-6 rounded-[10px] mb-2 mt-4 min-h-[160px] max-h-[280px] flex flex-col justify-center">
         <div className="flex justify-center items-center gap-5">
           {/* AM/PM */}
           <div
