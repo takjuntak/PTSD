@@ -36,6 +36,7 @@ export const useRoutines = () => {
       });
 
       // 변환된 요일 데이터로 요청
+      // 주의: 이미 TimeSelectPage에서 시간대 조정이 완료된 start_time을 그대로 사용
       const requestData = {
         ...data,
         repeat_days: convertedRepeatDays
@@ -60,6 +61,16 @@ export const useRoutines = () => {
           return day === 0 ? 7 : day;
         });
         data = { ...data, repeat_days: convertedRepeatDays };
+      }
+
+      // 시간 데이터(start_time)가 있는 경우 시간대 조정
+      if (data.start_time) {
+        const startTime = new Date(data.start_time);
+        // 로컬 시간대를 유지하기 위한 처리
+        const localISOString = new Date(
+          startTime.getTime() - (startTime.getTimezoneOffset() * 60000)
+        ).toISOString();
+        data = { ...data, start_time: localISOString };
       }
 
       await routineService.updateRoutine(routineId, data);

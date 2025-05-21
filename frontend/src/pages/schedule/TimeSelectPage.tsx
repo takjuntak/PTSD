@@ -90,9 +90,11 @@ export default function TimeSelectPage() {
     if (isAM && hour === 12) actualHour = 0;
     else if (!isAM && hour !== 12) actualHour += 12;
 
+    // 현재 선택된 시간으로 Date 객체 생성
     let startTime = new Date();
     startTime.setHours(actualHour, minute, 0, 0);
 
+    // 요일 선택이 없으면 내일 날짜로 설정
     if (!selectedDays.some(Boolean)) {
       startTime.setDate(startTime.getDate() + 1);
       if (startTime <= now) {
@@ -100,12 +102,18 @@ export default function TimeSelectPage() {
       }
     }
 
+    // ISO 문자열로 변환할 때 로컬 시간을 그대로 유지하기 위한 처리
+    // toISOString() 메서드는 UTC 기준으로 변환하므로, 9시간(KST)을 보정
+    const localISOString = new Date(
+      startTime.getTime() - (startTime.getTimezoneOffset() * 60000)
+    ).toISOString();
+
     const routineType = selectedDays.some(Boolean) ? 'daily' : 'once';
     const repeatDays = selectedDays.map((selected, i) => selected ? i : -1).filter(i => i !== -1);
 
     try {
       const success = await addRoutine({
-        start_time: startTime.toISOString(),
+        start_time: localISOString,
         routine_type: routineType,
         iswork: enabled,
         repeat_days: repeatDays,
