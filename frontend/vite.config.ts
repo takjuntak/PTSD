@@ -65,7 +65,7 @@ export default defineConfig({
             }
           },
           {
-            urlPattern: /\.(?:png|jpg|jpeg|svg|gif)$/,
+            urlPattern: /\.(?:png|jpg|jpeg|svg|gif)$/i,
             handler: 'CacheFirst',
             options: {
               cacheName: 'images-cache',
@@ -87,7 +87,8 @@ export default defineConfig({
               networkTimeoutSeconds: 10 // 10초 후 캐시된 응답 사용
             }
           }
-        ]
+        ],
+        maximumFileSizeToCacheInBytes: 5 * 1024 * 1024 // 5MB로 설정
       },
       devOptions: {
         enabled: true, // 개발 중에도 서비스 워커 활성화
