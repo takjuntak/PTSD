@@ -84,7 +84,7 @@ const RobotControlPage = () => {
         </div>
 
         {/* PICK/DROP/UP/DOWN 버튼 */}
-        <div className="w-[345px] mx-auto mt-4 mb-4 flex justify-between">
+        <div className="w-full mx-auto mt-4 mb-4 flex justify-between">
           {[
             { label: 'PICK-UP', img: pickUpImage, command: 'PICK' },
             { label: 'DROP', img: dropImage, command: 'DROP' },
