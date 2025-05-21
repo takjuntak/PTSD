@@ -25,7 +25,7 @@ export const useAlarms = () => {
         const mockAlarms: Alarm[] = [
           { id: 1, type: 'battery', message: '[경고] 배터리가 부족합니다.', isRead: false, createdAt: new Date(Date.now() - 5 * 60 * 1000) },
           { id: 2, type: 'cleaning', message: '[종료] 장애물에 부딪쳤습니다.', isRead: true, createdAt: new Date(Date.now() - 38 * 60 * 1000) },
-          { id: 3, type: 'warning', message: '[주의] 5분 이상 충전이지 않고 있습니다.', isRead: true, createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000) },
+          { id: 3, type: 'warning', message: '[주의] 5분 이상 충전되지 않고 있습니다.', isRead: true, createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000) },
           { id: 4, type: 'battery', message: '[경고] 배터리가 부족합니다.', isRead: false, createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000) },
           { id: 5, type: 'battery', message: '[경고] 배터리가 부족합니다.', isRead: true, createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000) },
           { id: 6, type: 'battery', message: '[경고] 배터리가 부족합니다.', isRead: false, createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000) },
