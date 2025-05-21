@@ -4,12 +4,13 @@ import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 
 import mapImageDefault from '../../src/assets/location/map2.svg';
-import mapImageTracking from '../../src/assets/map.svg';
+// import mapImageTracking from '../../src/assets/map.svg';
 
 import rocketIcon from '../assets/location/rocketicon.svg';
 import mapIcon from '../assets/location/mapicon.svg';
 import clockIcon from '../assets/location/clockicon.svg';
 import upArrowIcon from '../assets/location/uparrow.svg';
+import mappingMap from '../assets/location/mapping-map.svg'
 
 const LocationPage = () => {
   const { user } = useAuth();
@@ -66,13 +67,13 @@ const LocationPage = () => {
           <span className="text-[12px]">동작 시작</span>
         </div>
 
-        {/* 위치 추적 */}
+        {/* 지도 보기 */}
         <div
           className="w-[110px] h-[46px] bg-[#373738] rounded-[10px] shadow-md flex flex-row items-center justify-center gap-2 cursor-pointer"
           onClick={handleTrackingClick}
         >
           <img src={mapIcon} alt="위치" className="w-5 h-5" />
-          <span className="text-[12px]">위치 추적</span>
+          <span className="text-[12px]">지도 보기</span>
         </div>
 
         {/* 예약 작업 */}
@@ -88,7 +89,7 @@ const LocationPage = () => {
       {/* 지도 이미지 영역 */}
       <div className="absolute top-[130px] left-1/2 transform -translate-x-1/2 w-[300px] h-[300px]">
         <img
-          src={isTracking ? mapImageTracking : mapImageDefault}
+          src={isTracking ? mappingMap : mapImageDefault}
           alt="3D 지도"
           className="w-full h-full object-contain"
         />
