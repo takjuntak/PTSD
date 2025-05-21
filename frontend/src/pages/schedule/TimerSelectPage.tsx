@@ -58,7 +58,6 @@ const TimerSelectPage = () => {
   };
 
   const handlePointerMove = (e: React.PointerEvent) => {
-    // ✅ 예약이 완료되었으면 시간 변경 막기
     if (confirmed || !isDragging.current || !centerRef.current) return;
 
     const rect = centerRef.current.getBoundingClientRect();
@@ -77,8 +76,7 @@ const TimerSelectPage = () => {
 
   return (
     <div className="w-full h-full flex justify-center bg-gradient-to-b from-[#2E2E37] to-[#1D1E23] relative">
-      <div className="w-full max-w-[412px] h-full px-4 overflow-hidden">
-        {/* 헤더 */}
+      <div className={`w-full max-w-[412px] h-full px-4 ${confirmed ? 'overflow-y-auto' : 'overflow-hidden'}`}>
         <header className="p-4 px-0 flex items-center gap-3 sticky top-0 z-10" onClick={() => navigate(-1)}>
           <button className="border-none bg-transparent p-0">
             <ChevronLeft size={24} color="#FFFFFF" />
@@ -86,7 +84,6 @@ const TimerSelectPage = () => {
           <span className="text-xl font-bold text-[#767676] font-inter">예약</span>
         </header>
 
-        {/* 설명 */}
         <div className="mt-2 text-[20px] font-bold text-center text-white whitespace-nowrap">
           원하는 청소 종료 시간을 설정해 주세요.
         </div>
@@ -94,7 +91,6 @@ const TimerSelectPage = () => {
           설정 가능 시간 : 1시간 ~ 12시간
         </div>
 
-        {/* 타이머 */}
         <div
           className="mt-14 flex justify-center relative w-[250px] h-[250px] mx-auto touch-none"
           ref={centerRef}
@@ -124,7 +120,6 @@ const TimerSelectPage = () => {
             );
           })}
 
-          {/* 포인터 */}
           {(() => {
             const angle = ((selectedHour - 3) * 30) * (Math.PI / 180);
             const x = radius * Math.cos(angle);
@@ -140,7 +135,6 @@ const TimerSelectPage = () => {
             );
           })()}
 
-          {/* 중앙 시간 표시 */}
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-white text-center leading-tight z-20">
             <div className="text-[14px] font-semibold">종료 시각</div>
             <div className="flex justify-center items-baseline gap-1 mt-1">
@@ -153,7 +147,6 @@ const TimerSelectPage = () => {
           </div>
         </div>
 
-        {/* 확인 / 예약취소 버튼 */}
         {!confirmed ? (
           <div className="mt-16 flex justify-center">
             <button
@@ -164,7 +157,7 @@ const TimerSelectPage = () => {
             </button>
           </div>
         ) : (
-          <div className="mt-14 text-white text-center leading-tight">
+          <div className="mt-14 text-white text-center leading-tight pb-20">
             <div className="text-[14px] font-semibold mb-3">현재 예약된 청소 종료 시각</div>
             <div className="flex justify-center items-baseline gap-1 mb-4">
               <span className="text-[14px]">{selectedDateText}</span>
@@ -184,7 +177,6 @@ const TimerSelectPage = () => {
         )}
       </div>
 
-      {/* ✅ 예약 취소 모달 */}
       <TimerDeleteModal
         open={showCancelModal}
         onClose={() => setShowCancelModal(false)}

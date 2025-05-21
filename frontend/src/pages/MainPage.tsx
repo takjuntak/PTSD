@@ -7,13 +7,11 @@ import { useAuth } from '../hooks/useAuth';
 import { useDevices } from '../hooks/useDevices';
 import useBatteryStatus from '../hooks/useBatteryStatus';
 import ThreeRobot from '../components/status/ThreeRobot'
-import ChargeInfo from '../components/charge/ChargeInfo';
 import ChargeStatus from '../components/charge/ChargeStatus';
 
 
 const MainPage = () => {
   const { containerRef } = useScroll();
-  const [isCharging] = useState(false);
   const [currentLocation] = useState("현재 위치: 웨이트 존");
 
   const { user } = useAuth();
@@ -62,8 +60,7 @@ const MainPage = () => {
 
     return (
       <div className="flex flex-col items-center">
-        <ChargeStatus percentage={battery} remainingTime="1시간 25분 남았습니다" />
-        <ChargeInfo percentage={battery} isCharging={isCharging} />
+        <ChargeStatus percentage={battery} />
       </div>
     );
   };
