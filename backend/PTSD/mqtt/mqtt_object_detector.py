@@ -79,7 +79,7 @@ class MQTTObjectDetector:
             annotated_frame = results[0].plot()
             cv2.imshow("Object Detection", annotated_frame)
             cv2.waitKey(1)
-        else:
+        # else:
         # 객체가 감지되지 않은 경우에도 원본 이미지 표시
             # cv2.imshow("Object Detection", frame)
             # cv2.waitKey(1)
