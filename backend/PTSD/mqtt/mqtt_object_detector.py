@@ -1,4 +1,3 @@
-
 from ultralytics import YOLO
 import cv2
 import os
@@ -82,8 +81,8 @@ class MQTTObjectDetector:
             cv2.waitKey(1)
         else:
         # 객체가 감지되지 않은 경우에도 원본 이미지 표시
-            cv2.imshow("Object Detection", frame)
-            cv2.waitKey(1)
+            # cv2.imshow("Object Detection", frame)
+            # cv2.waitKey(1)
         
         # MQTT로 데이터 전송
         if detections and self.client:
@@ -119,8 +118,8 @@ class MQTTObjectDetector:
             img = cv2.imdecode(img_array, cv2.IMREAD_COLOR)
                 
             if img is not None:
-                cv2.imshow("MQTT Image", img)
-                cv2.waitKey(1)
+                # cv2.imshow("MQTT Image", img)
+                # cv2.waitKey(1)
 
                 # 이미지 추론 처리
                 self.process_frame(img)
