@@ -21,11 +21,11 @@ export default function TimeSelectPage() {
   const dayLabels = ['일', '월', '화', '수', '목', '금', '토'];
 
   useEffect(() => {
-    const tomorrow = new Date();
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    const month = tomorrow.getMonth() + 1;
-    const date = tomorrow.getDate();
-    const day = dayLabels[tomorrow.getDay()];
+    // 오늘 날짜 정보 설정
+    const today = new Date();
+    const month = today.getMonth() + 1;
+    const date = today.getDate();
+    const day = dayLabels[today.getDay()];
     setDefaultDate(`${month}월 ${date}일 (${day})`);
   }, []);
 
@@ -83,9 +83,7 @@ export default function TimeSelectPage() {
 
   const handleSave = async () => {
     const now = new Date();
-    const tomorrow = new Date(now);
-    tomorrow.setDate(now.getDate() + 1);
-
+    
     let actualHour = hour;
     if (isAM && hour === 12) actualHour = 0;
     else if (!isAM && hour !== 12) actualHour += 12;
@@ -94,16 +92,15 @@ export default function TimeSelectPage() {
     let startTime = new Date();
     startTime.setHours(actualHour, minute, 0, 0);
 
-    // 요일 선택이 없으면 내일 날짜로 설정
+    // 요일 선택이 없고, 선택한 시간이 현재 시간보다 이전인 경우에만 내일로 설정
     if (!selectedDays.some(Boolean)) {
-      startTime.setDate(startTime.getDate() + 1);
       if (startTime <= now) {
         startTime.setDate(startTime.getDate() + 1);
       }
+      // 현재 시간보다 미래라면 오늘로 유지
     }
 
-    // ISO 문자열로 변환할 때 로컬 시간을 그대로 유지하기 위한 처리
-    // toISOString() 메서드는 UTC 기준으로 변환하므로, 9시간(KST)을 보정
+    // 로컬 시간대를 유지하기 위한 처리
     const localISOString = new Date(
       startTime.getTime() - (startTime.getTimezoneOffset() * 60000)
     ).toISOString();
@@ -168,11 +165,11 @@ export default function TimeSelectPage() {
             <div className="text-[20px] text-[#888] leading-[30px]">{minute === 59 ? '00' : (minute + 1).toString().padStart(2, '0')}</div>
           </div>
         </div>
-
       </div>
 
       <div className="bg-[#373738] p-6 rounded-[10px] h-[420px] flex flex-col">
-        <div className="text-left mb-5">내일 - {defaultDate}</div>
+        {/* "내일" 텍스트 제거하고 날짜만 표시 */}
+        <div className="text-left mb-5">{defaultDate}</div>
 
         <div className="flex justify-between mb-6">
           {dayLabels.map((day, idx) => (
@@ -188,23 +185,50 @@ export default function TimeSelectPage() {
           ))}
         </div>
 
-
         <div className="border-t border-dashed border-[#666]" />
 
         <div className="flex flex-col gap-10 mt-8">
-          {[{ title: '예약 켜짐', desc: '설정된 청소 시간이 적용됩니다.', val: enabled, set: setEnabled },
-            { title: '공휴일에는 끄기', desc: '대체 및 임시 공휴일에는 끄기', val: skipHolidays, set: setSkipHolidays }].map((item, i) => (
-            <div key={i} className="flex justify-between items-center">
-              <div className="text-left">
-                <div className="text-white font-bold text-base">{item.title}</div>
-                <div className="text-[#0098FF] text-xs mt-1">{item.desc}</div>
-              </div>
-              <label className="relative w-[50px] h-[24px]">
-                <input type="checkbox" checked={item.val} onChange={e => item.set(e.target.checked)} className="opacity-0 w-0 h-0" />
-                <span className="absolute inset-0 bg-[#555] rounded-full cursor-pointer transition-all duration-300 before:content-[''] before:absolute before:h-[18px] before:w-[18px] before:left-[3px] before:bottom-[3px] before:bg-white before:rounded-full before:transition-all before:duration-300 peer-checked:bg-[#0098FF] peer-checked:before:translate-x-[26px]" />
-              </label>
+          {/* 토글 스위치 - 예약 켜짐 */}
+          <div className="flex justify-between items-center">
+            <div className="text-left">
+              <div className="text-white font-bold text-base">예약 켜짐</div>
+              <div className="text-[#0098FF] text-xs mt-1">설정된 청소 시간이 적용됩니다.</div>
             </div>
-          ))}
+            <label className="relative inline-block w-[50px] h-[24px]">
+              <input 
+                type="checkbox" 
+                checked={enabled} 
+                onChange={() => setEnabled(!enabled)} 
+                className="opacity-0 w-0 h-0" 
+              />
+              <span 
+                className={`absolute cursor-pointer inset-0 rounded-full transition-all duration-300 before:content-[''] before:absolute before:h-[18px] before:w-[18px] before:left-[3px] before:bottom-[3px] before:bg-white before:rounded-full before:transition-all before:duration-300 ${
+                  enabled ? 'bg-[#0098FF] before:translate-x-[26px]' : 'bg-[#555]'
+                }`}
+              />
+            </label>
+          </div>
+
+          {/* 토글 스위치 - 공휴일에는 끄기 */}
+          <div className="flex justify-between items-center">
+            <div className="text-left">
+              <div className="text-white font-bold text-base">공휴일에는 끄기</div>
+              <div className="text-[#0098FF] text-xs mt-1">대체 및 임시 공휴일에는 끄기</div>
+            </div>
+            <label className="relative inline-block w-[50px] h-[24px]">
+              <input 
+                type="checkbox" 
+                checked={skipHolidays} 
+                onChange={() => setSkipHolidays(!skipHolidays)} 
+                className="opacity-0 w-0 h-0" 
+              />
+              <span 
+                className={`absolute cursor-pointer inset-0 rounded-full transition-all duration-300 before:content-[''] before:absolute before:h-[18px] before:w-[18px] before:left-[3px] before:bottom-[3px] before:bg-white before:rounded-full before:transition-all before:duration-300 ${
+                  skipHolidays ? 'bg-[#0098FF] before:translate-x-[26px]' : 'bg-[#555]'
+                }`}
+              />
+            </label>
+          </div>
         </div>
 
         <div className="flex justify-center gap-3 mt-8 pt-4">
