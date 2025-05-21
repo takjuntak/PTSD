@@ -73,12 +73,12 @@ class MQTTObjectDetector:
                 
                 
                 
-            # 결과 시각화 - 객체 박스 표시
-        if len(results) > 0:
-        # YOLOv8의 내장 시각화 기능 사용
-            annotated_frame = results[0].plot()
-            cv2.imshow("Object Detection", annotated_frame)
-            cv2.waitKey(1)
+        #     # 결과 시각화 - 객체 박스 표시
+        # if len(results) > 0:
+        # # YOLOv8의 내장 시각화 기능 사용
+        #     annotated_frame = results[0].plot()
+        #     cv2.imshow("Object Detection", annotated_frame)
+        #     cv2.waitKey(1)
         # else:
         # 객체가 감지되지 않은 경우에도 원본 이미지 표시
             # cv2.imshow("Object Detection", frame)
@@ -141,8 +141,14 @@ class MQTTObjectDetector:
             self.client.on_message = self.on_message
             
             # MQTT 연결
-            self.client.connect(self.mqtt_broker, self.mqtt_port, 60)
-            logger.info(f"MQTT 브로커 {self.mqtt_broker}:{self.mqtt_port}에 연결됨")
+            try:
+                self.client.connect(self.mqtt_broker, self.mqtt_port, 60)
+                logger.info(f"MQTT 브로커 {self.mqtt_broker}:{self.mqtt_port}에 연결됨")
+            except ConnectionRefusedError as e:
+                logger.error(f"MQTT 브로커 연결 거부됨: {e}")
+                # 중요: 연결 실패해도 API 서비스는 계속 유지되도록 처리
+                # 브로커 없이도 작동하는 대체 로직 구현
+                return  # 또는 대체 로직 실행
             
             # 무한 루프 시작 (블로킹)
             self.running = True
