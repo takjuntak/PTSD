@@ -20,7 +20,7 @@ const NavigationBar: React.FC = () => {
 
   const navItems = [
     { path: '/', label: '홈', activeIcon: homeActive, inactiveIcon: homeInactive },
-    { path: '/control', label: '제어', activeIcon: controlActive, inactiveIcon: controlInactive },
+    { path: '/control', label: '상태', activeIcon: controlActive, inactiveIcon: controlInactive },
     { path: '/schedule', label: '예약', activeIcon: scheduleActive, inactiveIcon: scheduleInactive },
     { path: '/menu', label: '메뉴', activeIcon: menuActive, inactiveIcon: menuInactive },
   ];

@@ -63,8 +63,8 @@ function AppContent() {
                 <Route path="/schedule" element={<SchedulePage />} />
                 <Route path="/schedule/time-select" element={<TimeSelectPage />} />
                 <Route path="/schedule/timer-select" element={<TimerSelectPage />} />
-                <Route path="/control" element={<ControlPage />} />
-                <Route path="/play" element={<PlayPage />} />
+                <Route path="/control" element={<PlayPage />} />
+                <Route path="/play" element={<ControlPage />} />
                 <Route path="/robot-control" element={<RobotControlPage />} />
                 <Route path="/menu" element={<MenuPage />} />
                 <Route path="/device-connect" element={<DeviceConnectPage />} />

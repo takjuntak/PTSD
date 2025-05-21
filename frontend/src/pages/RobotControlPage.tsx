@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import mapImage from '../assets/map.svg';
 import React, { useEffect } from 'react';
 import { useRobotWebSocket } from '../hooks/useRobotWebSocket';
+import { useRobotArmControl } from '../hooks/useRobotArmControl'; // 로봇 팔 제어 훅 추가
 import { useDevices } from '../hooks/useDevices';
 
 import pickUpImage from '../assets/control/pickup.svg'
@@ -18,11 +19,26 @@ const RobotControlPage = () => {
   // 현재 선택된 디바이스 ID
   const deviceId = connectedDevices.length > 0 ? connectedDevices[0].device_id : null;
   
-  // 웹소켓 훅 사용
+  // 이동 제어를 위한 웹소켓 훅
   const { isConnected, status, lastResponse, sendCommand } = useRobotWebSocket(deviceId);
+  
+  // 로봇 팔 제어를 위한 웹소켓 훅
+  const { sendSwitchCommand, sendUpDownCommand } = useRobotArmControl(deviceId);
 
   // 명령 전송 함수
   const handleCommand = (command: string) => {
+    // 로봇 팔 관련 명령 처리
+    if (command === 'PICK' || command === 'DROP') {
+      sendSwitchCommand();
+      return;
+    }
+    
+    if (command === 'UP' || command === 'DOWN') {
+      sendUpDownCommand();
+      return;
+    }
+    
+    // 이동 관련 명령 처리 (기존 코드 유지)
     sendCommand(command);
   };
 
@@ -87,7 +103,6 @@ const RobotControlPage = () => {
             </div>
           ))}
         </div>
-
 
         {/* 컨트롤 버튼 */}
         <div className="grid grid-rows-3 grid-cols-3 gap-1.5 mt-3 place-items-center">
