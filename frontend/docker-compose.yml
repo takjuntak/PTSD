@@ -1,0 +1,16 @@
+services:
+  react:
+    image: s12p31d101-react
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: react
+    ports:
+      - "3000:80"
+    networks:
+      - app-network
+    restart: always
+
+networks:
+  app-network:
+    external: true
