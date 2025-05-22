@@ -105,7 +105,7 @@ const RobotControlPage = () => {
         </div>
 
         {/* 컨트롤 버튼 */}
-        <div className="grid grid-rows-3 grid-cols-3 gap-1.5 mt-3 place-items-center">
+        <div className="grid grid-rows-3 grid-cols-3 gap-3 mt-3 place-items-center">
           <div className="col-start-2">
             <ControlBtn onClick={() => handleCommand('W')} icon={<ArrowUp size={40} />} />
           </div>
@@ -115,7 +115,7 @@ const RobotControlPage = () => {
           <div className="row-start-2 col-start-2">
             <button
               onClick={() => handleCommand('S')}
-              className="bg-[#1A1A1A] border-2 border-cyan-400 rounded-full w-[52px] h-[52px] flex items-center justify-center shadow-[0_0_10px_rgba(0,207,253,0.6)]"
+              className="bg-[#1A1A1A] border-2 border-cyan-400 rounded-full w-[70px] h-[70px] flex items-center justify-center shadow-[0_0_10px_rgba(0,207,253,0.6)]"
             >
               <Power size={26} color="#00CFFD" />
             </button>
