@@ -13,7 +13,6 @@
 6. **[팀원 소개](#팀원-소개)**
 
 <br />
-<div id="프로젝트-소개"></div>
 
 ## 프로젝트 소개
 
@@ -32,7 +31,6 @@
 
 
 <br/>
-<div id="기술-스택"></div>
 
 ## 기술 스택
 ### ✔️Frond-end
@@ -56,7 +54,6 @@
 <img src="https://img.shields.io/badge/Jira-0052CC?style=for-the-badge&logo=Jira&logoColor=white"/>  <img src="https://img.shields.io/badge/GitLab-FC6D26?style=for-the-badge&logo=GitLab&logoColor=white"/>  <img src="https://img.shields.io/badge/Notion-000000?style=for-the-badge&logo=Notion&logoColor=white"/>  <img src="https://img.shields.io/badge/Mattermost-0058CC?style=for-the-badge&logo=Mattermost&logoColor=white"/>  <img src="https://img.shields.io/badge/Discord-5865F2?style=for-the-badge&logo=Discord&logoColor=white"/>
 
 <br/>
-<div id="주요-기능"></div>
 
 ## 주요 기능 
 
@@ -71,7 +68,6 @@
 
 
 <br/>
-<div id="시스템-아키텍쳐"></div>
 
 ## 시스템 아키텍쳐
 <br>
@@ -79,7 +75,6 @@
 <img src="image/system architecture.png" width="600"> 
 
 <br>
-<div id="시연-및-결과"></div>
 
 ## 시연 및 결과
 
@@ -116,7 +111,6 @@
 ---
 
 <br/>
-<div id="팀원-소개"></div>
 
 ## 팀원 소개
 
@@ -157,12 +151,8 @@
   </tbody>
 </table>
 
-
 <br/>
 
-
-
-## 🧪 설치 및 실행 방법
 
 
 
