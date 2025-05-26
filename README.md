@@ -230,16 +230,18 @@
 
 ### ☰ 메뉴 (기기 및 계정 관리)
 <div align="center">
-  <table>
-    <tr>
-      <td align="center">
-        <img src="image/8-메뉴(1).gif" width="220" height="444"><br/>
-      </td>
-      <td align="center">
-        <img src="image/9-메뉴(2).gif" width="220" height="444"><br/>
-      </td>
-    </tr>
-  </table>
+
+<table>
+  <tr>
+    <td align="center" style="padding: 0 20px;">
+      <img src="image/8-메뉴(1).gif" width="250" height="444"><br/>
+    </td>
+    <td align="center" style="padding: 0 20px;">
+      <img src="image/9-메뉴(2).gif" width="250" height="444"><br/>
+    </td>
+  </tr>
+</table>
+
 </div>
 
 > ⚙️ 기기 연결, 사용 설명서 확인  
