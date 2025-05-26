@@ -90,9 +90,20 @@
 
 ### 👁️ 객체 인식
 
-| <img src="image/객체인식1.gif" width="600"> |
-| :-------------------------------------: |
-| <img src="image/객체인식2.gif" width="600"> |
+<table>
+  <tr>
+    <td style="text-align: center;">
+      <img src="image/객체인식1.gif" width="300"><br/>
+      <sub>객체인식-(1)</sub>
+    </td>
+    <td style="text-align: center;">
+      <img src="image/객체인식2.gif" width="300"><br/>
+      <sub>객체인식-(2)</sub>
+    </td>
+  </tr>
+</table>
+
+
 
 
 - YOLOv8모델을 이용해서 운동기구를 덤벨, 원판클래스로 분류 후 탐지
@@ -112,103 +123,178 @@
 ---
 
 ### 🦾 로봇팔 제어
-| <img src="image/시연_1.gif" width="600"> | 
-| :-------------------------------------: |
-|<img src="image/시연_2.gif" width="600"> |
+<table>
+  <tr>
+    <td style="text-align: center;">
+      <img src="image/시연_1.gif" width="300"><br/>
+      <sub>거치대 바벨 정리</sub>
+    </td>
+    <td style="text-align: center;">
+      <img src="image/시연_2.gif" width="300"><br/>
+      <sub>바닥 바벨 회수</sub>
+    </td>
+  </tr>
+</table>
+
 
 - 로봇팔의 관절(Joint)을 제어하여 물체를 정확히 집어 올림
 - 지정된 위치로 이송 및 배치
 
----
-
 ## 서비스 화면
 
-### 🔐 회원가입 & 로그인
-| <img src="image/1-회원가입&로그인.gif" width="200"> | 
-|:---:|
+### 🔐 1. 회원가입 & 로그인
+<table>
+  <tr>
+    <td style="vertical-align: top; padding-right: 20px;">
+      <img src="image/1-회원가입&로그인.gif" width="200">
+    </td>
+    <td style="vertical-align: top;">
+      <ul>
+        <li>사용자 이메일과 비밀번호를 통해 로그인</li>
+        <li>로그인 시도 시 입력값 유효성 검사</li>
+        <li>가입 링크 제공으로 신규 사용자 접근 용이</li>
+      </ul>
+    </td>
+  </tr>
+</table>
 
-- 사용자 이메일과 비밀번호를 통해 로그인
-- 로그인 시도 시 입력값 유효성 검사
-- 가입 링크 제공으로 신규 사용자 접근 용이
+### 🔧 2. 기기 등록 (로봇 연결)
 
----
+<table>
+  <tr>
+    <td style="vertical-align: top; padding-right: 20px;">
+      <img src="image/2-기기등록.gif" width="200">
+    </td>
+    <td style="vertical-align: top;">
+      <ul>
+        <li>최초 로그인 시 로봇이 등록되어 있지 않다면 안내 문구 표시</li>
+        <li>사용 가능한 로봇 기기 목록에서 연결 및 등록</li>
+        <li>등록 후 연결 상태(connected 여부) 실시간 확인 가능</li>
+      </ul>
+    </td>
+  </tr>
+</table>
 
-### 🔧 기기 등록 (로봇 연결)
 
-| <img src="image/2-기기등록.gif" width="200"> | 
-|:---:|
+### 🔋 3. 배터리 상태 및 맵 확인
 
-- 최초 로그인 시 로봇이 등록되어 있지 않다면 안내 문구 표시
-- 연결 가능한 기기 등록
-- 연결 상태: connected 여부 확인 가능
+<table>
+  <tr>
+    <td style="vertical-align: top; padding-right: 20px;">
+      <img src="image/3-배터리&맵확인.gif" width="200">
+    </td>
+    <td style="vertical-align: top;">
+      <ul>
+        <li>로봇의 현재 충전 상태(%)를 실시간으로 확인</li>
+        <li><strong>터틀봇으로 그린 헬스장 맵</strong>을 사용자에게 제공</li>
+        <li>친숙한 캐릭터 UI로 로봇 상태를 직관적으로 전달</li>
+      </ul>
+    </td>
+  </tr>
+</table>
 
----
+ 
 
-### 🔋 배터리 상태 및 맵 확인
+### 📊 4. 기기 상태 대시보드
 
-| <img src="image/3-배터리&맵확인.gif" width="200"> | 
-|:---:|
+<table>
+  <tr>
+    <td style="vertical-align: top; padding-right: 20px;">
+      <img src="image/4-기기상태관리.gif" width="200">
+    </td>
+    <td style="vertical-align: top;">
+      <ul>
+        <li>기기의 연결 상태 확인</li>
+        <li>배터리 잔량 및 청소 예약 시간 확인</li>
+        <li>최근 알림 내역 확인 (예: 배터리 부족 경고 등)</li>
+      </ul>
+    </td>
+  </tr>
+</table>
 
-- 로봇의 현재 충전 상태(%)  표시
-- **터틀봇으로 그린 헬스장 맵** 제공
-- 사용자 친화적인 캐릭터 UI로 상태 전달
 
---- 
+### ⏰ 5. 청소 예약 등록
 
-### 📊 기기 상태 대시보드
+<table>
+  <tr>
+    <td style="vertical-align: top; padding-right: 20px;">
+      <img src="image/5-예약.gif" width="200">
+    </td>
+    <td style="vertical-align: top;">
+      <ul>
+        <li>사용자가 원하는 <strong>청소 시작 시간을 여러 개 등록</strong> 가능</li>
+        <li>각 예약은 리스트 형태로 나열되며, <strong>스위치를 통해 활성화 여부</strong> 조절 가능</li>
+        <li>예약이 없을 경우 "아직 예약된 시간이 없어요" 문구 표시</li>
+        <li>직관적인 "+" 버튼으로 새로운 예약 추가 가능</li>
+      </ul>
+    </td>
+  </tr>
+</table>
 
-| <img src="image/4-기기상태관리.gif" width="200"> | 
-|:---:|
 
-- 기기 연결 상태 / 배터리 잔량 / 예약 시간 / 최근 알림 내용 (예: 배터리 부족 경고 등) 확인 가능 
 
----
+### 📅 6. 예약 완료 및 활성화
 
-### ⏰ 청소 예약 등록
+<table>
+  <tr>
+    <td style="vertical-align: top; padding-right: 20px;">
+      <img src="image/6-예약-타이머.gif" width="200">
+    </td>
+    <td style="vertical-align: top;">
+      <ul>
+        <li>사용자는 <strong>"몇 시간 뒤 청소 종료"</strong> 형태의 타이머를 <strong>1개만 설정</strong> 가능</li>
+        <li>설정된 타이머는 <strong>플레이 탭과 연동</strong>되어, 시간이 만료되면 로봇이 <strong>자동으로 작업 종료</strong></li>
+      </ul>
+    </td>
+  </tr>
+</table>
 
-| <img src="image/5-예약.gif" width="200"> | 
-|:---:|
 
-- 사용자가 원하는 **청소 시작 시간을 여러 개 등록**할 수 있으며, 각각의 예약은 리스트 형태로 표시
-- 각 예약 항목은 스위치를 통해 예약의 활성화 여부 조절 가능
-- 예약이 없을 경우 "아직 예약된 시간이 없어요" 문구 표시
-- 직관적인 "+" 버튼을 통해 새로운 예약 추가 가능
+### ▶️ 7. 플레이 탭 (로봇 기능 실행)
 
----
+<table>
+  <tr>
+    <td style="vertical-align: top; padding-right: 20px;">
+      <img src="image/7-플레이탭.gif" width="200">
+    </td>
+    <td style="vertical-align: top;">
+      <ul>
+        <li><strong>동작 제어:</strong> 로봇의 자동 이동 및 정리 기능 시작</li>
+        <li><strong>로봇 복귀:</strong> 정해진 위치로 복귀 명령</li>
+        <li><strong>수동 조작:</strong> 아래 동작을 직접 제어 가능
+          <ul>
+            <li>로봇의 <strong>팔 상하 이동</strong></li>
+            <li><strong>집게 열기 / 닫기</strong></li>
+            <li><strong>상하좌우 방향 이동</strong></li>
+          </ul>
+        </li>
+      </ul>
+    </td>
+  </tr>
+</table>
 
-### 📅 예약 완료 및 활성화
 
-| <img src="image/6-예약-타이머.gif" width="200"> | 
-|:---:|
+### ☰ 8. 메뉴 화면 (기기 및 계정 관리)
 
-- 사용자는 **"몇 시간 뒤 청소 종료"** 형태의 타이머를 **1개만 설정 가능**
-- 설정된 타이머는 **플레이 탭과 연동**되어, 시간이 만료되면 로봇이 **자동으로 작업 종료**
+<table>
+  <tr>
+    <td style="vertical-align: top; padding-right: 10px;">
+      <img src="image/8-메뉴(1).gif" width="200">
+    </td>
+    <td style="vertical-align: top; padding-right: 10px;">
+      <img src="image/9-메뉴(2).gif" width="200">
+    </td>
+    <td style="vertical-align: top;">
+      <ul>
+        <li>기기 연결 및 사용 설명서 확인</li>
+        <li>알림 설정</li>
+        <li>로그아웃 및 계정 삭제</li>
+        <li>자주 묻는 질문(FAQ) 제공</li>
+      </ul>
+    </td>
+  </tr>
+</table>
 
----
-
-### ▶️ 플레이 탭 (로봇 기능 실행)
-
-| <img src="image/7-플레이탭.gif" width="200"> | 
-|:---:|
-
-- 동작 제어: 로봇의 자동 이동 및 정리 기능 시작
-- 로봇 복귀: 정해진 위치로 복귀 명령
-- 수동 조작을 통해 아래의 동작 직접 제어 가능
-    - 로봇의 **팔 상하 이동**
-    - **집게 열기 / 닫기**
-    - **상하좌우 방향 이동**
-
----
-
-### ☰ 메뉴 화면 (기기 및 계정 관리)
-
-| <img src="image/8-메뉴(1).gif" width="200"> | <img src="image/9-메뉴(2).gif" width="200"> | 
-|:---:|:---:|
-
-- 기기 연결 및 사용 설명서 확인
-- 알림 설정
-- 로그아웃 및 계정 삭제
-- 자주 묻는 질문(FAQ) 제공
 
 
 <br/>
