@@ -242,7 +242,7 @@
       </td>
       <td align="center">
         <a href="#"><img src="./image/my.png" width="100px;" alt=""/><br />
-        <sub><b>Ai : 최미연<br>romanfautoribus@gmail.com</b></sub></a><br />
+        <sub><b>Ai : 최미연<br>mu05041@naver.com</b></sub></a><br />
       </td>
       <td align="center">
         <a href="#"><img src="./image/yj.png" width="100px;" alt=""/><br />
