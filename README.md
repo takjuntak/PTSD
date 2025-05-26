@@ -229,11 +229,18 @@
 ---
 
 ### ☰ 메뉴 (기기 및 계정 관리)
-
-<p align="center">
-  <img src="image/8-메뉴(1).gif" width="200" height="444">
-  <img src="image/9-메뉴(2).gif" width="200" height="444">
-</p>
+<div align="center">
+  <table>
+    <tr>
+      <td align="center">
+        <img src="image/8-메뉴(1).gif" width="220" height="444"><br/>
+      </td>
+      <td align="center">
+        <img src="image/9-메뉴(2).gif" width="220" height="444"><br/>
+      </td>
+    </tr>
+  </table>
+</div>
 
 > ⚙️ 기기 연결, 사용 설명서 확인  
 > 🔕 알림 설정, 자주 묻는 질문(FAQ)  
