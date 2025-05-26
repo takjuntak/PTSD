@@ -93,11 +93,11 @@
 <table>
   <tr>
     <td style="text-align: center;">
-      <img src="image/객체인식1.gif" width="300"><br/>
+      <img src="image/객체인식1.gif" width="500"><br/>
       <sub>객체인식-(1)</sub>
     </td>
     <td style="text-align: center;">
-      <img src="image/객체인식2.gif" width="300"><br/>
+      <img src="image/객체인식2.gif" width="500"><br/>
       <sub>객체인식-(2)</sub>
     </td>
   </tr>
@@ -126,11 +126,11 @@
 <table>
   <tr>
     <td style="text-align: center;">
-      <img src="image/시연_1.gif" width="300"><br/>
+      <img src="image/시연_1.gif" width="500"><br/>
       <sub>거치대 바벨 정리</sub>
     </td>
     <td style="text-align: center;">
-      <img src="image/시연_2.gif" width="300"><br/>
+      <img src="image/시연_2.gif" width="500"><br/>
       <sub>바닥 바벨 회수</sub>
     </td>
   </tr>
@@ -142,158 +142,105 @@
 
 ## 서비스 화면
 
-### 🔐 1. 회원가입 & 로그인
-<table>
-  <tr>
-    <td style="vertical-align: top; padding-right: 20px;">
-      <img src="image/1-회원가입&로그인.gif" width="200">
-    </td>
-    <td style="vertical-align: top;">
-      <ul>
-        <li>사용자 이메일과 비밀번호를 통해 로그인</li>
-        <li>로그인 시도 시 입력값 유효성 검사</li>
-        <li>가입 링크 제공으로 신규 사용자 접근 용이</li>
-      </ul>
-    </td>
-  </tr>
-</table>
+### 🔐 회원가입 & 로그인
 
-### 🔧 2. 기기 등록 (로봇 연결)
+<div align="center">
+  <img src="image/1-회원가입&로그인.gif" width="250" height="444">
+</div>
 
-<table>
-  <tr>
-    <td style="vertical-align: top; padding-right: 20px;">
-      <img src="image/2-기기등록.gif" width="200">
-    </td>
-    <td style="vertical-align: top;">
-      <ul>
-        <li>최초 로그인 시 로봇이 등록되어 있지 않다면 안내 문구 표시</li>
-        <li>사용 가능한 로봇 기기 목록에서 연결 및 등록</li>
-        <li>등록 후 연결 상태(connected 여부) 실시간 확인 가능</li>
-      </ul>
-    </td>
-  </tr>
-</table>
+> 📝 사용자 이메일과 비밀번호를 통해 로그인  
+> ✅ 로그인 시도 시 입력값 유효성 검사  
+> 🔗 가입 링크 제공으로 신규 사용자 접근 용이
 
+---
 
-### 🔋 3. 배터리 상태 및 맵 확인
+### 🔧 기기 등록 (로봇 연결)
 
-<table>
-  <tr>
-    <td style="vertical-align: top; padding-right: 20px;">
-      <img src="image/3-배터리&맵확인.gif" width="200">
-    </td>
-    <td style="vertical-align: top;">
-      <ul>
-        <li>로봇의 현재 충전 상태(%)를 실시간으로 확인</li>
-        <li><strong>터틀봇으로 그린 헬스장 맵</strong>을 사용자에게 제공</li>
-        <li>친숙한 캐릭터 UI로 로봇 상태를 직관적으로 전달</li>
-      </ul>
-    </td>
-  </tr>
-</table>
+<div align="center">
+  <img src="image/2-기기등록.gif" width="250" height="444">
+</div>
 
- 
+> 🤖 최초 로그인 시 등록 안내 문구 표시  
+> 📡 사용 가능한 로봇 기기 목록에서 연결  
+> ✅ 연결 후 실시간 상태 확인 (connected)
 
-### 📊 4. 기기 상태 대시보드
+---
 
-<table>
-  <tr>
-    <td style="vertical-align: top; padding-right: 20px;">
-      <img src="image/4-기기상태관리.gif" width="200">
-    </td>
-    <td style="vertical-align: top;">
-      <ul>
-        <li>기기의 연결 상태 확인</li>
-        <li>배터리 잔량 및 청소 예약 시간 확인</li>
-        <li>최근 알림 내역 확인 (예: 배터리 부족 경고 등)</li>
-      </ul>
-    </td>
-  </tr>
-</table>
+### 🔋 배터리 상태 및 맵 확인
 
+<div align="center">
+  <img src="image/3-배터리&맵확인.gif" width="250" height="444">
+</div>
 
-### ⏰ 5. 청소 예약 등록
+> ⚡ 로봇 충전 상태(%) 실시간 확인  
+> 🗺️ **터틀봇 기반 헬스장 맵** 제공  
+> 🧸 캐릭터 UI로 친근한 상태 전달
 
-<table>
-  <tr>
-    <td style="vertical-align: top; padding-right: 20px;">
-      <img src="image/5-예약.gif" width="200">
-    </td>
-    <td style="vertical-align: top;">
-      <ul>
-        <li>사용자가 원하는 <strong>청소 시작 시간을 여러 개 등록</strong> 가능</li>
-        <li>각 예약은 리스트 형태로 나열되며, <strong>스위치를 통해 활성화 여부</strong> 조절 가능</li>
-        <li>예약이 없을 경우 "아직 예약된 시간이 없어요" 문구 표시</li>
-        <li>직관적인 "+" 버튼으로 새로운 예약 추가 가능</li>
-      </ul>
-    </td>
-  </tr>
-</table>
+---
 
+### 📊 기기 상태 대시보드
 
+<div align="center">
+  <img src="image/4-기기상태관리.gif" width="250" height="444">
+</div>
 
-### 📅 6. 예약 완료 및 활성화
+> ✅ 연결 상태, 배터리 잔량 확인  
+> ⏰ 청소 예약 상태 표시  
+> 🚨 최근 알림 내역 (예: 배터리 부족)
 
-<table>
-  <tr>
-    <td style="vertical-align: top; padding-right: 20px;">
-      <img src="image/6-예약-타이머.gif" width="200">
-    </td>
-    <td style="vertical-align: top;">
-      <ul>
-        <li>사용자는 <strong>"몇 시간 뒤 청소 종료"</strong> 형태의 타이머를 <strong>1개만 설정</strong> 가능</li>
-        <li>설정된 타이머는 <strong>플레이 탭과 연동</strong>되어, 시간이 만료되면 로봇이 <strong>자동으로 작업 종료</strong></li>
-      </ul>
-    </td>
-  </tr>
-</table>
+---
 
+### ⏰ 청소 예약 등록
 
-### ▶️ 7. 플레이 탭 (로봇 기능 실행)
+<div align="center">
+  <img src="image/5-예약.gif" width="250" height="444">
+</div>
 
-<table>
-  <tr>
-    <td style="vertical-align: top; padding-right: 20px;">
-      <img src="image/7-플레이탭.gif" width="200">
-    </td>
-    <td style="vertical-align: top;">
-      <ul>
-        <li><strong>동작 제어:</strong> 로봇의 자동 이동 및 정리 기능 시작</li>
-        <li><strong>로봇 복귀:</strong> 정해진 위치로 복귀 명령</li>
-        <li><strong>수동 조작:</strong> 아래 동작을 직접 제어 가능
-          <ul>
-            <li>로봇의 <strong>팔 상하 이동</strong></li>
-            <li><strong>집게 열기 / 닫기</strong></li>
-            <li><strong>상하좌우 방향 이동</strong></li>
-          </ul>
-        </li>
-      </ul>
-    </td>
-  </tr>
-</table>
+> 🕒 원하는 시간에 **여러 개 예약 등록 가능**  
+> 🔄 예약 항목 온오프 스위치 조절  
+> ➕ "+" 버튼으로 예약 추가
 
+---
 
-### ☰ 8. 메뉴 화면 (기기 및 계정 관리)
+### 📅 예약 타이머 설정
 
-<table>
-  <tr>
-    <td style="vertical-align: top; padding-right: 10px;">
-      <img src="image/8-메뉴(1).gif" width="200">
-    </td>
-    <td style="vertical-align: top; padding-right: 10px;">
-      <img src="image/9-메뉴(2).gif" width="200">
-    </td>
-    <td style="vertical-align: top;">
-      <ul>
-        <li>기기 연결 및 사용 설명서 확인</li>
-        <li>알림 설정</li>
-        <li>로그아웃 및 계정 삭제</li>
-        <li>자주 묻는 질문(FAQ) 제공</li>
-      </ul>
-    </td>
-  </tr>
-</table>
+<div align="center">
+  <img src="image/6-예약-타이머.gif" width="250" height="444">
+</div>
+
+> ⏳ **몇 시간 뒤 자동 종료** 타이머 설정  
+> 🔁 플레이 탭과 연동되어 자동 정리 종료
+
+---
+
+### ▶️ 플레이 탭
+
+<div align="center">
+  <img src="image/7-플레이탭.gif" width="250" height="444">
+</div>
+
+> 🧠 로봇 동작 자동 제어 시작  
+> 🏠 복귀 명령 (정해진 위치로 이동)  
+> 🛠 수동 제어 기능:  
+> &nbsp;&nbsp;&nbsp;&nbsp;- 팔 상하 이동  
+> &nbsp;&nbsp;&nbsp;&nbsp;- 집게 열기/닫기  
+> &nbsp;&nbsp;&nbsp;&nbsp;- 상하좌우 이동
+
+---
+
+### ☰ 메뉴 (기기 및 계정 관리)
+
+<p align="center">
+  <img src="image/8-메뉴(1).gif" width="200" height="444">
+  <img src="image/9-메뉴(2).gif" width="200" height="444">
+</p>
+
+> ⚙️ 기기 연결, 사용 설명서 확인  
+> 🔕 알림 설정, 자주 묻는 질문(FAQ)  
+> 🔐 로그아웃 / 계정 삭제 지원
+
+---
+
 
 
 
