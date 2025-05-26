@@ -81,7 +81,8 @@
 
 ### 터틀봇 기반 헬스장 정리 로봇 제작
 
-<img src="image/터틀봇.png" width="400"> 
+| <img src="image/터틀봇.png" width="400"> |
+|:---:|
 
 - **터틀봇3**과 **로봇팔**을 결합
 
@@ -89,9 +90,9 @@
 
 ### 객체 인식
 
-| <img src="image/객체인식1.gif" width="400"> | <img src="image/객체인식2.gif" width="400"> |
-|:---:|:---:|
-| 사물을 탐지하고 Bounding Box를 표시 | 다양한 물체에 대한 분류 결과 |
+| <img src="image/객체인식1.gif" width="600"> |
+| <img src="image/객체인식2.gif" width="600"> |
+|:---:|
 
 - YOLOv8모델을 이용해서 운동기구를 덤벨, 원판클래스로 분류 후 탐지
 - 식별한 운동기구의 크기와 위치정보를 로봇에 송신
@@ -100,7 +101,7 @@
 ---
 
 ### 자율주행
-| <img src="image/자율주행시연.gif" width="400"> | 
+| <img src="image/자율주행시연.gif" width="500"> | 
 |:---:|
 | 자율주행 시연 장면 |
 
@@ -110,8 +111,9 @@
 ---
 
 ### 로봇팔 제어
-| <img src="image/시연_1.gif" width="400"> | <img src="image/시연_2.gif" width="400"> |
-|:---:|:---:|
+| <img src="image/시연_1.gif" width="600"> | 
+|<img src="image/시연_2.gif" width="600"> |
+|:---:|
 
 - 로봇팔의 관절(Joint)을 제어하여 물체를 정확히 집어 올림
 - 지정된 위치로 이송 및 배치
