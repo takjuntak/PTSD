@@ -15,7 +15,7 @@
 <br />
 <div id="프로젝트-소개"></div>
 
-## 🧾 프로젝트 소개
+## 프로젝트 소개
 
 헬스 트레이너 분들과의 현장 인터뷰를 통해  
 **운동 후 정리하지 않는 무거운 원판을 매번 사람이 옮기는 불편함**을 확인하게 되었습니다.
@@ -34,7 +34,7 @@
 <br/>
 <div id="기술-스택"></div>
 
-## 🛠 기술 스택
+## 기술 스택
 ### ✔️Frond-end
 <img src="https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=React&logoColor=white"/>  <img src="https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=TypeScript&logoColor=white"/>  <img src="https://img.shields.io/badge/PWA-5A0FC8?style=for-the-badge&logo=PWA&logoColor=white"/>  <img src="https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=Node.js&logoColor=white"/>  <img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=JavaScript&logoColor=black"/>
 
@@ -58,7 +58,7 @@
 <br/>
 <div id="주요-기능"></div>
 
-## 🚀 주요 기능 
+## 주요 기능 
 
 |         기능         | 내용                                                                     |
 | :----------------: | :--------------------------------------------------------------------- |
@@ -73,7 +73,7 @@
 <br/>
 <div id="시스템-아키텍쳐"></div>
 
-## 📂 시스템 아키텍쳐
+## 시스템 아키텍쳐
 <br>
 
 <img src="image/system architecture.png" width="600"> 
@@ -81,7 +81,7 @@
 <br>
 <div id="시연-및-결과"></div>
 
-## 📷 시연 및 결과
+## 시연 및 결과
 
 
 ### 터틀봇 기반 헬스장 정리 로봇 제작
@@ -118,7 +118,7 @@
 <br/>
 <div id="팀원-소개"></div>
 
-## 🧑‍🤝‍🧑 팀원 소개
+## 팀원 소개
 
 <table>
   <tbody>
